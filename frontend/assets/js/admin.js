@@ -168,43 +168,92 @@ document.addEventListener('DOMContentLoaded', async () => {
         const title = document.getElementById('v-title').value;
         const desc = document.getElementById('v-desc').value;
         const price = document.getElementById('v-price').value;
-        const path = document.getElementById('v-path').value;
+        
+        const videoInput = document.getElementById('v-file');
+        const videoFile = videoInput.files[0];
 
-        if(!title || !path || !price) return alert('Título, precio y ruta son requeridos');
+        if(!title || !videoFile || !price) return alert('Título, precio y archivo de video son requeridos');
 
         const submitBtn = document.getElementById('submit-video');
         const originalText = submitBtn.textContent;
-        submitBtn.textContent = 'Guardando...';
+        submitBtn.textContent = 'Procesando...';
         submitBtn.disabled = true;
 
-        const imagesBase64 = selectedImages.map(img => img.data);
-
         try {
+            // 1. Obtener Presigned URL
+            const presignRes = await fetch(`/api/admin/get-upload-url?fileName=${encodeURIComponent(videoFile.name)}&fileType=${encodeURIComponent(videoFile.type)}`);
+            if (!presignRes.ok) throw new Error('No se pudo obtener la URL de subida. Verifica tus claves AWS.');
+            const { uploadUrl, fileKey } = await presignRes.json();
+
+            // 2. Subir directo a S3 con Barra de Progreso
+            const progressContainer = document.getElementById('upload-progress-container');
+            const progressBar = document.getElementById('upload-progress-bar');
+            const progressText = document.getElementById('upload-percent');
+            
+            progressContainer.style.display = 'block';
+
+            await new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('PUT', uploadUrl, true);
+                xhr.setRequestHeader('Content-Type', videoFile.type);
+                
+                xhr.upload.onprogress = (e) => {
+                    if (e.lengthComputable) {
+                        const percent = Math.round((e.loaded / e.total) * 100);
+                        progressBar.style.width = percent + '%';
+                        progressText.textContent = percent + '%';
+                    }
+                };
+                
+                xhr.onload = () => {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        resolve();
+                    } else {
+                        reject(new Error('Falló la subida a S3'));
+                    }
+                };
+                xhr.onerror = () => reject(new Error('Error de red al subir a S3'));
+                xhr.send(videoFile);
+            });
+
+            // 3. Subir metadatos e imágenes a la DB
+            submitBtn.textContent = 'Guardando datos...';
+            const imagesBase64 = selectedImages.map(img => img.data);
+
             const res = await fetch('/api/admin/videos', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title, description: desc, price, internal_storage_path: path, images: imagesBase64 })
+                body: JSON.stringify({ 
+                    title, 
+                    description: desc, 
+                    price, 
+                    internal_storage_path: fileKey, 
+                    images: imagesBase64 
+                })
             });
 
             if (res.ok) {
-                alert('Video agregado exitosamente');
+                alert('Video agregado exitosamente a la Nube');
                 document.getElementById('add-video-form').style.display = 'none';
                 
                 // Limpiar form
                 document.getElementById('v-title').value = '';
                 document.getElementById('v-desc').value = '';
                 document.getElementById('v-price').value = '';
-                document.getElementById('v-path').value = '';
+                videoInput.value = '';
+                progressContainer.style.display = 'none';
+                progressBar.style.width = '0%';
+                
                 selectedImages = [];
                 updateImagePreviews();
 
                 loadVideos(); // recargar
             } else {
-                alert('Error al agregar video');
+                alert('Error al registrar el video en la base de datos');
             }
         } catch (err) {
             console.error(err);
-            alert('Error de conexión');
+            alert('Error: ' + err.message);
         } finally {
             submitBtn.textContent = originalText;
             submitBtn.disabled = false;

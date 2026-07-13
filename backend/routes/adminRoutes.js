@@ -26,5 +26,6 @@ router.get('/stats', adminController.getStats);
 router.get('/users', adminController.getUsers);
 router.get('/videos', adminController.getVideos);
 router.post('/videos', adminController.addVideo);
+router.get('/get-upload-url', adminController.getUploadUrl);
 
 module.exports = router;

@@ -1,5 +1,41 @@
 const db = require('../config/database');
 const { randomUUID: uuidv4 } = require('crypto');
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+
+// Configuración S3 (AWS o Cloudflare R2)
+const s3 = new S3Client({
+    region: process.env.AWS_REGION || 'us-east-1',
+    credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ''
+    },
+    // endpoint: process.env.AWS_ENDPOINT // Descomentar si se usa Cloudflare R2
+});
+
+exports.getUploadUrl = async (req, res) => {
+    try {
+        const { fileName, fileType } = req.query;
+        if (!fileName || !fileType) return res.status(400).json({ error: 'Faltan parámetros' });
+
+        const extension = fileName.split('.').pop();
+        const safeFileName = `videos/${uuidv4()}.${extension}`;
+
+        const command = new PutObjectCommand({
+            Bucket: process.env.AWS_BUCKET_NAME || 'my-bucket',
+            Key: safeFileName,
+            ContentType: fileType
+        });
+
+        // La URL expira en 1 hora
+        const signedUrl = await getSignedUrl(s3, command, { expiresIn: 3600 });
+
+        res.json({ uploadUrl: signedUrl, fileKey: safeFileName });
+    } catch (error) {
+        console.error('Error generando Presigned URL:', error);
+        res.status(500).json({ error: 'Error interno de almacenamiento' });
+    }
+};
 
 exports.getStats = async (req, res) => {
     try {

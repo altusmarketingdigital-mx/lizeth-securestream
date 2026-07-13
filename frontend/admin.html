@@ -52,7 +52,22 @@
                 <div class="form-group"><input type="text" id="v-title" placeholder="Título"></div>
                 <div class="form-group"><input type="text" id="v-desc" placeholder="Descripción"></div>
                 <div class="form-group"><input type="number" id="v-price" placeholder="Precio ($ USD)"></div>
-                <div class="form-group"><input type="text" id="v-path" placeholder="Ruta del servidor (ej. /videos/masterclass.mp4)"></div>
+                
+                <div class="form-group" style="margin-top: 1rem;">
+                    <h4>Archivo de Video (.mp4)</h4>
+                    <p style="font-size: 0.85rem; color: #aaa; margin-bottom: 0.5rem;">Selecciona el curso para subirlo a S3.</p>
+                    <input type="file" id="v-file" accept="video/mp4, video/quicktime" style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 5px; width: 100%; box-sizing: border-box; cursor: pointer;">
+                    
+                    <div id="upload-progress-container" style="display: none; margin-top: 1rem;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 5px;">
+                            <span>Subiendo a la nube...</span>
+                            <span id="upload-percent">0%</span>
+                        </div>
+                        <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
+                            <div id="upload-progress-bar" style="width: 0%; height: 100%; background: var(--primary); transition: width 0.3s;"></div>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="form-group" style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
                     <h4>Imágenes Promocionales <span id="img-counter" style="font-size:0.9rem; color:var(--primary); font-weight:normal;">(0 / 10)</span></h4>

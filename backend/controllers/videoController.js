@@ -63,9 +63,33 @@ exports.streamVideo = async (req, res) => {
 
         const videoPath = videoResult.rows[0].internal_storage_path;
         
+        // Si el video fue subido a S3, la ruta será algo como "videos/uuid.mp4"
+        if (videoPath.startsWith('videos/')) {
+            const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
+            const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+            
+            const s3 = new S3Client({
+                region: process.env.AWS_REGION || 'us-east-1',
+                credentials: {
+                    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
+                    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ''
+                }
+            });
+
+            const command = new GetObjectCommand({
+                Bucket: process.env.AWS_BUCKET_NAME || 'my-bucket',
+                Key: videoPath
+            });
+
+            // Generar URL válida por 4 horas para que el reproductor pueda hacer buffer
+            const signedUrl = await getSignedUrl(s3, command, { expiresIn: 14400 });
+            return res.redirect(signedUrl);
+        }
+
+        // Fallback local (Legacy)
         const resolvedPath = path.resolve(__dirname, '../../', videoPath);
         if (!fs.existsSync(resolvedPath)) {
-            console.log(`[Warning] Video file not found locally: ${resolvedPath}`);
+            return res.status(404).json({ error: 'Video file not found locally or in S3' });
         }
 
         // Lógica de streaming segura
