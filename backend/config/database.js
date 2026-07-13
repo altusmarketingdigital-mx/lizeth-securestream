@@ -2,11 +2,16 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 
-const dbPath = path.resolve(__dirname, '../db/database.sqlite');
-const dbDir = path.dirname(dbPath);
+const isVercel = process.env.VERCEL === '1' || process.env.VERCEL_ENV;
+const dbPath = isVercel ? path.join('/tmp', 'database.sqlite') : path.resolve(__dirname, '../db/database.sqlite');
+const dbDir = isVercel ? '/tmp' : path.dirname(dbPath);
 
 if (!fs.existsSync(dbDir)) {
-    fs.mkdirSync(dbDir, { recursive: true });
+    try {
+        fs.mkdirSync(dbDir, { recursive: true });
+    } catch (e) {
+        console.error("Error creando directorio DB:", e);
+    }
 }
 
 const db = new sqlite3.Database(dbPath, (err) => {
