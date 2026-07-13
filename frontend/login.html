@@ -216,7 +216,7 @@
                     localStorage.setItem('hasPremium', data.user.has_premium);
                     localStorage.setItem('isAdmin', data.user.is_admin);
                     
-                    if (data.user.is_admin === 1) {
+                    if (data.user.is_admin === 1 || data.user.is_admin === true || data.user.is_admin === "1" || data.user.is_admin === "true") {
                         window.location.href = '/admin.html';
                     } else {
                         window.location.href = '/dashboard.html';
