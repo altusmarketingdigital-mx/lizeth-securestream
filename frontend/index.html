@@ -125,6 +125,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             margin-top: 10px;
             z-index: 5;
+            background: linear-gradient(135deg, #09203f 0%, #053b50 100%);
         }
 
         .carousel-slide {
@@ -134,79 +135,126 @@
             width: 100%;
             height: 100%;
             opacity: 0;
-            transition: opacity 1s ease-in-out;
-            object-fit: cover;
+            transition: opacity 0.8s ease-in-out;
             z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .carousel-slide.active {
             opacity: 1;
             z-index: 2;
         }
+        
+        .slide-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 80px;
+            box-sizing: border-box;
+            gap: 3rem;
+        }
+
+        .slide-img-col {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .slide-img-col img {
+            max-width: 100%;
+            max-height: 360px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            object-fit: contain;
+        }
+
+        .slide-text-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .slide-text-col h2 {
+            font-size: 2.8rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+            line-height: 1.1;
+            font-weight: 800;
+        }
+
+        .slide-text-col p {
+            font-size: 1.2rem;
+            color: #e2e8f0;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .slide-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+            max-width: 320px;
+        }
+        
+        .slide-btn:hover { background: #2563eb; }
 
         .carousel-nav {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.6);
             color: white;
             border: none;
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             cursor: pointer;
             z-index: 4;
             display: flex;
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(5px);
             transition: background 0.3s;
         }
-        .carousel-nav:hover { background: var(--primary); }
-        .carousel-nav.prev { left: 30px; }
-        .carousel-nav.next { right: 30px; }
+        .carousel-nav:hover { background: rgba(255,255,255,0.2); }
+        .carousel-nav.prev { left: 20px; }
+        .carousel-nav.next { right: 20px; }
 
         .carousel-dots {
             position: absolute;
-            bottom: 15px;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 8px;
+            gap: 12px;
             z-index: 4;
+            width: 80%;
+            max-width: 800px;
         }
         .dot {
-            width: 10px;
-            height: 10px;
+            flex: 1;
+            height: 4px;
             background: rgba(255,255,255,0.3);
-            border-radius: 50%;
+            border-radius: 2px;
             cursor: pointer;
             transition: background 0.3s;
         }
         .dot.active {
-            background: var(--primary);
-            box-shadow: 0 0 10px var(--primary);
-        }
-        
-        .slide-content-overlay {
-            position: absolute;
-            bottom: 40px;
-            right: 50px;
-            background: rgba(0,0,0,0.75);
-            backdrop-filter: blur(10px);
-            padding: 2rem;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
-            z-index: 4;
-            max-width: 400px;
-            text-align: right;
-            opacity: 0;
-            transition: opacity 1s;
-        }
-        .carousel-slide.active + .slide-content-overlay,
-        .slide-content-overlay.active {
-            opacity: 1;
+            background: #ffffff;
+            box-shadow: 0 0 8px rgba(255,255,255,0.8);
         }
 
         .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 4rem; position: relative; z-index: 10; }
@@ -244,19 +292,22 @@
 
     <div class="top-banner-carousel" id="hero-carousel">
         <!-- Fallback -->
-        <img class="carousel-slide active" src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1920&q=80">
+        <div class="carousel-slide active">
+            <div class="slide-inner">
+                <div class="slide-img-col">
+                    <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80" alt="Fallback">
+                </div>
+                <div class="slide-text-col">
+                    <h2>Haz más grande tu experiencia</h2>
+                    <p>Más sabor para tu visita</p>
+                    <button class="slide-btn">Conoce la promoción</button>
+                </div>
+            </div>
+        </div>
         
         <button class="carousel-nav prev" id="c-prev">❮</button>
         <button class="carousel-nav next" id="c-next">❯</button>
         
-        <div id="dynamic-slide-content" class="slide-content-overlay">
-            <h3 id="slide-title" style="margin:0 0 10px 0; font-size:1.5rem; color: #fff;">Premium Content</h3>
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span style="color:var(--sec-3); font-weight:700; font-size:1.1rem;">Exclusive</span>
-                <button id="slide-link-btn" class="btn-primary sm-btn" style="display:none; padding: 8px 16px; font-size: 1rem;">Ver Curso</button>
-            </div>
-        </div>
-
         <div class="carousel-dots" id="c-dots">
             <div class="dot active"></div>
         </div>
@@ -325,32 +376,10 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const carousel = document.getElementById('hero-carousel');
             const dotsContainer = document.getElementById('c-dots');
-            const slideTitle = document.getElementById('slide-title');
-            const slideLinkBtn = document.getElementById('slide-link-btn');
-            const contentOverlay = document.getElementById('dynamic-slide-content');
             
             let currentIdx = 0;
             let images = [];
             let rotationInterval;
-
-            const updateSlideContent = () => {
-                if(!images || images.length === 0) return;
-                const data = images[currentIdx];
-                if(data.title) {
-                    slideTitle.textContent = data.title;
-                    contentOverlay.style.opacity = 1;
-                } else {
-                    contentOverlay.style.opacity = 0;
-                }
-
-                if(data.link_url) {
-                    slideLinkBtn.style.display = 'inline-block';
-                    slideLinkBtn.onclick = () => window.location.href = data.link_url;
-                } else {
-                    slideLinkBtn.style.display = 'none';
-                    slideLinkBtn.onclick = null;
-                }
-            };
 
             const goToSlide = (idx) => {
                 const slides = carousel.querySelectorAll('.carousel-slide');
@@ -365,7 +394,6 @@
                 slides[currentIdx].classList.add('active');
                 if(dots[currentIdx]) dots[currentIdx].classList.add('active');
                 
-                updateSlideContent();
                 resetInterval();
             };
 
@@ -399,12 +427,23 @@
                         dotsContainer.innerHTML = '';
                         
                         images.forEach((img, idx) => {
-                            // Img
-                            const imgEl = document.createElement('img');
-                            imgEl.className = 'carousel-slide' + (idx === 0 ? ' active' : '');
-                            imgEl.src = img.image_data;
-                            // Insert before the arrows so they stay on top
-                            carousel.insertBefore(imgEl, document.getElementById('c-prev'));
+                            const slideDiv = document.createElement('div');
+                            slideDiv.className = 'carousel-slide' + (idx === 0 ? ' active' : '');
+                            
+                            slideDiv.innerHTML = `
+                                <div class="slide-inner">
+                                    <div class="slide-img-col">
+                                        <img src="${img.image_data}" alt="${img.title || ''}">
+                                    </div>
+                                    <div class="slide-text-col">
+                                        <h2>${img.title || 'Haz más grande tu experiencia'}</h2>
+                                        <p>Contenido Exclusivo para tu visita</p>
+                                        ${img.link_url ? `<button onclick="window.location.href='${img.link_url}'" class="slide-btn">Conoce la promoción</button>` : ''}
+                                    </div>
+                                </div>
+                            `;
+                            
+                            carousel.insertBefore(slideDiv, document.getElementById('c-prev'));
                             
                             // Dot
                             const dot = document.createElement('div');
@@ -413,7 +452,6 @@
                             dotsContainer.appendChild(dot);
                         });
 
-                        updateSlideContent();
                         resetInterval();
                     } else {
                         // Esconder controles si no hay imagenes
