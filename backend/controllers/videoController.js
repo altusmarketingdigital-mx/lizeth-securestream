@@ -33,7 +33,7 @@ exports.streamVideo = async (req, res) => {
         const userId = req.user.id;
 
         // Validar que el usuario compró el video O es admin (los admin ven todo)
-        if (req.user.is_admin !== 1) {
+        if (req.user.is_admin !== 1 && req.user.is_admin !== true && req.user.is_admin !== "1" && req.user.is_admin !== "true") {
             const purchaseCheck = await db.query(`
                 SELECT p.id FROM purchases p 
                 JOIN videos v ON p.video_id = v.id 
