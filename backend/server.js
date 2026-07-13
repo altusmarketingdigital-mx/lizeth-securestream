@@ -21,6 +21,10 @@ app.use('/api/payment', require('./routes/paymentRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/coupons', require('./routes/couponRoutes'));
 
+// Rutas directas (sin router por simplicidad)
+const currencyController = require('./controllers/currencyController');
+app.get('/api/currency/rates', currencyController.getRates);
+
 // Rutas básicas (placeholder)
 app.get('/api/health', async (req, res) => {
     try {

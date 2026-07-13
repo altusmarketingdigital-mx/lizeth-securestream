@@ -7,6 +7,7 @@
     <link rel="icon" href="/assets/img/barber-pole.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/main.css">
+    <script src="/assets/js/currency.js"></script>
     <style>
         .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 4rem; position: relative; z-index: 10; }
         .header-nav { display: flex; gap: 2rem; align-items: center; }
@@ -161,7 +162,7 @@
             <p id="coupon-msg" style="margin-top: 5px; font-family: Bahnschrift;"></p>
 
             <div class="cart-total-box">
-                <div class="cart-total">Total: <span>$<span id="total-price">0</span> USD</span></div>
+                <div class="cart-total">Total: <span id="total-price-display">$0 MXN</span></div>
                 <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: flex-end;">
                     <button id="stripe-btn" class="btn-checkout" style="background: #635bff;">
                         <svg style="vertical-align: middle; margin-right: 5px;" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
@@ -226,18 +227,34 @@
             let originalTotal = 0;
             let currentTotal = 0;
             let appliedCoupon = null;
+            let discountPercentage = 0;
 
-            container.innerHTML = cart.map(v => {
-                originalTotal += parseFloat(v.price) || 0;
-                return `
-                <div class="cart-item">
-                    <span>${v.title}</span>
-                    <strong>$${v.price}</strong>
-                </div>`;
-            }).join('');
+            function renderCart() {
+                originalTotal = 0;
+                container.innerHTML = cart.map(v => {
+                    originalTotal += parseFloat(v.price) || 0;
+                    return `
+                    <div class="cart-item">
+                        <span>${v.title}</span>
+                        <strong>${window.formatPrice ? window.formatPrice(v.price) : '$' + v.price}</strong>
+                    </div>`;
+                }).join('');
+                
+                currentTotal = originalTotal * (1 - (discountPercentage / 100));
+                
+                const displayEl = document.getElementById('total-price-display');
+                if (displayEl) {
+                    displayEl.textContent = window.formatPrice ? window.formatPrice(currentTotal) : `$${currentTotal.toFixed(2)}`;
+                }
+            }
             
-            currentTotal = originalTotal;
-            totalEl.textContent = currentTotal.toFixed(2);
+            renderCart();
+
+            if (window.onCurrencyChange) {
+                window.onCurrencyChange(() => {
+                    renderCart();
+                });
+            }
 
             document.getElementById('apply-coupon-btn').addEventListener('click', async () => {
                 const code = document.getElementById('coupon-code').value;
@@ -254,16 +271,18 @@
                     
                     if(res.ok) {
                         appliedCoupon = data.code;
-                        currentTotal = originalTotal * (1 - (data.discount_percentage / 100));
-                        totalEl.textContent = currentTotal.toFixed(2);
+                        discountPercentage = data.discount_percentage;
+                        currentTotal = originalTotal * (1 - (discountPercentage / 100));
+                        renderCart();
                         msg.style.color = '#4ade80';
                         msg.textContent = `Cupón aplicado: -${data.discount_percentage}% de descuento`;
                     } else {
                         msg.style.color = 'var(--error)';
                         msg.textContent = data.error || 'Cupón inválido';
                         appliedCoupon = null;
+                        discountPercentage = 0;
                         currentTotal = originalTotal;
-                        totalEl.textContent = currentTotal.toFixed(2);
+                        renderCart();
                     }
                 } catch(e) {
                     msg.style.color = 'var(--error)';

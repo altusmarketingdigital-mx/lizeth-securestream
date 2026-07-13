@@ -7,6 +7,7 @@
     <link rel="icon" href="/assets/img/barber-pole.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/main.css">
+    <script src="/assets/js/currency.js"></script>
     <style>
         .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 4rem; position: relative; z-index: 10; }
         .header-nav { display: flex; gap: 2rem; align-items: center; }
@@ -201,25 +202,36 @@
             };
             updateCartCount();
 
-            const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id');
             const container = document.getElementById('product-container');
+            let currentProduct = null;
 
             if (!productId) {
                 container.innerHTML = '<p style="text-align:center;width:100%;">Producto no encontrado.</p>';
                 return;
             }
 
-            try {
-                // Fetch all videos and find the matching one
-                const res = await fetch('/api/videos/catalog');
-                const videos = await res.json();
-                const product = videos.find(v => v.id === productId);
+            async function loadProduct() {
+                try {
+                    // Fetch all videos and find the matching one
+                    const res = await fetch('/api/videos/catalog');
+                    const videos = await res.json();
+                    currentProduct = videos.find(v => v.id === productId);
 
-                if (!product) {
-                    container.innerHTML = '<p style="text-align:center;width:100%;">Producto no encontrado en el catálogo.</p>';
-                    return;
+                    if (!currentProduct) {
+                        container.innerHTML = '<p style="text-align:center;width:100%;">Producto no encontrado en el catálogo.</p>';
+                        return;
+                    }
+                    renderProduct();
+                } catch (err) {
+                    console.error(err);
+                    container.innerHTML = '<p style="text-align:center;width:100%;">Error al cargar el producto.</p>';
                 }
+            }
+
+            async function renderProduct() {
+                if(!currentProduct) return;
+                const product = currentProduct;
 
                 const covers = [
                     'photo-1585747860715-2ba37e788b70',
@@ -275,17 +287,22 @@
                     </div>
                     <div class="product-details">
                         <h2>${product.title}</h2>
-                        <span class="product-price">$${product.price}</span>
+                        <span class="product-price">${window.formatPrice ? window.formatPrice(product.price) : '$' + product.price}</span>
                         <div class="product-description">
                             ${descHTML}
                         </div>
                         <button class="btn-add" onclick="addToCart('${product.id}', '${product.title}', ${product.price})">ADD TO CART</button>
                     </div>
                 `;
-            } catch (err) {
-                console.error(err);
-                container.innerHTML = '<p style="text-align:center;width:100%;">Error al cargar el producto.</p>';
             }
+
+            if (window.onCurrencyChange) {
+                window.onCurrencyChange(() => {
+                    renderProduct();
+                });
+            }
+
+            loadProduct();
         });
 
         // Add to cart global function

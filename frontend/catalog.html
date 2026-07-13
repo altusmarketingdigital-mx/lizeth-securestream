@@ -7,6 +7,7 @@
     <link rel="icon" href="/assets/img/barber-pole.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/main.css">
+    <script src="/assets/js/currency.js"></script>
     <style>
         .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 4rem; position: relative; z-index: 10; }
         
@@ -65,7 +66,7 @@
     </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
+        document.addEventListener('DOMContentLoaded', () => {
             const updateCartCount = () => {
                 const cart = JSON.parse(localStorage.getItem('videoCart')) || [];
                 document.getElementById('cart-count').textContent = cart.length;
@@ -84,28 +85,37 @@
                 }
             };
 
-            try {
-                const res = await fetch('/api/videos/catalog');
-                const videos = await res.json();
+            let allVideos = [];
+            const covers = [
+                'photo-1585747860715-2ba37e788b70',
+                'photo-1503951914875-452162b0f3f1',
+                'photo-1622286342621-4bd786c2447c',
+                'photo-1534723452862-4c874018d66d',
+                'photo-1599351431202-1e0f0137899a',
+                'photo-1605497788044-5a32c7078486',
+                'photo-1526374965328-7f61d4dc18c5',
+                'photo-1593720213428-28a5b9e94613'
+            ];
+
+            async function loadCatalog() {
+                try {
+                    const res = await fetch('/api/videos/catalog');
+                    allVideos = await res.json();
+                    renderCatalog();
+                } catch(e) {
+                    console.error(e);
+                    document.getElementById('catalog-grid').innerHTML = '<p>Error al cargar catálogo</p>';
+                }
+            }
+
+            function renderCatalog() {
                 const grid = document.getElementById('catalog-grid');
-                
-                if (videos.length === 0) {
-                    grid.innerHTML = '<p>No hay videos disponibles en la tienda.</p>';
+                if(!allVideos || allVideos.length === 0) {
+                    grid.innerHTML = '<p>No hay videos disponibles</p>';
                     return;
                 }
 
-                const covers = [
-                    'photo-1585747860715-2ba37e788b70', // barber cutting hair
-                    'photo-1503951914875-452162b0f3f1', // barber pole
-                    'photo-1622286342621-4bd786c2447c', // barber tools
-                    'photo-1534723452862-4c874018d66d', // shaving
-                    'photo-1599351431202-1e0f0137899a', // chair
-                    'photo-1605497788044-5a32c7078486', // scissors
-                    'photo-1526374965328-7f61d4dc18c5', // salon (working)
-                    'photo-1593720213428-28a5b9e94613'  // hair detail
-                ];
-
-                grid.innerHTML = videos.map((v, i) => {
+                grid.innerHTML = allVideos.map((v, i) => {
                     const coverId = covers[i % covers.length];
                     return `
                     <div class="card interactive">
@@ -116,16 +126,22 @@
                         <div class="card-content" style="padding: 1rem 0;">
                             <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem; cursor: pointer;" onclick="window.location.href='/product.html?id=${v.id}'">
                                 <h3 style="margin: 0; color: var(--primary); font-size: 1.1rem; text-transform: uppercase;">${v.title}</h3>
-                                <span class="price-tag" style="color: var(--sec-1); font-size: 1.1rem;">$${v.price}</span>
+                                <span class="price-tag" style="color: var(--sec-1); font-size: 1.1rem;">${window.formatPrice ? window.formatPrice(v.price) : '$' + v.price}</span>
                             </div>
                             <button onclick="addToCart('${v.id}', '${v.title}', ${v.price})" class="btn-primary">ADD TO CART</button>
                         </div>
                     </div>
-                `}).join('');
-            } catch (err) {
-                console.error(err);
-                document.getElementById('catalog-grid').innerHTML = 'Error al cargar el catálogo.';
+                    `;
+                }).join('');
             }
+
+            if (window.onCurrencyChange) {
+                window.onCurrencyChange(() => {
+                    if (allVideos.length > 0) renderCatalog();
+                });
+            }
+
+            loadCatalog();
         });
     </script>
 </body>
