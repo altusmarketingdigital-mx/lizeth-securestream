@@ -110,9 +110,59 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Formularios
+    let selectedImages = [];
+    
     document.getElementById('btn-add-video').addEventListener('click', () => {
         document.getElementById('add-video-form').style.display = 'block';
+        selectedImages = [];
+        updateImagePreviews();
     });
+
+    document.getElementById('v-images').addEventListener('change', (e) => {
+        const files = Array.from(e.target.files);
+        
+        for (const file of files) {
+            if (selectedImages.length >= 10) {
+                alert('No puedes subir más de 10 imágenes.');
+                break;
+            }
+            if (file.size > 2 * 1024 * 1024) {
+                alert(`La imagen ${file.name} excede los 2MB permitidos.`);
+                continue;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                selectedImages.push({
+                    name: file.name,
+                    data: ev.target.result // Base64
+                });
+                updateImagePreviews();
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // Limpiar input para permitir seleccionar el mismo archivo de nuevo si se borra
+        e.target.value = '';
+    });
+
+    function updateImagePreviews() {
+        const container = document.getElementById('img-previews');
+        const counter = document.getElementById('img-counter');
+        
+        counter.textContent = `(${selectedImages.length} / 10)`;
+        container.innerHTML = selectedImages.map((img, index) => `
+            <div style="position: relative; width: 80px; height: 80px; border-radius: 5px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
+                <img src="${img.data}" style="width: 100%; height: 100%; object-fit: cover;">
+                <button type="button" onclick="removeImage(${index})" style="position: absolute; top: 2px; right: 2px; background: rgba(220, 38, 38, 0.9); border: none; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center;">✕</button>
+            </div>
+        `).join('');
+    }
+
+    window.removeImage = (index) => {
+        selectedImages.splice(index, 1);
+        updateImagePreviews();
+    };
 
     document.getElementById('submit-video').addEventListener('click', async () => {
         const title = document.getElementById('v-title').value;
@@ -122,18 +172,42 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if(!title || !path || !price) return alert('Título, precio y ruta son requeridos');
 
-        const res = await fetch('/api/admin/videos', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title, description: desc, price, internal_storage_path: path })
-        });
+        const submitBtn = document.getElementById('submit-video');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Guardando...';
+        submitBtn.disabled = true;
 
-        if (res.ok) {
-            alert('Video agregado exitosamente');
-            document.getElementById('add-video-form').style.display = 'none';
-            loadVideos(); // recargar
-        } else {
-            alert('Error al agregar video');
+        const imagesBase64 = selectedImages.map(img => img.data);
+
+        try {
+            const res = await fetch('/api/admin/videos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, description: desc, price, internal_storage_path: path, images: imagesBase64 })
+            });
+
+            if (res.ok) {
+                alert('Video agregado exitosamente');
+                document.getElementById('add-video-form').style.display = 'none';
+                
+                // Limpiar form
+                document.getElementById('v-title').value = '';
+                document.getElementById('v-desc').value = '';
+                document.getElementById('v-price').value = '';
+                document.getElementById('v-path').value = '';
+                selectedImages = [];
+                updateImagePreviews();
+
+                loadVideos(); // recargar
+            } else {
+                alert('Error al agregar video');
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Error de conexión');
+        } finally {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
         }
     });
 

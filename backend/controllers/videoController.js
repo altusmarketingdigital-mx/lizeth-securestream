@@ -11,6 +11,17 @@ exports.getCatalog = async (req, res) => {
     }
 };
 
+exports.getImages = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await db.query('SELECT id, image_data FROM video_images WHERE video_id = $1 ORDER BY created_at ASC', [id]);
+        res.json(result.rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener imágenes' });
+    }
+};
+
 exports.getMyVideos = async (req, res) => {
     try {
         const userId = req.user.id;

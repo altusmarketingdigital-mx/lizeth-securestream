@@ -62,9 +62,18 @@ async function initializeDatabase() {
             CREATE TABLE IF NOT EXISTS coupons (
                 id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
                 code VARCHAR(50) UNIQUE NOT NULL,
-                discount_percentage INT NOT NULL,
-                is_active BOOLEAN DEFAULT TRUE,
-                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+                discount_percentage DECIMAL(5,2) NOT NULL,
+                is_active BOOLEAN DEFAULT true,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS video_images (
+                id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                video_id UUID REFERENCES videos(id) ON DELETE CASCADE,
+                image_data TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         `);
 

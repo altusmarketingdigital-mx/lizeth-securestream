@@ -35,19 +35,36 @@ exports.getVideos = async (req, res) => {
 };
 
 exports.addVideo = async (req, res) => {
-    const { title, description, internal_storage_path, price } = req.body;
+    const { title, description, internal_storage_path, price, images } = req.body;
     
     // Generamos un slug seguro aleatorio para la URL de streaming
     const secure_slug = 'v-' + Math.random().toString(36).substring(2, 9);
     const videoPrice = parseFloat(price) || 0;
+    const videoId = uuidv4();
     
     try {
+        await db.query('BEGIN');
+
         await db.query(
             'INSERT INTO videos (id, title, description, price, secure_slug, internal_storage_path) VALUES ($1, $2, $3, $4, $5, $6)',
-            [uuidv4(), title, description, videoPrice, secure_slug, internal_storage_path]
+            [videoId, title, description, videoPrice, secure_slug, internal_storage_path]
         );
+
+        if (images && Array.isArray(images) && images.length > 0) {
+            // Limit to 10 images
+            const imagesToProcess = images.slice(0, 10);
+            for (const imgBase64 of imagesToProcess) {
+                await db.query(
+                    'INSERT INTO video_images (id, video_id, image_data) VALUES ($1, $2, $3)',
+                    [uuidv4(), videoId, imgBase64]
+                );
+            }
+        }
+
+        await db.query('COMMIT');
         res.json({ message: 'Video agregado exitosamente', slug: secure_slug });
     } catch (error) {
+        await db.query('ROLLBACK');
         console.error(error);
         res.status(500).json({ error: 'Error al registrar video' });
     }
