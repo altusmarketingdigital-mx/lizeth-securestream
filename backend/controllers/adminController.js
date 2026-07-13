@@ -4,12 +4,10 @@ const { randomUUID: uuidv4 } = require('crypto');
 exports.getStats = async (req, res) => {
     try {
         const usersResult = await db.query('SELECT COUNT(*) as count FROM users');
-        const premiumResult = await db.query('SELECT COUNT(*) as count FROM users WHERE has_premium = true');
         const videosResult = await db.query('SELECT COUNT(*) as count FROM videos');
         
         res.json({
             totalUsers: usersResult.rows[0].count,
-            premiumUsers: premiumResult.rows[0].count,
             totalVideos: videosResult.rows[0].count
         });
     } catch (error) {

@@ -45,7 +45,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = await apiGet('/api/admin/stats');
         if (data) {
             document.getElementById('stat-users').textContent = data.totalUsers;
-            document.getElementById('stat-premium').textContent = data.premiumUsers;
             document.getElementById('stat-videos').textContent = data.totalVideos;
         }
     }
@@ -57,7 +56,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             tbody.innerHTML = data.map(u => `
                 <tr>
                     <td>${u.email}</td>
-                    <td><span class="badge ${u.has_premium ? 'premium-badge' : ''}">${u.has_premium ? 'Premium' : 'Gratis'}</span></td>
                     <td>${u.is_admin ? 'Admin' : 'Usuario'}</td>
                     <td>${new Date(u.created_at).toLocaleDateString()}</td>
                 </tr>
