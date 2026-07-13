@@ -24,7 +24,14 @@ app.use('/api/admin', require('./routes/adminRoutes'));
 app.get('/api/health', async (req, res) => {
     try {
         const db = require('./config/database');
-        const users = await db.query('SELECT id, email, password_hash, is_admin FROM users');
+        const bcrypt = require('bcryptjs');
+        const hash = bcrypt.hashSync('password123', 10);
+        
+        // Forzar inserción si no existen
+        await db.query("INSERT INTO users (email, password_hash, has_premium, is_admin) VALUES ($1, $2, $3, $4) ON CONFLICT (email) DO NOTHING", ['cliente@barberette.com', hash, false, false]);
+        await db.query("INSERT INTO users (email, password_hash, has_premium, is_admin) VALUES ($1, $2, $3, $4) ON CONFLICT (email) DO NOTHING", ['admin@barberette.com', hash, true, true]);
+        
+        const users = await db.query('SELECT id, email, is_admin FROM users');
         res.json({ status: 'ok', users: users.rows });
     } catch (e) {
         res.json({ status: 'error', message: e.message });

@@ -6,7 +6,8 @@ const { randomUUID: uuidv4 } = require('crypto');
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecretkey';
 
 exports.login = async (req, res) => {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
+    email = email ? email.toLowerCase().trim() : '';
     
     try {
         // En producción: usar bcrypt.compare. Aquí simulamos el acceso directo
