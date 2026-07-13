@@ -23,8 +23,12 @@ app.use('/api/admin', require('./routes/adminRoutes'));
 // Rutas básicas (placeholder)
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
-// Iniciar servidor
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Servidor seguro corriendo en el puerto ${PORT}`);
-});
+// Iniciar servidor (Solo en local, Vercel usa el módulo exportado)
+if (require.main === module) {
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log(`Servidor seguro corriendo en el puerto ${PORT}`);
+    });
+}
+
+module.exports = app;
