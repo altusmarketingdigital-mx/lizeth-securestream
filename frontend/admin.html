@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureStream | Backoffice</title>
+    <link rel="icon" href="/assets/img/barber-pole.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/admin.css">
+</head>
+<body class="admin-body">
+    <aside class="sidebar glass-panel">
+        <div class="logo"><img src="/assets/img/logo.png" alt="Lizeth The Barberette" style="height: 50px; object-fit: contain;"></div>
+        <nav class="nav-menu">
+            <a href="#" class="active" id="tab-dashboard">Dashboard</a>
+            <a href="#" id="tab-videos">Videos</a>
+            <a href="#" id="tab-users">Usuarios</a>
+            <a href="/dashboard.html">Volver al Sitio</a>
+        </nav>
+    </aside>
+
+    <main class="admin-content">
+        <header class="admin-header">
+            <h2>Métricas Generales</h2>
+            <div id="admin-user-info">Cargando admin...</div>
+        </header>
+
+        <!-- Secciones -->
+        <section id="view-dashboard" class="admin-section active-view">
+            <div class="stats-grid">
+                <div class="stat-card glass-panel">
+                    <h3>Usuarios Totales</h3>
+                    <div class="stat-value" id="stat-users">0</div>
+                </div>
+                <div class="stat-card glass-panel">
+                    <h3>Suscripciones Premium</h3>
+                    <div class="stat-value" id="stat-premium">0</div>
+                </div>
+                <div class="stat-card glass-panel">
+                    <h3>Videos Activos</h3>
+                    <div class="stat-value" id="stat-videos">0</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-videos" class="admin-section" style="display:none;">
+            <div class="header-action">
+                <h2>Gestión de Videos</h2>
+                <button id="btn-add-video" class="btn-primary sm-btn">+ Nuevo Video</button>
+            </div>
+            
+            <div id="add-video-form" class="glass-panel" style="display:none; padding:1.5rem; margin-bottom:1.5rem;">
+                <h3>Agregar Video</h3>
+                <div class="form-group"><input type="text" id="v-title" placeholder="Título"></div>
+                <div class="form-group"><input type="text" id="v-desc" placeholder="Descripción"></div>
+                <div class="form-group"><input type="number" id="v-price" placeholder="Precio ($ USD)"></div>
+                <div class="form-group"><input type="text" id="v-path" placeholder="Ruta del servidor (ej. /videos/masterclass.mp4)"></div>
+                <button id="submit-video" class="btn-primary">Guardar</button>
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Slug Seguro</th>
+                        <th>Fecha Creación</th>
+                    </tr>
+                </thead>
+                <tbody id="videos-tbody">
+                    <!-- Dinámico -->
+                </tbody>
+            </table>
+        </section>
+
+        <section id="view-users" class="admin-section" style="display:none;">
+            <h2>Usuarios Registrados</h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Estado Premium</th>
+                        <th>Rol</th>
+                        <th>Registro</th>
+                    </tr>
+                </thead>
+                <tbody id="users-tbody">
+                    <!-- Dinámico -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="/assets/js/admin.js"></script>
+</body>
+</html>

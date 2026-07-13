@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureStream | Dashboard</title>
+    <link rel="icon" href="/assets/img/barber-pole.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body class="dashboard-body">
+    <nav class="navbar glass-panel">
+        <div class="logo"><a href="/" style="color:white; text-decoration:none;"><img src="/assets/img/logo.png" alt="Lizeth The Barberette" style="height: 40px; object-fit: contain; vertical-align: middle;"></a></div>
+        <div class="nav-right">
+            <span id="user-display">Cargando...</span>
+            <a href="/admin.html" id="admin-link" style="display:none; color: var(--primary); font-weight: bold; text-decoration: none;">⚙️ Backoffice</a>
+            <button id="logout-btn" class="btn-secondary">Salir</button>
+        </div>
+    </nav>
+
+    <main class="dashboard-content">
+        <header class="section-header">
+            <h2>Mi Biblioteca</h2>
+            <p>Tus cursos adquiridos están disponibles aquí para visualización segura.</p>
+        </header>
+
+        <div class="grid" id="my-videos-grid">
+            Cargando tus videos...
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const email = localStorage.getItem('userEmail');
+            if (!email) window.location.href = '/login.html';
+            
+            const isAdmin = localStorage.getItem('isAdmin') == '1' || localStorage.getItem('isAdmin') === 'true';
+            
+            document.getElementById('user-display').textContent = email;
+            if (isAdmin) {
+                document.getElementById('admin-link').style.display = 'inline-block';
+            }
+            
+            // Verificar si el pago fue exitoso
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('payment') === 'success') {
+                alert('¡Compra exitosa! Tus nuevos videos se han agregado a tu biblioteca.');
+                window.history.replaceState({}, document.title, "/dashboard.html");
+            }
+
+            document.getElementById('logout-btn').addEventListener('click', async () => {
+                await fetch('/api/auth/logout', { method: 'POST' });
+                localStorage.clear();
+                window.location.href = '/';
+            });
+
+            // Cargar mis videos
+            try {
+                const res = await fetch('/api/videos/my-videos');
+                if (res.status === 401 || res.status === 403) {
+                    window.location.href = '/login.html';
+                    return;
+                }
+                const videos = await res.json();
+                const grid = document.getElementById('my-videos-grid');
+
+                if (videos.length === 0) {
+                    grid.innerHTML = '<p>Aún no has adquirido ningún curso. <a href="/catalog.html" style="color:var(--primary)">Ir al catálogo</a></p>';
+                    return;
+                }
+
+                const covers = [
+                    'photo-1585747860715-2ba37e788b70',
+                    'photo-1503951914875-452162b0f3f1',
+                    'photo-1622286342621-4bd786c2447c',
+                    'photo-1534723452862-4c874018d66d',
+                    'photo-1599351431202-1e0f0137899a',
+                    'photo-1605497788044-5a32c7078486',
+                    'photo-1526374965328-7f61d4dc18c5',
+                    'photo-1593720213428-28a5b9e94613'
+                ];
+
+                grid.innerHTML = videos.map((v, i) => {
+                    const coverId = covers[i % covers.length];
+                    return `
+                    <div class="card interactive">
+                        <div class="card-img-wrapper">
+                            <div class="overlay-play">▶</div>
+                            <img src="https://images.unsplash.com/${coverId}?auto=format&fit=crop&w=600&q=80" alt="${v.title}">
+                        </div>
+                        <div class="card-content" style="padding: 1rem 0; text-align: center;">
+                            <h3 style="margin: 0 0 1rem 0; color: var(--primary); font-size: 1.1rem; text-transform: uppercase;">${v.title}</h3>
+                            <button onclick="window.location.href='/player.html?v=${v.secure_slug}'" class="btn-primary" style="background: linear-gradient(135deg, var(--sec-2), var(--primary)); width: auto; padding: 12px 40px;">VER CURSO</button>
+                        </div>
+                    </div>
+                `}).join('');
+            } catch (err) {
+                document.getElementById('my-videos-grid').innerHTML = 'Error al cargar tu biblioteca.';
+            }
+        });
+    </script>
+</body>
+</html>
