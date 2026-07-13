@@ -182,6 +182,12 @@
                 <div class="glass-panel" style="padding: 1.5rem;">
                     <h3>General & Branding</h3>
                     <div class="form-group" style="margin-top: 1rem;">
+                        <label style="display:block; margin-bottom:0.5rem; color:#aaa;">Logotipo del Sitio (Max 2MB)</label>
+                        <input type="file" id="file-logo_url" accept="image/png, image/jpeg, image/webp" style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 5px; width: 100%; box-sizing: border-box; cursor: pointer;">
+                        <div id="preview-logo_url" style="margin-top: 10px;"></div>
+                        <input type="hidden" id="set-logo_url">
+                    </div>
+                    <div class="form-group" style="margin-top: 1rem;">
                         <label style="display:block; margin-bottom:0.5rem; color:#aaa;">Texto del Footer</label>
                         <textarea id="set-footer_text" style="width:100%; height:80px; padding:10px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.2); color:#fff; border-radius:8px; resize:vertical;"></textarea>
                     </div>
@@ -223,10 +229,11 @@
                         <label style="display:block; margin-bottom:0.5rem; color:#aaa;">Etiqueta 2</label>
                         <input type="text" id="set-hero_card_badge2">
                     </div>
-                    <!-- (Más adelante agregaremos subida de imágenes para la tarjeta y el logo, por ahora campos de texto para la URL de la imagen) -->
                     <div class="form-group" style="margin-top: 1rem;">
-                        <label style="display:block; margin-bottom:0.5rem; color:#aaa;">URL Imagen Tarjeta Flotante</label>
-                        <input type="text" id="set-hero_card_image">
+                        <label style="display:block; margin-bottom:0.5rem; color:#aaa;">Imagen Tarjeta Flotante (Max 2MB)</label>
+                        <input type="file" id="file-hero_card_image" accept="image/png, image/jpeg, image/webp" style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 5px; width: 100%; box-sizing: border-box; cursor: pointer;">
+                        <div id="preview-hero_card_image" style="margin-top: 10px;"></div>
+                        <input type="hidden" id="set-hero_card_image">
                     </div>
                 </div>
             </div>

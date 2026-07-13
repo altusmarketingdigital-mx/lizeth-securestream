@@ -159,7 +159,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             ];
             fields.forEach(f => {
                 const el = document.getElementById('set-' + f);
-                if(el) el.value = data[f] || '';
+                if(el) {
+                    el.value = data[f] || '';
+                    if (f === 'logo_url' || f === 'hero_card_image') {
+                        const preview = document.getElementById('preview-' + f);
+                        if (data[f] && preview) {
+                            preview.innerHTML = `<img src="${data[f]}" style="max-width:100%; max-height:100px; border-radius:5px;">`;
+                        }
+                    }
+                }
             });
         }
     }
@@ -202,6 +210,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         } finally {
             btn.textContent = 'Guardar Cambios';
             btn.disabled = false;
+        }
+    });
+
+    // Image Handlers for Settings
+    ['logo_url', 'hero_card_image'].forEach(f => {
+        const fileInput = document.getElementById('file-' + f);
+        if (fileInput) {
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                if (file.size > 2 * 1024 * 1024) return alert('La imagen excede los 2MB.');
+
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const base64 = ev.target.result;
+                    document.getElementById('set-' + f).value = base64;
+                    document.getElementById('preview-' + f).innerHTML = `<img src="${base64}" style="max-width:100%; max-height:100px; border-radius:5px;">`;
+                };
+                reader.readAsDataURL(file);
+            });
         }
     });
 
