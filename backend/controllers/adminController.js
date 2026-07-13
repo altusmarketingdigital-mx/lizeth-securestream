@@ -4,7 +4,7 @@ const { randomUUID: uuidv4 } = require('crypto');
 exports.getStats = async (req, res) => {
     try {
         const usersResult = await db.query('SELECT COUNT(*) as count FROM users');
-        const premiumResult = await db.query('SELECT COUNT(*) as count FROM users WHERE has_premium = 1');
+        const premiumResult = await db.query('SELECT COUNT(*) as count FROM users WHERE has_premium = true');
         const videosResult = await db.query('SELECT COUNT(*) as count FROM videos');
         
         res.json({
@@ -45,7 +45,7 @@ exports.addVideo = async (req, res) => {
     
     try {
         await db.query(
-            'INSERT INTO videos (id, title, description, price, secure_slug, internal_storage_path) VALUES (?, ?, ?, ?, ?, ?)',
+            'INSERT INTO videos (id, title, description, price, secure_slug, internal_storage_path) VALUES ($1, $2, $3, $4, $5, $6)',
             [uuidv4(), title, description, videoPrice, secure_slug, internal_storage_path]
         );
         res.json({ message: 'Video agregado exitosamente', slug: secure_slug });

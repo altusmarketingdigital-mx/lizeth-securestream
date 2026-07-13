@@ -7,7 +7,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const tabs = {
         'tab-dashboard': 'view-dashboard',
         'tab-videos': 'view-videos',
-        'tab-users': 'view-users'
+        'tab-users': 'view-users',
+        'tab-coupons': 'view-coupons'
     };
 
     for (const [tabId, viewId] of Object.entries(tabs)) {
@@ -25,6 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (tabId === 'tab-dashboard') loadStats();
             if (tabId === 'tab-users') loadUsers();
             if (tabId === 'tab-videos') loadVideos();
+            if (tabId === 'tab-coupons') loadCoupons();
         });
     }
 
@@ -77,6 +79,38 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    async function loadCoupons() {
+        const data = await apiGet('/api/coupons');
+        if (data) {
+            const tbody = document.getElementById('coupons-tbody');
+            tbody.innerHTML = data.map(c => `
+                <tr>
+                    <td><strong>${c.code}</strong></td>
+                    <td>${c.discount_percentage}%</td>
+                    <td><span class="badge ${c.is_active ? 'premium-badge' : ''}" style="${!c.is_active ? 'background: #555; color: #fff;' : ''}">${c.is_active ? 'Activo' : 'Inactivo'}</span></td>
+                    <td>
+                        <button class="btn-primary sm-btn toggle-coupon" data-id="${c.id}" data-active="${c.is_active}" style="padding: 5px 10px; font-size: 0.8rem; background: ${c.is_active ? '#dc2626' : '#16a34a'};">
+                            ${c.is_active ? 'Desactivar' : 'Activar'}
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            document.querySelectorAll('.toggle-coupon').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    const currentActive = e.target.getAttribute('data-active') === 'true';
+                    await fetch(`/api/coupons/${id}/toggle`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ is_active: !currentActive })
+                    });
+                    loadCoupons();
+                });
+            });
+        }
+    }
+
     // Formularios
     document.getElementById('btn-add-video').addEventListener('click', () => {
         document.getElementById('add-video-form').style.display = 'block';
@@ -102,6 +136,34 @@ document.addEventListener('DOMContentLoaded', async () => {
             loadVideos(); // recargar
         } else {
             alert('Error al agregar video');
+        }
+    });
+
+    document.getElementById('btn-add-coupon').addEventListener('click', () => {
+        document.getElementById('add-coupon-form').style.display = 'block';
+    });
+
+    document.getElementById('submit-coupon').addEventListener('click', async () => {
+        const code = document.getElementById('c-code').value;
+        const discount = document.getElementById('c-discount').value;
+
+        if(!code || !discount) return alert('Código y porcentaje son requeridos');
+
+        const res = await fetch('/api/coupons', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code, discount_percentage: discount })
+        });
+
+        if (res.ok) {
+            alert('Cupón creado exitosamente');
+            document.getElementById('add-coupon-form').style.display = 'none';
+            document.getElementById('c-code').value = '';
+            document.getElementById('c-discount').value = '';
+            loadCoupons();
+        } else {
+            const err = await res.json();
+            alert(err.error || 'Error al crear cupón');
         }
     });
 

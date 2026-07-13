@@ -32,7 +32,7 @@ router.post('/create-checkout-session', requireAuth, async (req, res) => {
 
         for (const vidId of videoIds) {
             await db.query(
-                "INSERT INTO purchases (id, user_id, video_id) VALUES (?, ?, ?)", 
+                "INSERT INTO purchases (id, user_id, video_id) VALUES ($1, $2, $3)", 
                 [uuidv4(), req.user.id, vidId]
             );
         }
@@ -69,7 +69,7 @@ router.post('/capture-paypal-order', requireAuth, async (req, res) => {
         // Simulación de captura exitosa
         for (const vidId of videoIds) {
             await db.query(
-                "INSERT INTO purchases (id, user_id, video_id) VALUES (?, ?, ?)", 
+                "INSERT INTO purchases (id, user_id, video_id) VALUES ($1, $2, $3)", 
                 [uuidv4(), req.user.id, vidId]
             );
         }

@@ -19,6 +19,7 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/videos', require('./routes/videoRoutes'));
 app.use('/api/payment', require('./routes/paymentRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/coupons', require('./routes/couponRoutes'));
 
 // Rutas básicas (placeholder)
 app.get('/api/health', async (req, res) => {

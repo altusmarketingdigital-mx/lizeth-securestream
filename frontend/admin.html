@@ -16,6 +16,7 @@
             <a href="#" class="active" id="tab-dashboard">Dashboard</a>
             <a href="#" id="tab-videos">Videos</a>
             <a href="#" id="tab-users">Usuarios</a>
+            <a href="#" id="tab-coupons">Cupones</a>
             <a href="/dashboard.html">Volver al Sitio</a>
         </nav>
     </aside>
@@ -85,6 +86,34 @@
                     </tr>
                 </thead>
                 <tbody id="users-tbody">
+                    <!-- Dinámico -->
+                </tbody>
+            </table>
+        </section>
+
+        <section id="view-coupons" class="admin-section" style="display:none;">
+            <div class="header-action">
+                <h2>Gestión de Cupones</h2>
+                <button id="btn-add-coupon" class="btn-primary sm-btn">+ Nuevo Cupón</button>
+            </div>
+            
+            <div id="add-coupon-form" class="glass-panel" style="display:none; padding:1.5rem; margin-bottom:1.5rem;">
+                <h3>Crear Cupón</h3>
+                <div class="form-group"><input type="text" id="c-code" placeholder="Código (ej. VERANO20)" style="text-transform: uppercase;"></div>
+                <div class="form-group"><input type="number" id="c-discount" placeholder="Porcentaje de descuento (ej. 20)"></div>
+                <button id="submit-coupon" class="btn-primary">Guardar</button>
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Descuento</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="coupons-tbody">
                     <!-- Dinámico -->
                 </tbody>
             </table>

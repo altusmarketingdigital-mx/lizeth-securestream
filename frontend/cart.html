@@ -153,6 +153,13 @@
         <div class="cart-layout">
             <h2>Tu Carrito</h2>
             <div id="cart-container" class="cart-list"></div>
+            
+            <div id="coupon-section" style="display:flex; gap: 10px; margin-top: 1rem;">
+                <input type="text" id="coupon-code" placeholder="Código de descuento" style="flex:1; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; font-family: Bahnschrift;">
+                <button id="apply-coupon-btn" class="btn-checkout" style="padding: 12px 24px;">Aplicar</button>
+            </div>
+            <p id="coupon-msg" style="margin-top: 5px; font-family: Bahnschrift;"></p>
+
             <div class="cart-total-box">
                 <div class="cart-total">Total: <span>$<span id="total-price">0</span> USD</span></div>
                 <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: flex-end;">
@@ -216,9 +223,12 @@
                 return;
             }
 
-            let total = 0;
+            let originalTotal = 0;
+            let currentTotal = 0;
+            let appliedCoupon = null;
+
             container.innerHTML = cart.map(v => {
-                total += parseFloat(v.price) || 0;
+                originalTotal += parseFloat(v.price) || 0;
                 return `
                 <div class="cart-item">
                     <span>${v.title}</span>
@@ -226,7 +236,40 @@
                 </div>`;
             }).join('');
             
-            totalEl.textContent = total.toFixed(2);
+            currentTotal = originalTotal;
+            totalEl.textContent = currentTotal.toFixed(2);
+
+            document.getElementById('apply-coupon-btn').addEventListener('click', async () => {
+                const code = document.getElementById('coupon-code').value;
+                const msg = document.getElementById('coupon-msg');
+                if(!code) return;
+                
+                try {
+                    const res = await fetch('/api/coupons/validate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ code })
+                    });
+                    const data = await res.json();
+                    
+                    if(res.ok) {
+                        appliedCoupon = data.code;
+                        currentTotal = originalTotal * (1 - (data.discount_percentage / 100));
+                        totalEl.textContent = currentTotal.toFixed(2);
+                        msg.style.color = '#4ade80';
+                        msg.textContent = `Cupón aplicado: -${data.discount_percentage}% de descuento`;
+                    } else {
+                        msg.style.color = 'var(--error)';
+                        msg.textContent = data.error || 'Cupón inválido';
+                        appliedCoupon = null;
+                        currentTotal = originalTotal;
+                        totalEl.textContent = currentTotal.toFixed(2);
+                    }
+                } catch(e) {
+                    msg.style.color = 'var(--error)';
+                    msg.textContent = 'Error al validar cupón';
+                }
+            });
 
             const handleCheckout = async (type, btnId) => {
                 const btn = document.getElementById(btnId);
@@ -247,7 +290,7 @@
                     const res = await fetch(endpoint, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ videoIds })
+                        body: JSON.stringify({ videoIds, couponCode: appliedCoupon })
                     });
                     
                     const data = await res.json();
