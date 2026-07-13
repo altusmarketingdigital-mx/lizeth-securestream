@@ -11,21 +11,16 @@
             position: relative;
             display: flex;
             align-items: center;
-            width: 95%;
-            max-width: 1400px;
-            margin: 20px auto;
-            min-height: 80vh;
-            border-radius: 30px;
-            overflow: hidden;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-            border: 1px solid rgba(255,255,255,0.05);
+            justify-content: space-between;
+            padding: 4rem 2rem; 
+            max-width: 1300px; 
+            margin: 0 auto; 
+            min-height: calc(100vh - 100px);
             z-index: 2;
         }
         .hero-text {
-            position: relative;
-            z-index: 3;
+            flex: 1;
             max-width: 650px;
-            padding: 4rem;
         }
         .hero h1 { 
             font-size: 4rem; 
@@ -88,13 +83,22 @@
             margin-bottom: 1.5rem;
         }
         
-        .full-carousel {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
+        .hero-graphics {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .carousel-container {
+            width: 350px;
+            height: 400px;
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .carousel-slide {
@@ -104,21 +108,13 @@
             width: 100%;
             height: 100%;
             opacity: 0;
-            transition: opacity 1.5s ease-in-out, transform 8s linear;
+            transition: opacity 1s ease-in-out;
             object-fit: cover;
-            transform: scale(1);
+            z-index: 1;
         }
 
         .carousel-slide.active {
             opacity: 1;
-            transform: scale(1.08); /* Ken Burns effect */
-            z-index: 2;
-        }
-
-        .hero-gradient {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to right, rgba(15,15,15,0.95) 0%, rgba(15,15,15,0.7) 40%, transparent 100%);
             z-index: 2;
         }
 
@@ -129,10 +125,10 @@
             background: rgba(0,0,0,0.5);
             color: white;
             border: none;
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             cursor: pointer;
             z-index: 4;
             display: flex;
@@ -142,21 +138,21 @@
             transition: background 0.3s;
         }
         .carousel-nav:hover { background: var(--primary); }
-        .carousel-nav.prev { left: 20px; }
-        .carousel-nav.next { right: 20px; }
+        .carousel-nav.prev { left: 10px; }
+        .carousel-nav.next { right: 10px; }
 
         .carousel-dots {
             position: absolute;
-            bottom: 20px;
+            bottom: 15px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 10px;
+            gap: 8px;
             z-index: 4;
         }
         .dot {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             background: rgba(255,255,255,0.3);
             border-radius: 50%;
             cursor: pointer;
@@ -169,18 +165,15 @@
         
         .slide-content-overlay {
             position: absolute;
-            bottom: 60px;
-            right: 40px;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(10px);
-            padding: 1.5rem;
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.1);
-            z-index: 4;
-            max-width: 300px;
-            text-align: right;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 2rem 1.5rem 2.5rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            z-index: 3;
+            box-sizing: border-box;
             opacity: 0;
-            transition: opacity 1s;
+            transition: opacity 0.5s;
         }
         .carousel-slide.active + .slide-content-overlay,
         .slide-content-overlay.active {
@@ -220,28 +213,7 @@
         </div>
     </header>
 
-    <main class="hero bg-banner-purple">
-        <div class="full-carousel" id="hero-carousel">
-            <!-- Fallback -->
-            <img class="carousel-slide active" src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1920&q=80">
-        </div>
-        
-        <div class="hero-gradient"></div>
-
-        <button class="carousel-nav prev" id="c-prev">❮</button>
-        <button class="carousel-nav next" id="c-next">❯</button>
-        <div class="carousel-dots" id="c-dots">
-            <div class="dot active"></div>
-        </div>
-
-        <div id="dynamic-slide-content" class="slide-content-overlay">
-            <h3 id="slide-title" style="margin:0 0 10px 0; font-size:1.3rem; color: #fff;">Premium Content</h3>
-            <div style="display:flex; justify-content:flex-end; align-items:center; gap: 10px;">
-                <span style="color:var(--sec-3); font-weight:700; font-size:1.1rem;">Exclusive</span>
-                <button id="slide-link-btn" class="btn-primary sm-btn" style="display:none; padding: 6px 12px; font-size: 0.9rem;">Ver Curso</button>
-            </div>
-        </div>
-
+    <main class="hero">
         <div class="hero-text">
             <h1>Hi, I'm Lizeth, <br>The Barberette...</h1>
             <p class="subtitle">and I'd love to shave your head.. no guard, no hair left... BALD!!!</p>
@@ -252,6 +224,28 @@
                 <div style="color: var(--text-muted); font-size: 0.95rem; font-weight:600; display:flex; align-items:center; gap:8px;">
                     <span style="display:inline-block; width:10px; height:10px; background:var(--primary); border-radius:50%; box-shadow: 0 0 10px var(--primary);"></span>
                     Platform Active
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-graphics">
+            <div class="carousel-container" id="hero-carousel">
+                <!-- Fallback -->
+                <img class="carousel-slide active" src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80">
+                
+                <button class="carousel-nav prev" id="c-prev">❮</button>
+                <button class="carousel-nav next" id="c-next">❯</button>
+                
+                <div id="dynamic-slide-content" class="slide-content-overlay">
+                    <h3 id="slide-title" style="margin:0 0 5px 0; font-size:1.1rem; color: #fff;">Premium Content</h3>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="color:var(--sec-3); font-weight:700; font-size:0.9rem;">Exclusive</span>
+                        <button id="slide-link-btn" class="btn-primary sm-btn" style="display:none; padding: 4px 10px; font-size: 0.8rem;">Ver Curso</button>
+                    </div>
+                </div>
+
+                <div class="carousel-dots" id="c-dots">
+                    <div class="dot active"></div>
                 </div>
             </div>
         </div>
@@ -370,7 +364,8 @@
                             const imgEl = document.createElement('img');
                             imgEl.className = 'carousel-slide' + (idx === 0 ? ' active' : '');
                             imgEl.src = img.image_data;
-                            carousel.appendChild(imgEl);
+                            // Insert before the arrows so they stay on top
+                            carousel.insertBefore(imgEl, document.getElementById('c-prev'));
                             
                             // Dot
                             const dot = document.createElement('div');
