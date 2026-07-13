@@ -21,7 +21,15 @@ app.use('/api/payment', require('./routes/paymentRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 
 // Rutas básicas (placeholder)
-app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
+app.get('/api/health', async (req, res) => {
+    try {
+        const db = require('./config/database');
+        const users = await db.query('SELECT id, email, password_hash, is_admin FROM users');
+        res.json({ status: 'ok', users: users.rows });
+    } catch (e) {
+        res.json({ status: 'error', message: e.message });
+    }
+});
 
 // Iniciar servidor (Solo en local, Vercel usa el módulo exportado)
 if (require.main === module) {
