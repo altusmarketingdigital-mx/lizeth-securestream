@@ -1,5 +1,5 @@
 const sqlite3 = require('sqlite3').verbose();
-const { v4: uuidv4 } = require('uuid');
+const { randomUUID: uuidv4 } = require('crypto');
 const path = require('path');
 
 const db = new sqlite3.Database(path.resolve(__dirname, 'db/database.sqlite'));
