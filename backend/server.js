@@ -20,6 +20,7 @@ app.use('/api/videos', require('./routes/videoRoutes'));
 app.use('/api/payment', require('./routes/paymentRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/coupons', require('./routes/couponRoutes'));
+app.use('/api/carousel', require('./routes/carouselRoutes'));
 
 // Rutas directas (sin router por simplicidad)
 const currencyController = require('./controllers/currencyController');

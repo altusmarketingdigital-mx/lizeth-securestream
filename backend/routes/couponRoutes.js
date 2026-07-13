@@ -36,7 +36,11 @@ router.post('/validate', requireAuth, async (req, res) => {
             return res.status(400).json({ error: 'Este cupón ya no es válido' });
         }
         
-        res.json({ discount_percentage: coupon.discount_percentage, code: coupon.code });
+        res.json({ 
+            discount_percentage: coupon.discount_percentage, 
+            code: coupon.code,
+            video_id: coupon.video_id 
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al validar el cupón' });
@@ -50,7 +54,12 @@ router.use(requireAuth, requireAdmin);
 // Obtener todos los cupones
 router.get('/', async (req, res) => {
     try {
-        const result = await db.query('SELECT * FROM coupons ORDER BY created_at DESC');
+        const result = await db.query(`
+            SELECT c.*, v.title as video_title 
+            FROM coupons c 
+            LEFT JOIN videos v ON c.video_id = v.id 
+            ORDER BY c.created_at DESC
+        `);
         res.json(result.rows);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener cupones' });
@@ -59,7 +68,7 @@ router.get('/', async (req, res) => {
 
 // Crear un nuevo cupón
 router.post('/', async (req, res) => {
-    const { code, discount_percentage } = req.body;
+    const { code, discount_percentage, video_id } = req.body;
     
     if (!code || !discount_percentage) {
         return res.status(400).json({ error: 'Código y porcentaje son requeridos' });
@@ -74,9 +83,11 @@ router.post('/', async (req, res) => {
             return res.status(400).json({ error: 'Este código ya existe' });
         }
         
+        const targetVideo = video_id ? video_id : null;
+        
         await db.query(
-            'INSERT INTO coupons (id, code, discount_percentage, is_active) VALUES ($1, $2, $3, true)',
-            [uuidv4(), cleanCode, parseInt(discount_percentage)]
+            'INSERT INTO coupons (id, code, discount_percentage, is_active, video_id) VALUES ($1, $2, $3, true, $4)',
+            [uuidv4(), cleanCode, parseInt(discount_percentage), targetVideo]
         );
         
         res.json({ message: 'Cupón creado exitosamente' });

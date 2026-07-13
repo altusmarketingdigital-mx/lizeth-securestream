@@ -77,6 +77,22 @@ async function initializeDatabase() {
             );
         `);
 
+        // Carrusel
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS carousel_images (
+                id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                image_data TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+
+        // Modificar cupones para soporte específico
+        try {
+            await pool.query(`ALTER TABLE coupons ADD COLUMN IF NOT EXISTS video_id UUID REFERENCES videos(id) ON DELETE CASCADE;`);
+        } catch(e) {
+            console.log('Coupons table already updated or error adding column:', e.message);
+        }
+
         const bcrypt = require('bcryptjs');
         const hash = bcrypt.hashSync('password123', 10);
 

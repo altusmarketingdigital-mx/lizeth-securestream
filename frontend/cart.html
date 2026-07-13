@@ -228,19 +228,35 @@
             let currentTotal = 0;
             let appliedCoupon = null;
             let discountPercentage = 0;
+            let appliedCouponVideoId = null;
 
             function renderCart() {
                 originalTotal = 0;
+                currentTotal = 0;
                 container.innerHTML = cart.map(v => {
-                    originalTotal += parseFloat(v.price) || 0;
+                    let price = parseFloat(v.price) || 0;
+                    originalTotal += price;
+                    
+                    let itemFinalPrice = price;
+                    let discountLabel = '';
+                    
+                    if (appliedCoupon) {
+                        if (!appliedCouponVideoId || appliedCouponVideoId === v.id) {
+                            itemFinalPrice = price * (1 - (discountPercentage / 100));
+                            if (appliedCouponVideoId === v.id) {
+                                discountLabel = `<span style="font-size: 0.8rem; color: #4ade80; margin-left: 10px;">(-${discountPercentage}%)</span>`;
+                            }
+                        }
+                    }
+                    
+                    currentTotal += itemFinalPrice;
+
                     return `
                     <div class="cart-item">
-                        <span>${v.title}</span>
+                        <span>${v.title} ${discountLabel}</span>
                         <strong>${window.formatPrice ? window.formatPrice(v.price) : '$' + v.price}</strong>
                     </div>`;
                 }).join('');
-                
-                currentTotal = originalTotal * (1 - (discountPercentage / 100));
                 
                 const displayEl = document.getElementById('total-price-display');
                 if (displayEl) {
@@ -270,9 +286,20 @@
                     const data = await res.json();
                     
                     if(res.ok) {
+                        // Verificar si el curso específico está en el carrito
+                        if (data.video_id) {
+                            const hasVideo = cart.some(v => v.id === data.video_id);
+                            if (!hasVideo) {
+                                msg.style.color = 'var(--error)';
+                                msg.textContent = 'Este cupón es válido solo para un curso específico que no está en tu carrito.';
+                                return;
+                            }
+                        }
+
                         appliedCoupon = data.code;
                         discountPercentage = data.discount_percentage;
-                        currentTotal = originalTotal * (1 - (discountPercentage / 100));
+                        appliedCouponVideoId = data.video_id || null;
+                        
                         renderCart();
                         msg.style.color = '#4ade80';
                         msg.textContent = `Cupón aplicado: -${data.discount_percentage}% de descuento`;
@@ -281,7 +308,7 @@
                         msg.textContent = data.error || 'Cupón inválido';
                         appliedCoupon = null;
                         discountPercentage = 0;
-                        currentTotal = originalTotal;
+                        appliedCouponVideoId = null;
                         renderCart();
                     }
                 } catch(e) {

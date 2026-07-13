@@ -3,12 +3,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!email) window.location.href = '/';
     document.getElementById('admin-user-info').textContent = email;
 
-    // Tabs
     const tabs = {
         'tab-dashboard': 'view-dashboard',
         'tab-videos': 'view-videos',
         'tab-users': 'view-users',
-        'tab-coupons': 'view-coupons'
+        'tab-coupons': 'view-coupons',
+        'tab-carousel': 'view-carousel'
     };
 
     for (const [tabId, viewId] of Object.entries(tabs)) {
@@ -26,7 +26,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (tabId === 'tab-dashboard') loadStats();
             if (tabId === 'tab-users') loadUsers();
             if (tabId === 'tab-videos') loadVideos();
-            if (tabId === 'tab-coupons') loadCoupons();
+            if (tabId === 'tab-coupons') { loadCoupons(); populateCouponVideos(); }
+            if (tabId === 'tab-carousel') loadCarousel();
         });
     }
 
@@ -85,6 +86,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <tr>
                     <td><strong>${c.code}</strong></td>
                     <td>${c.discount_percentage}%</td>
+                    <td>${c.video_title || '<span style="color:#aaa;">Global</span>'}</td>
                     <td><span class="badge ${c.is_active ? 'premium-badge' : ''}" style="${!c.is_active ? 'background: #555; color: #fff;' : ''}">${c.is_active ? 'Activo' : 'Inactivo'}</span></td>
                     <td>
                         <button class="btn-primary sm-btn toggle-coupon" data-id="${c.id}" data-active="${c.is_active}" style="padding: 5px 10px; font-size: 0.8rem; background: ${c.is_active ? '#dc2626' : '#16a34a'};">
@@ -104,6 +106,42 @@ document.addEventListener('DOMContentLoaded', async () => {
                         body: JSON.stringify({ is_active: !currentActive })
                     });
                     loadCoupons();
+                });
+            });
+        }
+    }
+
+    async function populateCouponVideos() {
+        const data = await apiGet('/api/admin/videos');
+        if (data) {
+            const select = document.getElementById('c-video');
+            select.innerHTML = '<option value="">Válido para cualquier curso (Global)</option>' + 
+                data.map(v => `<option value="${v.id}">${v.title}</option>`).join('');
+        }
+    }
+
+    async function loadCarousel() {
+        const data = await apiGet('/api/carousel');
+        if (data) {
+            const grid = document.getElementById('carousel-grid');
+            if (data.length === 0) {
+                grid.innerHTML = '<p style="color: #aaa;">No hay imágenes en el carrusel.</p>';
+                return;
+            }
+            grid.innerHTML = data.map(img => `
+                <div style="position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5);">
+                    <img src="${img.image_data}" style="width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block;">
+                    <button class="btn-delete-carousel" data-id="${img.id}" style="position: absolute; top: 10px; right: 10px; background: #dc2626; color: white; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer;">Eliminar</button>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.btn-delete-carousel').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    if (confirm('¿Eliminar esta imagen del carrusel?')) {
+                        const id = e.target.getAttribute('data-id');
+                        await fetch(`/api/carousel/${id}`, { method: 'DELETE' });
+                        loadCarousel();
+                    }
                 });
             });
         }
@@ -267,13 +305,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('submit-coupon').addEventListener('click', async () => {
         const code = document.getElementById('c-code').value;
         const discount = document.getElementById('c-discount').value;
+        const video_id = document.getElementById('c-video').value;
 
         if(!code || !discount) return alert('Código y porcentaje son requeridos');
 
         const res = await fetch('/api/coupons', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ code, discount_percentage: discount })
+            body: JSON.stringify({ code, discount_percentage: discount, video_id: video_id || null })
         });
 
         if (res.ok) {
@@ -281,10 +320,62 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('add-coupon-form').style.display = 'none';
             document.getElementById('c-code').value = '';
             document.getElementById('c-discount').value = '';
+            document.getElementById('c-video').value = '';
             loadCoupons();
         } else {
             const err = await res.json();
             alert(err.error || 'Error al crear cupón');
+        }
+    });
+
+    // Carrusel form
+    document.getElementById('btn-add-carousel').addEventListener('click', () => {
+        document.getElementById('add-carousel-form').style.display = 'block';
+    });
+
+    let currentCarouselBase64 = null;
+    document.getElementById('carousel-file').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        if (file.size > 2 * 1024 * 1024) return alert('La imagen excede los 2MB.');
+
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            currentCarouselBase64 = ev.target.result;
+            document.getElementById('carousel-preview').innerHTML = `<img src="${currentCarouselBase64}" style="max-width:100%; max-height:200px; border-radius: 8px;">`;
+        };
+        reader.readAsDataURL(file);
+    });
+
+    document.getElementById('submit-carousel').addEventListener('click', async () => {
+        if (!currentCarouselBase64) return alert('Selecciona una imagen primero');
+        
+        const btn = document.getElementById('submit-carousel');
+        btn.textContent = 'Guardando...';
+        btn.disabled = true;
+
+        try {
+            const res = await fetch('/api/carousel', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ image_data: currentCarouselBase64 })
+            });
+
+            if (res.ok) {
+                alert('Imagen agregada al carrusel');
+                document.getElementById('add-carousel-form').style.display = 'none';
+                document.getElementById('carousel-file').value = '';
+                document.getElementById('carousel-preview').innerHTML = '';
+                currentCarouselBase64 = null;
+                loadCarousel();
+            } else {
+                alert('Error al agregar imagen');
+            }
+        } catch (e) {
+            alert('Error de red');
+        } finally {
+            btn.textContent = 'Guardar Imagen';
+            btn.disabled = false;
         }
     });
 
