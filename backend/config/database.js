@@ -58,7 +58,7 @@ async function initializeDatabase() {
             );
         `);
 
-        const bcrypt = require('bcrypt');
+        const bcrypt = require('bcryptjs');
         const hash = bcrypt.hashSync('password123', 10);
 
         // Insertar usuario cliente
