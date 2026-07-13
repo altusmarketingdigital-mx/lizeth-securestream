@@ -89,6 +89,25 @@ async function initializeDatabase() {
             );
         }
 
+        // Insertar video de prueba si no hay videos
+        const videoCheck = await pool.query("SELECT id FROM videos");
+        if (videoCheck.rows.length === 0) {
+            const videoId = require('crypto').randomUUID();
+            await pool.query(
+                "INSERT INTO videos (id, title, description, price, secure_slug, internal_storage_path) VALUES ($1, $2, $3, $4, $5, $6)",
+                [videoId, 'Masterclass: Fade Perfecto', 'Aprende las técnicas más avanzadas para un degradado impecable.', 49.99, 'v-mock123', '/videos/fade.mp4']
+            );
+            
+            // Asignar el video al cliente para que vea algo en su biblioteca
+            const cliente = await pool.query("SELECT id FROM users WHERE email = 'cliente@barberette.com'");
+            if (cliente.rows.length > 0) {
+                await pool.query(
+                    "INSERT INTO purchases (id, user_id, video_id) VALUES ($1, $2, $3)",
+                    [require('crypto').randomUUID(), cliente.rows[0].id, videoId]
+                );
+            }
+        }
+
         console.log('✅ Base de datos PostgreSQL inicializada correctamente');
     } catch (err) {
         console.error('❌ Error inicializando base de datos:', err);
