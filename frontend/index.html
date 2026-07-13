@@ -423,7 +423,8 @@
                     images = await res.json();
                     if (images.length > 0) {
                         // Remove fallback
-                        carousel.innerHTML = '';
+                        const oldSlides = carousel.querySelectorAll('.carousel-slide');
+                        oldSlides.forEach(s => s.remove());
                         dotsContainer.innerHTML = '';
                         
                         images.forEach((img, idx) => {
