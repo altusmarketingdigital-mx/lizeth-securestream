@@ -8,7 +8,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         'tab-videos': 'view-videos',
         'tab-users': 'view-users',
         'tab-coupons': 'view-coupons',
-        'tab-carousel': 'view-carousel'
+        'tab-carousel': 'view-carousel',
+        'tab-settings': 'view-settings'
     };
 
     for (const [tabId, viewId] of Object.entries(tabs)) {
@@ -28,6 +29,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (tabId === 'tab-videos') loadVideos();
             if (tabId === 'tab-coupons') { loadCoupons(); populateCouponVideos(); }
             if (tabId === 'tab-carousel') loadCarousel();
+            if (tabId === 'tab-settings') loadSettings();
         });
     }
 
@@ -146,6 +148,62 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
     }
+
+    async function loadSettings() {
+        const data = await apiGet('/api/settings'); // Public endpoint but used by admin too
+        if (data) {
+            const fields = [
+                'footer_text', 'hero_title', 'hero_subtitle', 'hero_body', 
+                'hero_btn_text', 'hero_card_title', 'hero_card_badge1', 
+                'hero_card_badge2', 'hero_card_image'
+            ];
+            fields.forEach(f => {
+                const el = document.getElementById('set-' + f);
+                if(el) el.value = data[f] || '';
+            });
+        }
+    }
+
+    document.getElementById('btn-save-settings').addEventListener('click', async () => {
+        const fields = [
+            'footer_text', 'hero_title', 'hero_subtitle', 'hero_body', 
+            'hero_btn_text', 'hero_card_title', 'hero_card_badge1', 
+            'hero_card_badge2', 'hero_card_image'
+        ];
+        
+        const payload = {};
+        fields.forEach(f => {
+            const el = document.getElementById('set-' + f);
+            if(el) payload[f] = el.value;
+        });
+
+        const btn = document.getElementById('btn-save-settings');
+        btn.textContent = 'Guardando...';
+        btn.disabled = true;
+
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch('/api/settings', {
+                method: 'PUT',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                alert('Configuración guardada exitosamente');
+            } else {
+                alert('Error al guardar configuración');
+            }
+        } catch(e) {
+            alert('Error de red');
+        } finally {
+            btn.textContent = 'Guardar Cambios';
+            btn.disabled = false;
+        }
+    });
 
     // Formularios
     let selectedImages = [];

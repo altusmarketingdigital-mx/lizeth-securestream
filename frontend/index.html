@@ -233,7 +233,7 @@
     <header class="top-bar">
         <div class="logo" style="display: flex; align-items: center; gap: 15px;">
             <img src="/assets/img/barber-pole.png" alt="Poste de Barbero" style="height: 70px; filter: drop-shadow(0 0 15px rgba(154, 34, 171, 0.5));">
-            <img src="/assets/img/logo.png" alt="Lizeth The Barberette" style="height: 60px; object-fit: contain;">
+            <img id="dyn-logo_img" src="/assets/img/logo.png" alt="Lizeth The Barberette" style="height: 60px; object-fit: contain;">
         </div>
         <div class="header-nav">
             <a href="/" class="active">HOME</a>
@@ -264,12 +264,12 @@
 
     <main class="hero">
         <div class="hero-text">
-            <h1>Hi, I'm Lizeth, <br>The Barberette...</h1>
-            <p class="subtitle">and I'd love to shave your head.. no guard, no hair left... BALD!!!</p>
-            <p class="body-text">So, be prepared, sweetie, I'll be with you in a minute.. Please, take a sit!</p>
+            <h1 id="dyn-hero_title">Hi, I'm Lizeth, <br>The Barberette...</h1>
+            <p id="dyn-hero_subtitle" class="subtitle">and I'd love to shave your head.. no guard, no hair left... BALD!!!</p>
+            <p id="dyn-hero_body" class="body-text">So, be prepared, sweetie, I'll be with you in a minute.. Please, take a sit!</p>
             
             <div class="cta-group">
-                <button onclick="window.location.href='/catalog.html'" class="btn-primary lg" style="width: auto;">ENTER THE SHOP</button>
+                <button id="dyn-hero_btn_text" onclick="window.location.href='/catalog.html'" class="btn-primary lg" style="width: auto;">ENTER THE SHOP</button>
                 <div style="color: var(--text-muted); font-size: 0.95rem; font-weight:600; display:flex; align-items:center; gap:8px;">
                     <span style="display:inline-block; width:10px; height:10px; background:var(--primary); border-radius:50%; box-shadow: 0 0 10px var(--primary);"></span>
                     Platform Active
@@ -279,11 +279,11 @@
 
         <div class="hero-graphics">
             <div class="floating-card">
-                <img class="main-pic" src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80" alt="Exclusive Video">
-                <h3 style="margin:0 0 10px 0; font-size:1.3rem; color: #fff;">Premium Content</h3>
+                <img id="dyn-hero_card_image" class="main-pic" src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80" alt="Exclusive Video">
+                <h3 id="dyn-hero_card_title" style="margin:0 0 10px 0; font-size:1.3rem; color: #fff;">Premium Content</h3>
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="color:var(--sec-3); font-weight:700; font-size:1.2rem;">Exclusive</span>
-                    <span style="background:rgba(154,34,171,0.2); color:var(--sec-1); padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:700;">Protected</span>
+                    <span id="dyn-hero_card_badge1" style="color:var(--sec-3); font-weight:700; font-size:1.2rem;">Exclusive</span>
+                    <span id="dyn-hero_card_badge2" style="background:rgba(154,34,171,0.2); color:var(--sec-1); padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:700;">Protected</span>
                 </div>
             </div>
         </div>
@@ -293,7 +293,7 @@
         <div class="footer-content">
             <div class="footer-brand">
                 <img src="/assets/img/logo.png" alt="Lizeth The Barberette" class="footer-logo">
-                <p>Monetizing knowledge with extreme security.<br>No guard, no hair left... BALD!!!</p>
+            <p id="dyn-footer_text">Monetizing knowledge with extreme security.<br>No guard, no hair left... BALD!!!</p>
             </div>
             <div class="footer-links-col">
                 <h4>Explore</h4>
@@ -320,6 +320,7 @@
         </div>
     </footer>
 
+    <script src="/assets/js/settings.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             const carousel = document.getElementById('hero-carousel');

@@ -95,13 +95,43 @@ async function initializeDatabase() {
             console.log('Error adding columns to carousel_images:', e.message);
         }
 
-        // Modificar cupones para soporte específico
+        // Cupones con soporte para video específico
         try {
             await pool.query(`ALTER TABLE coupons ADD COLUMN IF NOT EXISTS video_id UUID REFERENCES videos(id) ON DELETE CASCADE;`);
         } catch(e) {
-            console.log('Coupons table already updated or error adding column:', e.message);
+            console.log('Error modifying coupons:', e.message);
         }
 
+        // Configuraciones de Sitio (CMS)
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS site_settings (
+                setting_key VARCHAR(100) PRIMARY KEY,
+                setting_value TEXT
+            );
+        `);
+
+        // Insertar valores por defecto para el CMS si la tabla está vacía
+        const settingsCount = await pool.query('SELECT count(*) FROM site_settings');
+        if (settingsCount.rows[0].count === '0') {
+            const defaults = {
+                'hero_title': "Hi, I'm Lizeth, <br>The Barberette...",
+                'hero_subtitle': "and I'd love to shave your head.. no guard, no hair left... BALD!!!",
+                'hero_body': "So, be prepared, sweetie, I'll be with you in a minute.. Please, take a sit!",
+                'hero_btn_text': "ENTER THE SHOP",
+                'hero_card_title': "Premium Content",
+                'hero_card_badge1': "Exclusive",
+                'hero_card_badge2': "Protected",
+                'hero_card_image': "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80",
+                'footer_text': "Monetizing knowledge with extreme security.<br>No guard, no hair left... BALD!!!",
+                'logo_url': "/assets/img/logo.png"
+            };
+            
+            for (const [key, val] of Object.entries(defaults)) {
+                await pool.query('INSERT INTO site_settings (setting_key, setting_value) VALUES ($1, $2)', [key, val]);
+            }
+        }
+
+        console.log('✅ Base de datos inicializada correctamente');
         const bcrypt = require('bcryptjs');
         const hash = bcrypt.hashSync('password123', 10);
 

@@ -18,6 +18,7 @@
             <a href="#" id="tab-users">Usuarios</a>
             <a href="#" id="tab-coupons">Cupones</a>
             <a href="#" id="tab-carousel">Carrusel</a>
+            <a href="#" id="tab-settings">Configuración Web</a>
             <a href="/dashboard.html">Volver al Sitio</a>
         </nav>
     </aside>
@@ -168,6 +169,66 @@
 
             <div id="carousel-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-top: 2rem;">
                 <!-- Dinámico -->
+            </div>
+        </section>
+        <section id="view-settings" class="admin-section" style="display:none;">
+            <div class="header-action">
+                <h2>Configuración Web (CMS)</h2>
+                <button id="btn-save-settings" class="btn-primary sm-btn">Guardar Cambios</button>
+            </div>
+            
+            <div class="settings-grid" style="display: grid; gap: 2rem; margin-top: 1.5rem;">
+                <!-- General -->
+                <div class="glass-panel" style="padding: 1.5rem;">
+                    <h3>General & Branding</h3>
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label style="display:block; margin-bottom:0.5rem; color:#aaa;">Texto del Footer</label>
+                        <textarea id="set-footer_text" style="width:100%; height:80px; padding:10px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.2); color:#fff; border-radius:8px; resize:vertical;"></textarea>
+                    </div>
+                </div>
+
+                <!-- Inicio (Hero) -->
+                <div class="glass-panel" style="padding: 1.5rem;">
+                    <h3>Página de Inicio (Textos Principales)</h3>
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label style="display:block; margin-bottom:0.5rem; color:#aaa;">Título Principal (H1)</label>
+                        <input type="text" id="set-hero_title">
+                    </div>
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label style="display:block; margin-bottom:0.5rem; color:#aaa;">Subtítulo</label>
+                        <input type="text" id="set-hero_subtitle">
+                    </div>
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label style="display:block; margin-bottom:0.5rem; color:#aaa;">Texto del Cuerpo</label>
+                        <textarea id="set-hero_body" style="width:100%; height:80px; padding:10px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.2); color:#fff; border-radius:8px; resize:vertical;"></textarea>
+                    </div>
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label style="display:block; margin-bottom:0.5rem; color:#aaa;">Texto Botón Principal</label>
+                        <input type="text" id="set-hero_btn_text">
+                    </div>
+                </div>
+
+                <!-- Inicio (Tarjeta Flotante) -->
+                <div class="glass-panel" style="padding: 1.5rem;">
+                    <h3>Página de Inicio (Tarjeta Flotante)</h3>
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label style="display:block; margin-bottom:0.5rem; color:#aaa;">Título de Tarjeta</label>
+                        <input type="text" id="set-hero_card_title">
+                    </div>
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label style="display:block; margin-bottom:0.5rem; color:#aaa;">Etiqueta 1</label>
+                        <input type="text" id="set-hero_card_badge1">
+                    </div>
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label style="display:block; margin-bottom:0.5rem; color:#aaa;">Etiqueta 2</label>
+                        <input type="text" id="set-hero_card_badge2">
+                    </div>
+                    <!-- (Más adelante agregaremos subida de imágenes para la tarjeta y el logo, por ahora campos de texto para la URL de la imagen) -->
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label style="display:block; margin-bottom:0.5rem; color:#aaa;">URL Imagen Tarjeta Flotante</label>
+                        <input type="text" id="set-hero_card_image">
+                    </div>
+                </div>
             </div>
         </section>
     </main>
