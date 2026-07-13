@@ -82,9 +82,18 @@ async function initializeDatabase() {
             CREATE TABLE IF NOT EXISTS carousel_images (
                 id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
                 image_data TEXT NOT NULL,
+                title VARCHAR(255),
+                link_url VARCHAR(255),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         `);
+        
+        try {
+            await pool.query(`ALTER TABLE carousel_images ADD COLUMN IF NOT EXISTS title VARCHAR(255);`);
+            await pool.query(`ALTER TABLE carousel_images ADD COLUMN IF NOT EXISTS link_url VARCHAR(255);`);
+        } catch(e) {
+            console.log('Error adding columns to carousel_images:', e.message);
+        }
 
         // Modificar cupones para soporte específico
         try {

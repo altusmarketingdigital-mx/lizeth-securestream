@@ -350,6 +350,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('submit-carousel').addEventListener('click', async () => {
         if (!currentCarouselBase64) return alert('Selecciona una imagen primero');
         
+        const title = document.getElementById('carousel-title').value;
+        const link = document.getElementById('carousel-link').value;
+
         const btn = document.getElementById('submit-carousel');
         btn.textContent = 'Guardando...';
         btn.disabled = true;
@@ -358,13 +361,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             const res = await fetch('/api/carousel', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ image_data: currentCarouselBase64 })
+                body: JSON.stringify({ 
+                    image_data: currentCarouselBase64,
+                    title: title,
+                    link_url: link
+                })
             });
 
             if (res.ok) {
                 alert('Imagen agregada al carrusel');
                 document.getElementById('add-carousel-form').style.display = 'none';
                 document.getElementById('carousel-file').value = '';
+                document.getElementById('carousel-title').value = '';
+                document.getElementById('carousel-link').value = '';
                 document.getElementById('carousel-preview').innerHTML = '';
                 currentCarouselBase64 = null;
                 loadCarousel();

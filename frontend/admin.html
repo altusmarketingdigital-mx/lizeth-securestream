@@ -157,7 +157,11 @@
             <div id="add-carousel-form" class="glass-panel" style="display:none; padding:1.5rem; margin-bottom:1.5rem;">
                 <h3>Subir al Carrusel</h3>
                 <p style="font-size: 0.85rem; color: #aaa; margin-bottom: 0.5rem;">Recomendado: Imágenes horizontales (1920x1080). Max 2MB.</p>
-                <input type="file" id="carousel-file" accept="image/jpeg, image/png, image/webp" style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 5px; width: 100%; box-sizing: border-box; cursor: pointer;">
+                
+                <div class="form-group"><input type="text" id="carousel-title" placeholder="Título Opcional (ej. Nuevo Curso)"></div>
+                <div class="form-group"><input type="text" id="carousel-link" placeholder="Enlace Opcional (ej. /product.html?id=123)"></div>
+                
+                <input type="file" id="carousel-file" accept="image/jpeg, image/png, image/webp" style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 5px; width: 100%; box-sizing: border-box; cursor: pointer; margin-top: 1rem;">
                 <div id="carousel-preview" style="margin-top: 1rem;"></div>
                 <button id="submit-carousel" class="btn-primary" style="margin-top: 1rem;">Guardar Imagen</button>
             </div>
