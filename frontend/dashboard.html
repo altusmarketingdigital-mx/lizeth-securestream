@@ -195,20 +195,21 @@
             
             <div class="settings-container">
                 <h3 style="color: var(--primary); margin-top: 0;">Seguridad</h3>
-                <form id="password-form" onsubmit="event.preventDefault(); alert('La funcionalidad de cambio de contraseña estará disponible próximamente.');">
+                <form id="password-form" onsubmit="changePassword(event)">
                     <div class="form-group">
                         <label>Contraseña Actual</label>
-                        <input type="password" class="form-control" placeholder="••••••••" required>
+                        <input type="password" id="current-pwd" class="form-control" placeholder="••••••••" required>
                     </div>
                     <div class="form-group">
                         <label>Nueva Contraseña</label>
-                        <input type="password" class="form-control" placeholder="••••••••" required>
+                        <input type="password" id="new-pwd" class="form-control" placeholder="••••••••" required minlength="6">
                     </div>
                     <div class="form-group">
                         <label>Confirmar Nueva Contraseña</label>
-                        <input type="password" class="form-control" placeholder="••••••••" required>
+                        <input type="password" id="confirm-pwd" class="form-control" placeholder="••••••••" required minlength="6">
                     </div>
-                    <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem;">Actualizar Contraseña</button>
+                    <button type="submit" id="pwd-submit-btn" class="btn-primary" style="width: 100%; margin-top: 1rem;">Actualizar Contraseña</button>
+                    <p id="pwd-msg" style="display:none; font-weight: bold; margin-top: 1rem; text-align: center;"></p>
                 </form>
             </div>
             
@@ -264,6 +265,55 @@
             } catch (err) {
                 alert('Hubo un problema al conectar con la pasarela de pagos.');
                 btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        async function changePassword(e) {
+            e.preventDefault();
+            const currentPassword = document.getElementById('current-pwd').value;
+            const newPassword = document.getElementById('new-pwd').value;
+            const confirmPassword = document.getElementById('confirm-pwd').value;
+            const msgBox = document.getElementById('pwd-msg');
+            const btn = document.getElementById('pwd-submit-btn');
+
+            if (newPassword !== confirmPassword) {
+                msgBox.textContent = 'Las nuevas contraseñas no coinciden.';
+                msgBox.style.color = 'var(--error)';
+                msgBox.style.display = 'block';
+                return;
+            }
+
+            btn.textContent = 'Actualizando...';
+            btn.disabled = true;
+            msgBox.style.display = 'none';
+
+            try {
+                const res = await fetch('/api/auth/change-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ currentPassword, newPassword })
+                });
+
+                const data = await res.json();
+                
+                msgBox.textContent = data.message || data.error;
+                msgBox.style.color = res.ok ? 'var(--sec-3)' : 'var(--error)';
+                msgBox.style.display = 'block';
+
+                if (res.ok) {
+                    document.getElementById('password-form').reset();
+                    setTimeout(() => {
+                        localStorage.clear();
+                        window.location.href = '/login.html';
+                    }, 3000);
+                }
+            } catch (err) {
+                msgBox.textContent = 'Error de conexión con el servidor.';
+                msgBox.style.color = 'var(--error)';
+                msgBox.style.display = 'block';
+            } finally {
+                btn.textContent = 'Actualizar Contraseña';
                 btn.disabled = false;
             }
         }

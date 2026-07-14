@@ -102,6 +102,14 @@ async function initializeDatabase() {
             console.log('Error modifying coupons:', e.message);
         }
 
+        // Recuperación de Contraseña
+        try {
+            await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_password_token VARCHAR(255);`);
+            await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_password_expires TIMESTAMP WITH TIME ZONE;`);
+        } catch(e) {
+            console.log('Error adding password reset columns to users:', e.message);
+        }
+
         // Configuraciones de Sitio (CMS)
         await pool.query(`
             CREATE TABLE IF NOT EXISTS site_settings (
