@@ -74,6 +74,13 @@
         }
         .card-title { margin: 0; font-size: 1.2rem; font-weight: 700; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
         
+        .card-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
+        .badge { background: rgba(154,34,171,0.8); padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
+        .card-duration { font-size: 0.8rem; color: #ccc; font-weight: 600; }
+        
+        .progress-container { width: 100%; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--primary); }
+        
         .play-btn-overlay {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.8);
             width: 60px; height: 60px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center;
@@ -296,6 +303,7 @@
 
                 grid.innerHTML = videos.map((v, i) => {
                     const coverId = covers[i % covers.length];
+                    const progress = Math.floor(Math.random() * 60) + 10; // Random progress 10-70% para demostrar UI
                     return `
                     <div class="cinematic-card" onclick="window.location.href='/player.html?v=${v.secure_slug}'">
                         <img src="https://images.unsplash.com/${coverId}?auto=format&fit=crop&w=600&q=80" alt="${v.title}">
@@ -303,7 +311,14 @@
                             <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                         </div>
                         <div class="card-overlay">
+                            <div class="card-meta">
+                                <span class="badge">CURSO HD</span>
+                                <span class="card-duration">Acceso Completo</span>
+                            </div>
                             <h3 class="card-title">${v.title}</h3>
+                            <div class="progress-container">
+                                <div class="progress-bar" style="width: ${progress}%"></div>
+                            </div>
                         </div>
                     </div>
                 `}).join('');
