@@ -27,6 +27,31 @@
         <div class="grid" id="my-videos-grid">
             Cargando tus videos...
         </div>
+
+        <hr style="border: 1px solid rgba(255,255,255,0.1); margin: 3rem 0;">
+
+        <header class="section-header">
+            <h2>Apoya mi trabajo (Donativos)</h2>
+            <p>Si disfrutas de mi contenido, considera dejar una propina. ¡Tu apoyo me permite seguir creando más videos para ti!</p>
+        </header>
+
+        <div class="card interactive" style="max-width: 600px; margin: 0 auto; text-align: center; padding: 2rem;">
+            <h3 style="color: var(--primary); margin-bottom: 1.5rem;">Elige un monto</h3>
+            <div style="display: flex; gap: 15px; justify-content: center; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                <button class="btn-secondary" onclick="setDonation(5)">$5 USD</button>
+                <button class="btn-secondary" onclick="setDonation(10)">$10 USD</button>
+                <button class="btn-secondary" onclick="setDonation(20)">$20 USD</button>
+                <button class="btn-secondary" onclick="setDonation(50)">$50 USD</button>
+            </div>
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 5px; color: #aaa;">Otro monto (USD):</label>
+                <input type="number" id="custom-donation" placeholder="Ej. 15" min="1" class="admin-input" style="width: 150px; text-align: center;">
+            </div>
+            <button onclick="processDonation()" class="btn-primary" style="width: 100%; max-width: 300px; background: #ffc439; color: #003087; box-shadow: 0 10px 25px -5px rgba(255, 196, 57, 0.4);">
+                <svg style="vertical-align: middle; margin-right: 5px;" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11V7a5 5 0 0 1 10 0v4"></path><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect></svg>
+                Donar con PayPal
+            </button>
+        </div>
     </main>
 
     <script>
@@ -98,6 +123,21 @@
                 document.getElementById('my-videos-grid').innerHTML = 'Error al cargar tu biblioteca.';
             }
         });
+
+        function setDonation(amount) {
+            document.getElementById('custom-donation').value = amount;
+        }
+
+        function processDonation() {
+            const amount = document.getElementById('custom-donation').value;
+            if (!amount || amount <= 0) {
+                alert('Por favor, ingresa un monto válido para el donativo.');
+                return;
+            }
+            alert('¡Gracias por tu apoyo!\n\nRedirigiendo a PayPal para procesar tu donativo de $' + amount + ' USD...');
+            // Placeholder: Here we will integrate the real PayPal or Stripe donation checkout URL
+            // window.location.href = '/api/payment/donate?amount=' + amount;
+        }
     </script>
 </body>
 </html>
