@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const app = express();
@@ -14,12 +16,54 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(cookieParser());
 
-// Archivos estáticos (Frontend)
+// Seguridad y Rate Limiting
+app.use(helmet({
+    contentSecurityPolicy: false, // Desactivado para no romper iframes/scripts externos como PayPal o Stripe
+    crossOriginEmbedderPolicy: false
+}));
+
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    max: 30, // 30 intentos
+    message: { error: 'Demasiados intentos de inicio de sesión. Por favor, intenta más tarde.' }
+});
+
+// SEO Dinámico para Cursos (Open Graph)
+const fs = require('fs');
 const path = require('path');
+const db = require('./config/database');
+app.get('/curso/:slug', async (req, res) => {
+    try {
+        const { slug } = req.params;
+        const result = await db.query('SELECT title, description, price, cover_url FROM videos WHERE secure_slug = $1', [slug]);
+        
+        const playerHtmlPath = path.join(__dirname, '../frontend/player.html');
+        let htmlData = fs.readFileSync(playerHtmlPath, 'utf8');
+
+        if (result.rows.length > 0) {
+            const video = result.rows[0];
+            const metaTags = \`
+                <title>\${video.title} | Lizeth The Barberette</title>
+                <meta property="og:title" content="\${video.title}" />
+                <meta property="og:description" content="\${video.description || 'Aprende las mejores técnicas de barbería.'}" />
+                <meta property="og:image" content="\${video.cover_url}" />
+                <meta property="og:type" content="video.other" />
+            \`;
+            htmlData = htmlData.replace('<head>', \`<head>\n\${metaTags}\`);
+        }
+        
+        res.send(htmlData);
+    } catch (err) {
+        console.error('Error en SEO Dinámico:', err);
+        res.sendFile(path.join(__dirname, '../frontend/player.html'));
+    }
+});
+
+// Archivos estáticos (Frontend)
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Rutas de API
-app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/auth', authLimiter, require('./routes/authRoutes'));
 app.use('/api/videos', require('./routes/videoRoutes'));
 app.use('/api/payment', require('./routes/paymentRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));

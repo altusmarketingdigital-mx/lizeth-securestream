@@ -5,15 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure Player</title>
     <link rel="icon" href="/assets/img/barber-pole.png" type="image/png">
+    <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet" />
     <link rel="stylesheet" href="/assets/css/player.css">
+    <style>
+        .video-js { width: 100%; height: 100%; }
+        .vjs-big-play-button { background-color: rgba(154,34,171,0.7) !important; border: none !important; }
+    </style>
 </head>
 <body>
     <div id="secure-player-container">
         <div id="dynamic-watermark">Cargando identidad...</div>
-        <video id="protected-video" controls controlsList="nodownload">
-            <!-- Source will be injected via JS Blob -->
+        <video id="protected-video" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" controlsList="nodownload" oncontextmenu="return false;">
+            <!-- Source will be injected via JS -->
         </video>
     </div>
+    <script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
     <script src="/assets/js/player.js"></script>
 </body>
 </html>
