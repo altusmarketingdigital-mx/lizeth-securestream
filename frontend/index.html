@@ -265,6 +265,19 @@
         }
         .header-nav a:hover, .header-nav a.active { color: var(--primary); }
         
+        /* Donations */
+        .public-donation { margin: 4rem auto; max-width: 1000px; padding: 0 2rem; position: relative; z-index: 10; }
+        .donation-widget {
+            background: linear-gradient(135deg, rgba(255, 196, 57, 0.1), rgba(0,0,0,0.8)); border: 1px solid rgba(255, 196, 57, 0.3);
+            border-radius: 16px; padding: 2rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; backdrop-filter: blur(10px);
+        }
+        .donation-info h3 { color: #ffc439; margin: 0 0 10px 0; font-size: 1.5rem; }
+        .donation-info p { color: #ccc; margin: 0; font-size: 0.95rem; line-height: 1.5; max-width: 500px; }
+        .donation-actions { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+        .don-btn { background: rgba(255, 196, 57, 0.1); border: 1px solid rgba(255, 196, 57, 0.3); color: #ffc439; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .don-btn:hover, .don-btn.active { background: #ffc439; color: #000; }
+        .custom-don { width: 100px; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: white; text-align: center; }
+
         @media (max-width: 900px) {
             .hero { flex-direction: column; text-align: center; justify-content: center; padding-top: 2rem; }
             .hero h1 { font-size: 3rem; }
@@ -339,6 +352,22 @@
         </div>
     </main>
     
+    <div class="public-donation">
+        <div class="donation-widget">
+            <div class="donation-info">
+                <h3>☕ Apoya la Producción</h3>
+                <p>Cada donativo me permite crear mejor contenido, comprar mejores equipos y producir masterclasses más avanzadas. ¡Gracias por tu apoyo!</p>
+            </div>
+            <div class="donation-actions">
+                <button class="don-btn" onclick="setDon(this, 5)">$5</button>
+                <button class="don-btn" onclick="setDon(this, 10)">$10</button>
+                <button class="don-btn" onclick="setDon(this, 20)">$20</button>
+                <input type="number" id="custom-don" class="custom-don" placeholder="Otro" min="1">
+                <button id="don-submit-btn" onclick="processDonation()" class="btn-primary" style="background: #ffc439; color: #000; padding: 12px 24px; box-shadow: 0 10px 20px rgba(255, 196, 57, 0.2);">Donar</button>
+            </div>
+        </div>
+    </div>
+
     <footer class="site-footer">
         <div class="footer-content">
             <div class="footer-brand">
@@ -372,6 +401,44 @@
 
     <script src="/assets/js/settings.js"></script>
     <script>
+        function setDon(btn, amount) {
+            document.querySelectorAll('.don-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('custom-don').value = amount;
+        }
+
+        async function processDonation() {
+            const amount = document.getElementById('custom-don').value;
+            if (!amount || amount <= 0) {
+                alert('Por favor, ingresa un monto válido.');
+                return;
+            }
+            
+            const btn = document.getElementById('don-submit-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Procesando...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/payment/donate-stripe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount })
+                });
+                
+                const data = await res.json();
+                if (data.url) {
+                    window.location.href = data.url;
+                } else {
+                    throw new Error(data.error || 'Error al iniciar donativo');
+                }
+            } catch (err) {
+                alert('Hubo un problema al conectar con la pasarela de pagos.');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
             const carousel = document.getElementById('hero-carousel');
             const dotsContainer = document.getElementById('c-dots');

@@ -228,4 +228,96 @@ router.post('/capture-paypal-order', requireAuth, async (req, res) => {
     }
 });
 
+// STRIPE DONATION
+router.post('/donate-stripe', async (req, res) => {
+    try {
+        const { amount } = req.body;
+        if (!amount || amount <= 0) return res.status(400).json({ error: 'Monto inválido' });
+
+        if (STRIPE_SECRET_KEY === 'sk_test_mock') {
+            return res.json({ url: '/dashboard.html?donation=success&method=stripe' });
+        }
+
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            line_items: [{
+                price_data: {
+                    currency: 'usd',
+                    product_data: { name: 'Donativo / Apoyo a Producción' },
+                    unit_amount: Math.round(amount * 100),
+                },
+                quantity: 1,
+            }],
+            mode: 'payment',
+            success_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard.html?donation=success&method=stripe`,
+            cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard.html`,
+            metadata: { type: 'donation' }
+        });
+
+        res.json({ url: session.url });
+    } catch (error) {
+        console.error('Error Stripe Donation:', error);
+        res.status(500).json({ error: 'Error al iniciar Stripe para donativo' });
+    }
+});
+
+// PAYPAL DONATION
+router.post('/donate-paypal', async (req, res) => {
+    try {
+        const { amount } = req.body;
+        if (!amount || amount <= 0) return res.status(400).json({ error: 'Monto inválido' });
+
+        if (PAYPAL_CLIENT_ID === 'test') {
+            return res.json({ orderID: 'PAYPAL_DONATION_MOCK_' + uuidv4() });
+        }
+
+        const accessToken = await getPayPalAccessToken();
+        const orderData = {
+            intent: 'CAPTURE',
+            purchase_units: [{
+                description: 'Donativo / Apoyo a Producción',
+                amount: { currency_code: 'USD', value: parseFloat(amount).toFixed(2) }
+            }]
+        };
+
+        const response = await fetch(`${PAYPAL_API}/v2/checkout/orders`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${accessToken}` },
+            body: JSON.stringify(orderData)
+        });
+
+        const order = await response.json();
+        res.json({ orderID: order.id });
+    } catch (error) {
+        console.error('Error PayPal Donation:', error);
+        res.status(500).json({ error: 'Error al iniciar PayPal' });
+    }
+});
+
+// PAYPAL DONATION CAPTURE
+router.post('/capture-donation-paypal', async (req, res) => {
+    try {
+        const { orderID } = req.body;
+        if (PAYPAL_CLIENT_ID === 'test' || orderID.startsWith('PAYPAL_DONATION_MOCK_')) {
+            return res.json({ success: true, url: '/dashboard.html?donation=success&method=paypal' });
+        }
+        
+        const accessToken = await getPayPalAccessToken();
+        const response = await fetch(`${PAYPAL_API}/v2/checkout/orders/${orderID}/capture`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${accessToken}` }
+        });
+        
+        const captureData = await response.json();
+        if (captureData.status === 'COMPLETED') {
+            res.json({ success: true, url: '/dashboard.html?donation=success&method=paypal' });
+        } else {
+            res.status(400).json({ error: 'Donativo de PayPal no completado' });
+        }
+    } catch (error) {
+        console.error('Error PayPal Donation Capture:', error);
+        res.status(500).json({ error: 'Error al capturar donativo PayPal' });
+    }
+});
+
 module.exports = router;

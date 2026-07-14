@@ -236,14 +236,36 @@
             document.getElementById('custom-don').value = amount;
         }
 
-        function processDonation() {
+        async function processDonation() {
             const amount = document.getElementById('custom-don').value;
             if (!amount || amount <= 0) {
                 alert('Por favor, ingresa un monto válido.');
                 return;
             }
-            alert('¡Mil gracias por tu apoyo!\n\nRedirigiendo al checkout seguro para tu propina de $' + amount + ' USD...');
-            // Placeholder for real donation link
+            
+            const btn = document.querySelector('.donation-actions .btn-primary');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Procesando...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/payment/donate-stripe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount })
+                });
+                
+                const data = await res.json();
+                if (data.url) {
+                    window.location.href = data.url;
+                } else {
+                    throw new Error(data.error || 'Error al iniciar donativo');
+                }
+            } catch (err) {
+                alert('Hubo un problema al conectar con la pasarela de pagos.');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
