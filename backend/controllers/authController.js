@@ -87,10 +87,8 @@ exports.forgotPassword = async (req, res) => {
 
         const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password.html?token=${resetToken}`;
         
-        console.log('==================================================');
-        console.log(`📧 SIMULACIÓN DE CORREO PARA: ${email}`);
-        console.log(`Enlace de recuperación: ${resetUrl}`);
-        console.log('==================================================');
+        const emailService = require('../utils/emailService');
+        await emailService.sendMagicLink(email, resetUrl);
 
         res.json({ message: 'Si el correo existe, se enviará un enlace de recuperación.' });
     } catch (error) {

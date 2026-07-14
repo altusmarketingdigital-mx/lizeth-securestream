@@ -139,6 +139,10 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                 <span>Mi Cuenta</span>
             </div>
+            <div class="nav-item" onclick="switchTab('history')" id="tab-history">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                <span>Facturación</span>
+            </div>
             <a href="/admin.html" class="nav-item" id="admin-link" style="display:none; text-decoration: none;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"></path></svg>
                 <span>Backoffice</span>
@@ -193,6 +197,18 @@
         <section id="section-settings" class="content-section">
             <h2 style="margin-top:0; font-size: 2rem; margin-bottom: 2rem;">Configuración de Cuenta</h2>
             
+            <div class="settings-container" style="margin-bottom: 2rem;">
+                <h3 style="color: var(--primary); margin-top: 0;">Actualizar Correo</h3>
+                <form id="email-form" onsubmit="changeEmail(event)">
+                    <div class="form-group">
+                        <label>Nuevo Correo Electrónico</label>
+                        <input type="email" id="new-email" class="form-control" placeholder="nuevo@correo.com" required>
+                    </div>
+                    <button type="submit" id="email-submit-btn" class="btn-primary" style="width: 100%; margin-top: 1rem;">Actualizar Correo</button>
+                    <p id="email-msg" style="display:none; font-weight: bold; margin-top: 1rem; text-align: center;"></p>
+                </form>
+            </div>
+
             <div class="settings-container">
                 <h3 style="color: var(--primary); margin-top: 0;">Seguridad</h3>
                 <form id="password-form" onsubmit="changePassword(event)">
@@ -220,9 +236,94 @@
             </div>
         </section>
 
+        <!-- Tab: Facturación -->
+        <section id="section-history" class="content-section">
+            <h2 style="margin-top:0; font-size: 2rem; margin-bottom: 2rem;">Historial de Pagos</h2>
+            <div class="settings-container">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <th style="padding: 15px 10px; color: var(--sec-1);">Fecha</th>
+                            <th style="padding: 15px 10px; color: var(--sec-1);">Concepto</th>
+                            <th style="padding: 15px 10px; color: var(--sec-1);">Monto</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table-body">
+                        <tr><td colspan="3" style="padding: 20px 10px; color: #888; text-align: center;">Cargando historial...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
     </main>
 
     <script>
+        async function changeEmail(e) {
+            e.preventDefault();
+            const newEmail = document.getElementById('new-email').value;
+            const msgBox = document.getElementById('email-msg');
+            const btn = document.getElementById('email-submit-btn');
+
+            btn.textContent = 'Actualizando...';
+            btn.disabled = true;
+            msgBox.style.display = 'none';
+
+            try {
+                const res = await fetch('/api/user/change-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ newEmail })
+                });
+
+                const data = await res.json();
+                
+                msgBox.textContent = data.message || data.error;
+                msgBox.style.color = res.ok ? 'var(--sec-3)' : 'var(--error)';
+                msgBox.style.display = 'block';
+
+                if (res.ok) {
+                    setTimeout(() => {
+                        localStorage.clear();
+                        window.location.href = '/login.html';
+                    }, 3000);
+                }
+            } catch (err) {
+                msgBox.textContent = 'Error de conexión con el servidor.';
+                msgBox.style.color = 'var(--error)';
+                msgBox.style.display = 'block';
+            } finally {
+                btn.textContent = 'Actualizar Correo';
+                btn.disabled = false;
+            }
+        }
+
+        async function fetchHistory() {
+            try {
+                const res = await fetch('/api/user/purchases');
+                if (!res.ok) return;
+                const purchases = await res.json();
+                const tbody = document.getElementById('history-table-body');
+                
+                if (purchases.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="3" style="padding: 20px 10px; color: #888; text-align: center;">No tienes compras registradas.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = purchases.map(p => {
+                    const date = new Date(p.created_at).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+                    return \`
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 15px 10px; color: #ccc;">\${date}</td>
+                            <td style="padding: 15px 10px; font-weight: bold;">\${p.title}</td>
+                            <td style="padding: 15px 10px; color: var(--primary);">$\${p.price} USD</td>
+                        </tr>
+                    \`;
+                }).join('');
+            } catch (error) {
+                console.error('Error fetching history:', error);
+            }
+        }
+
         function switchTab(tabId) {
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
@@ -397,6 +498,8 @@
             } catch (err) {
                 document.getElementById('my-videos-grid').innerHTML = '<p style="color:var(--error)">Error al cargar tu biblioteca.</p>';
             }
+
+            fetchHistory();
         });
     </script>
 </body>
