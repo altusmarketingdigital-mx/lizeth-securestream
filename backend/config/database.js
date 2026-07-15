@@ -102,12 +102,13 @@ async function initializeDatabase() {
             console.log('Error modifying coupons:', e.message);
         }
 
-        // Recuperación de Contraseña
+        // Recuperación de Contraseña y Bloqueo
         try {
             await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_password_token VARCHAR(255);`);
             await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_password_expires TIMESTAMP WITH TIME ZONE;`);
+            await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS is_blocked BOOLEAN DEFAULT false;`);
         } catch(e) {
-            console.log('Error adding password reset columns to users:', e.message);
+            console.log('Error adding password reset/block columns to users:', e.message);
         }
 
         // Configuraciones de Sitio (CMS)

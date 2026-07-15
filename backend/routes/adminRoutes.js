@@ -27,5 +27,7 @@ router.get('/users', adminController.getUsers);
 router.get('/videos', adminController.getVideos);
 router.post('/videos', adminController.addVideo);
 router.get('/get-upload-url', adminController.getUploadUrl);
+router.put('/users/:id/toggle-block', adminController.toggleUserBlock);
+router.put('/users/:id/reset-password', adminController.regenerateUserPassword);
 
 module.exports = router;

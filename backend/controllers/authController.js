@@ -18,6 +18,9 @@ exports.login = async (req, res) => {
         }
         
         const user = result.rows[0];
+        if (user.is_blocked) {
+            return res.status(403).json({ error: 'Tu cuenta ha sido suspendida. Contacta a soporte.' });
+        }
         
         // Comparación de hash usando bcrypt real
         const validPassword = await bcrypt.compare(password, user.password_hash);

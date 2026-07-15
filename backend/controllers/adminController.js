@@ -1,5 +1,6 @@
 const db = require('../config/database');
 const { randomUUID: uuidv4 } = require('crypto');
+const bcrypt = require('bcryptjs');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
@@ -54,7 +55,7 @@ exports.getStats = async (req, res) => {
 
 exports.getUsers = async (req, res) => {
     try {
-        const result = await db.query('SELECT id, email, has_premium, is_admin, last_login_ip, created_at FROM users ORDER BY created_at DESC');
+        const result = await db.query('SELECT id, email, has_premium, is_admin, last_login_ip, created_at, is_blocked FROM users ORDER BY created_at DESC');
         res.json(result.rows);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener usuarios' });
@@ -103,5 +104,45 @@ exports.addVideo = async (req, res) => {
         await db.query('ROLLBACK');
         console.error(error);
         res.status(500).json({ error: 'Error al registrar video' });
+    }
+};
+
+exports.toggleUserBlock = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await db.query('SELECT is_blocked FROM users WHERE id = $1', [id]);
+        if (result.rows.length === 0) return res.status(404).json({ error: 'Usuario no encontrado' });
+
+        const isCurrentlyBlocked = result.rows[0].is_blocked;
+        const newStatus = !isCurrentlyBlocked;
+
+        if (newStatus) {
+            await db.query('UPDATE users SET is_blocked = $1, current_session_token = NULL WHERE id = $2', [newStatus, id]);
+        } else {
+            await db.query('UPDATE users SET is_blocked = $1 WHERE id = $2', [newStatus, id]);
+        }
+
+        res.json({ message: newStatus ? 'Usuario bloqueado exitosamente' : 'Usuario desbloqueado exitosamente' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al cambiar estado del usuario' });
+    }
+};
+
+exports.regenerateUserPassword = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await db.query('SELECT id FROM users WHERE id = $1', [id]);
+        if (result.rows.length === 0) return res.status(404).json({ error: 'Usuario no encontrado' });
+
+        const newPassword = require('crypto').randomBytes(4).toString('hex');
+        const hash = await bcrypt.hash(newPassword, 10);
+
+        await db.query('UPDATE users SET password_hash = $1, current_session_token = NULL WHERE id = $2', [hash, id]);
+
+        res.json({ message: 'Contraseña regenerada', newPassword });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al regenerar contraseña' });
     }
 };

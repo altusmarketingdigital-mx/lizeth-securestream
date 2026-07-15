@@ -99,11 +99,56 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (clientsTbody) {
                 clientsTbody.innerHTML = clients.map(u => `
                     <tr>
-                        <td>${u.email}</td>
+                        <td style="${u.is_blocked ? 'text-decoration: line-through; color: #888;' : ''}">${u.email}</td>
                         <td>${u.has_premium ? '<span style="color:#16a34a;">Sí</span>' : 'No'}</td>
                         <td>${new Date(u.created_at).toLocaleDateString()}</td>
+                        <td>
+                            <button class="btn-primary sm-btn block-btn" data-id="${u.id}" style="background: ${u.is_blocked ? '#16a34a' : '#dc2626'}; padding: 4px 8px; font-size: 0.8rem; margin-right: 5px;">
+                                ${u.is_blocked ? 'Desbloquear' : 'Bloquear'}
+                            </button>
+                            <button class="btn-primary sm-btn reset-btn" data-id="${u.id}" style="background: #2563eb; padding: 4px 8px; font-size: 0.8rem;">
+                                Nueva Clave
+                            </button>
+                        </td>
                     </tr>
                 `).join('');
+
+                document.querySelectorAll('.block-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        if (!confirm('¿Seguro que deseas cambiar el estado de este cliente?')) return;
+                        const id = e.target.getAttribute('data-id');
+                        const token = localStorage.getItem('token');
+                        const res = await fetch(`/api/admin/users/${id}/toggle-block`, {
+                            method: 'PUT',
+                            headers: { 'Authorization': 'Bearer ' + token }
+                        });
+                        const data = await res.json();
+                        if (res.ok) {
+                            alert(data.message);
+                            loadUsers();
+                        } else {
+                            alert(data.error || 'Error');
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.reset-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        if (!confirm('¿Generar nueva contraseña para este cliente? Se cerrará su sesión actual.')) return;
+                        const id = e.target.getAttribute('data-id');
+                        const token = localStorage.getItem('token');
+                        const res = await fetch(`/api/admin/users/${id}/reset-password`, {
+                            method: 'PUT',
+                            headers: { 'Authorization': 'Bearer ' + token }
+                        });
+                        const data = await res.json();
+                        if (res.ok) {
+                            alert(`NUEVA CONTRASEÑA GENERADA:\n\n${data.newPassword}\n\nCopia y envía esta contraseña al cliente.`);
+                        } else {
+                            alert(data.error || 'Error');
+                        }
+                    });
+                });
             }
         }
     }
