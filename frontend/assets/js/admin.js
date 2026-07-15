@@ -37,6 +37,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
+    // Logout Handler
+    const btnLogout = document.getElementById('btn-admin-logout');
+    if (btnLogout) {
+        btnLogout.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                const token = localStorage.getItem('token');
+                await fetch('/api/auth/logout', { 
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+            } catch (error) {
+                console.error('Error closing session:', error);
+            }
+            localStorage.removeItem('token');
+            localStorage.removeItem('userEmail');
+            window.location.href = '/';
+        });
+    }
+
     // Funciones de carga (Requieren JWT válido con rol admin)
     async function apiGet(endpoint) {
         const res = await fetch(endpoint);
