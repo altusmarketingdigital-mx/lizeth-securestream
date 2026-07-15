@@ -98,14 +98,14 @@
         
         /* Donations */
         .donation-widget {
-            background: linear-gradient(135deg, rgba(255, 196, 57, 0.1), transparent); border: 1px solid rgba(255, 196, 57, 0.3);
+            background: linear-gradient(135deg, rgba(229, 42, 126, 0.1), transparent); border: 1px solid rgba(229, 42, 126, 0.3);
             border-radius: 16px; padding: 2rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; margin-top: 3rem;
         }
-        .donation-info h3 { color: #ffc439; margin: 0 0 10px 0; font-size: 1.5rem; }
+        .donation-info h3 { color: var(--accent); margin: 0 0 10px 0; font-size: 1.5rem; }
         .donation-info p { color: #aaa; margin: 0; font-size: 0.95rem; line-height: 1.5; max-width: 400px; }
         .donation-actions { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
-        .don-btn { background: rgba(255, 196, 57, 0.1); border: 1px solid rgba(255, 196, 57, 0.3); color: #ffc439; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .don-btn:hover, .don-btn.active { background: #ffc439; color: #000; }
+        .don-btn { background: rgba(229, 42, 126, 0.1); border: 1px solid rgba(229, 42, 126, 0.3); color: var(--accent); padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .don-btn:hover, .don-btn.active { background: var(--accent); color: #fff; }
         .custom-don { width: 100px; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: white; text-align: center; }
         
         @media(max-width: 900px) {
@@ -188,7 +188,7 @@
                     <button class="don-btn" onclick="setDon(this, 10)">$10</button>
                     <button class="don-btn" onclick="setDon(this, 20)">$20</button>
                     <input type="number" id="custom-don" class="custom-don" placeholder="Otro" min="1">
-                    <button onclick="processDonation()" class="btn-primary" style="background: #635bff; color: #fff; padding: 12px 24px; box-shadow: 0 10px 20px rgba(99, 91, 255, 0.2); border-color: #635bff;">Donar con Tarjeta</button>
+                    <button onclick="processDonation()" class="btn-primary" style="background: var(--primary); color: #fff; padding: 12px 24px; box-shadow: 0 10px 20px rgba(154, 34, 171, 0.2); border-color: var(--primary);">Donar con Tarjeta</button>
                 </div>
             </div>
         </section>
