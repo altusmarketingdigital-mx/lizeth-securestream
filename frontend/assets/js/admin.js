@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             tbody.innerHTML = data.map(u => `
                 <tr>
                     <td>${u.email}</td>
-                    <td>${u.is_admin ? 'Admin' : 'Usuario'}</td>
+                    <td>${u.is_admin ? 'Admin' : 'Cliente'}</td>
                     <td>${new Date(u.created_at).toLocaleDateString()}</td>
                 </tr>
             `).join('');
