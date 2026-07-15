@@ -343,6 +343,15 @@
             </div>
         </div>
     </main>
+
+    <section class="latest-videos-section" style="padding: 4rem 2rem; text-align: center; max-width: 1400px; margin: 0 auto; position: relative; z-index: 5;">
+        <h2 style="font-size: 2.5rem; margin-bottom: 3rem; color: #fff; font-weight: 700;">LATEST RELEASES</h2>
+        <div class="grid" id="latest-videos-grid" style="text-align: left;">
+            <!-- Dinámico -->
+            <p style="color: #fff; text-align: center; grid-column: 1 / -1;">Cargando videos...</p>
+        </div>
+        <button onclick="window.location.href='/catalog.html'" class="btn-primary" style="margin-top: 3rem; padding: 12px 32px; background: transparent; border: 2px solid var(--primary); color: #fff; width: auto;">SEE ALL VIDEOS</button>
+    </section>
     
     <div class="public-donation">
         <div class="donation-widget">
@@ -543,6 +552,56 @@
                 console.error('Error fetching carousel:', err);
             }
         });
+        // Latest Videos Logic
+        async function loadLatestVideos() {
+            try {
+                const res = await fetch('/api/videos/catalog');
+                let allVideos = await res.json();
+                
+                const grid = document.getElementById('latest-videos-grid');
+                if(!allVideos || allVideos.length === 0) {
+                    grid.innerHTML = '<p style="color:#fff; text-align:center; grid-column: 1/-1;">No videos available.</p>';
+                    return;
+                }
+
+                // Tomar solo los últimos 5
+                const latestVideos = allVideos.slice(0, 5);
+                
+                const covers = [
+                    'photo-1585747860715-2ba37e788b70',
+                    'photo-1503951914875-452162b0f3f1',
+                    'photo-1622286342621-4bd786c2447c',
+                    'photo-1534723452862-4c874018d66d',
+                    'photo-1599351431202-1e0f0137899a',
+                    'photo-1605497788044-5a32c7078486',
+                    'photo-1526374965328-7f61d4dc18c5',
+                    'photo-1593720213428-28a5b9e94613'
+                ];
+
+                grid.innerHTML = latestVideos.map((v, i) => {
+                    const coverId = covers[i % covers.length];
+                    return `
+                    <div class="card interactive">
+                        <div class="card-img-wrapper" style="cursor: pointer;" onclick="window.location.href='/product.html?id=${v.id}'">
+                            <div class="overlay-play">Ver Detalles</div>
+                            <img src="https://images.unsplash.com/${coverId}?auto=format&fit=crop&w=600&q=80" alt="${v.title}">
+                        </div>
+                        <div class="card-content" style="padding: 1rem 0;">
+                            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem; cursor: pointer;" onclick="window.location.href='/product.html?id=${v.id}'">
+                                <h3 style="margin: 0; color: var(--primary); font-size: 1.1rem; text-transform: uppercase;">${v.title}</h3>
+                                <span class="price-tag" style="color: var(--sec-1); font-size: 1.1rem;">$${v.price}</span>
+                            </div>
+                            <button onclick="window.location.href='/product.html?id=${v.id}'" class="btn-primary">MORE DETAILS</button>
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+            } catch(e) {
+                console.error('Error loading latest videos:', e);
+            }
+        }
+        
+        window.addEventListener('DOMContentLoaded', loadLatestVideos);
     </script>
 </body>
 </html>
