@@ -70,7 +70,6 @@
             border-radius: 24px;
             padding: 2rem;
             width: 350px;
-            animation: float 6s ease-in-out infinite;
             position: relative;
             z-index: 3;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
@@ -80,7 +79,6 @@
             aspect-ratio: 4/3;
             object-fit: cover;
             border-radius: 12px;
-            margin-bottom: 1.5rem;
         }
         
         .hero-graphics {
@@ -89,19 +87,6 @@
             justify-content: center;
             align-items: center;
             position: relative;
-        }
-        
-        .floating-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            padding: 2rem;
-            width: 350px;
-            animation: float 6s ease-in-out infinite;
-            position: relative;
-            z-index: 3;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
         .floating-card img.main-pic {
             width: 100%;
@@ -343,11 +328,6 @@
         <div class="hero-graphics">
             <div class="floating-card">
                 <img id="dyn-hero_card_image" class="main-pic" src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80" alt="Exclusive Video">
-                <h3 id="dyn-hero_card_title" style="margin:0 0 10px 0; font-size:1.3rem; color: #fff;">Premium Content</h3>
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span id="dyn-hero_card_badge1" style="color:var(--sec-3); font-weight:700; font-size:1.2rem;">Exclusive</span>
-                    <span id="dyn-hero_card_badge2" style="background:rgba(154,34,171,0.2); color:var(--sec-1); padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:700;">Protected</span>
-                </div>
             </div>
         </div>
     </main>
