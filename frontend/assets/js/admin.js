@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         'tab-dashboard': 'view-dashboard',
         'tab-videos': 'view-videos',
         'tab-users': 'view-users',
+        'tab-clients': 'view-clients',
         'tab-coupons': 'view-coupons',
         'tab-carousel': 'view-carousel',
         'tab-settings': 'view-settings',
@@ -25,8 +26,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById(viewId).style.display = 'block';
 
             // Cargar datos según la vista
-            if (tabId === 'tab-dashboard') loadStats();
+            if (tabId === 'tab-dashboard') { loadStats(); loadUsers(); }
             if (tabId === 'tab-users') loadUsers();
+            if (tabId === 'tab-clients') loadUsers();
             if (tabId === 'tab-videos') loadVideos();
             if (tabId === 'tab-coupons') { loadCoupons(); populateCouponVideos(); }
             if (tabId === 'tab-carousel') loadCarousel();
@@ -49,7 +51,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function loadStats() {
         const data = await apiGet('/api/admin/stats');
         if (data) {
-            document.getElementById('stat-users').textContent = data.totalUsers;
             document.getElementById('stat-videos').textContent = data.totalVideos;
         }
     }
@@ -57,14 +58,33 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function loadUsers() {
         const data = await apiGet('/api/admin/users');
         if (data) {
-            const tbody = document.getElementById('users-tbody');
-            tbody.innerHTML = data.map(u => `
-                <tr>
-                    <td>${u.email}</td>
-                    <td>${u.is_admin ? 'Admin' : 'Cliente'}</td>
-                    <td>${new Date(u.created_at).toLocaleDateString()}</td>
-                </tr>
-            `).join('');
+            const admins = data.filter(u => u.is_admin);
+            const clients = data.filter(u => !u.is_admin);
+            
+            document.getElementById('stat-users').textContent = admins.length;
+            document.getElementById('stat-clients').textContent = clients.length;
+
+            const usersTbody = document.getElementById('users-tbody');
+            if (usersTbody) {
+                usersTbody.innerHTML = admins.map(u => `
+                    <tr>
+                        <td>${u.email}</td>
+                        <td>Admin</td>
+                        <td>${new Date(u.created_at).toLocaleDateString()}</td>
+                    </tr>
+                `).join('');
+            }
+
+            const clientsTbody = document.getElementById('clients-tbody');
+            if (clientsTbody) {
+                clientsTbody.innerHTML = clients.map(u => `
+                    <tr>
+                        <td>${u.email}</td>
+                        <td>${u.has_premium ? '<span style="color:#16a34a;">Sí</span>' : 'No'}</td>
+                        <td>${new Date(u.created_at).toLocaleDateString()}</td>
+                    </tr>
+                `).join('');
+            }
         }
     }
 
@@ -554,6 +574,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Carga inicial
+    // Cargar inicial
     loadStats();
+    loadUsers();
 });
