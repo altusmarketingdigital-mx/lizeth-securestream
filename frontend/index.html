@@ -393,18 +393,23 @@
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
         // PRELOADER
-        window.addEventListener('load', () => {
+        function hidePreloader() {
             const preloader = document.getElementById('page-preloader');
-            if (preloader) {
+            if (preloader && preloader.style.display !== 'none') {
+                preloader.style.opacity = '0';
                 setTimeout(() => {
-                    preloader.style.opacity = '0';
-                    setTimeout(() => {
-                        preloader.style.display = 'none';
-                        document.body.classList.remove('no-scroll');
-                    }, 500); // Tiempo de la transición CSS
-                }, 600); // Pequeña pausa adicional para estética
+                    preloader.style.display = 'none';
+                    document.body.classList.remove('no-scroll');
+                }, 500); // Tiempo de la transición CSS
             }
+        }
+        
+        window.addEventListener('load', () => {
+            setTimeout(hidePreloader, 600);
         });
+        
+        // Failsafe por si falla la carga del video (.mov) o un script externo
+        setTimeout(hidePreloader, 3500);
 
         // CMS Logic
         function setDon(btn, amount) {
