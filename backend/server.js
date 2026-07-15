@@ -42,14 +42,14 @@ app.get('/curso/:slug', async (req, res) => {
 
         if (result.rows.length > 0) {
             const video = result.rows[0];
-            const metaTags = \`
-                <title>\${video.title} | Lizeth The Barberette</title>
-                <meta property="og:title" content="\${video.title}" />
-                <meta property="og:description" content="\${video.description || 'Aprende las mejores técnicas de barbería.'}" />
-                <meta property="og:image" content="\${video.cover_url}" />
+            const metaTags = `
+                <title>${video.title} | Lizeth The Barberette</title>
+                <meta property="og:title" content="${video.title}" />
+                <meta property="og:description" content="${video.description || 'Aprende las mejores técnicas de barbería.'}" />
+                <meta property="og:image" content="${video.cover_url}" />
                 <meta property="og:type" content="video.other" />
-            \`;
-            htmlData = htmlData.replace('<head>', \`<head>\n\${metaTags}\`);
+            `;
+            htmlData = htmlData.replace('<head>', `<head>\n${metaTags}`);
         }
         
         res.send(htmlData);

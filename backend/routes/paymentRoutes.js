@@ -10,7 +10,7 @@ const stripe = require('stripe')(STRIPE_SECRET_KEY);
 
 const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID || 'test';
 const PAYPAL_SECRET = process.env.PAYPAL_SECRET || 'test';
-const PAYPAL_API = 'https://api-m.sandbox.paypal.com';
+const PAYPAL_API = process.env.PAYPAL_API_URL || 'https://api-m.paypal.com';
 
 const requireAuth = (req, res, next) => {
     const token = req.cookies?.sessionToken;
