@@ -38,35 +38,8 @@
         </div>
     </header>
 
-    <main class="legal-container">
-        <h1>Privacy Policy</h1>
-        <p><strong>Última actualización:</strong> 13 de Julio de 2026</p>
-
-        <h2>1. Información que Recopilamos</h2>
-        <p>Al registrarse y utilizar nuestra plataforma, recopilamos la siguiente información:</p>
-        <ul>
-            <li><strong>Datos de la Cuenta:</strong> Dirección de correo electrónico y contraseña (encriptada).</li>
-            <li><strong>Datos de Uso:</strong> Información sobre cómo interactúa con nuestro sitio web y los videos que visualiza.</li>
-            <li><strong>Información Técnica:</strong> Dirección IP, tipo de navegador e información del dispositivo por motivos de seguridad.</li>
-        </ul>
-
-        <h2>2. Uso de la Información</h2>
-        <p>Utilizamos la información recopilada para:</p>
-        <ul>
-            <li>Proporcionar y mantener el acceso a sus compras y suscripciones.</li>
-            <li>Procesar sus transacciones a través de nuestros proveedores de pago.</li>
-            <li>Enviarle notificaciones importantes sobre su cuenta y actualizaciones del servicio.</li>
-            <li>Prevenir el fraude y garantizar la seguridad de la plataforma.</li>
-        </ul>
-
-        <h2>3. Compartir Información</h2>
-        <p>No vendemos ni alquilamos su información personal a terceros. Podemos compartir información con proveedores de servicios de terceros (como procesadores de pago o proveedores de alojamiento en la nube) estrictamente para facilitar la prestación de nuestros servicios. Estos proveedores están obligados contractualmente a proteger su información.</p>
-
-        <h2>4. Seguridad de los Datos</h2>
-        <p>Implementamos medidas de seguridad técnicas e institucionales avanzadas (incluyendo encriptación de extremo a extremo y tokens JWT) para proteger su información contra acceso, alteración, divulgación o destrucción no autorizada.</p>
-
-        <h2>5. Sus Derechos</h2>
-        <p>Usted tiene derecho a acceder, corregir o solicitar la eliminación de su información personal. Para ejercer estos derechos, puede contactarnos a través del panel de su cuenta o soporte al cliente.</p>
+    <main class="legal-container" id="dynamic-legal-content" data-page-type="privacy">
+        <p style="text-align:center; color:#aaa;">Loading content...</p>
     </main>
     
     <footer class="site-footer">
@@ -94,5 +67,6 @@
     </footer>
     <script src="/assets/js/settings.js"></script>
     <script src="/assets/js/i18n.js"></script>
+    <script src="/assets/js/load_legal_page.js"></script>
 </body>
 </html>

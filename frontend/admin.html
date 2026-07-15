@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/main.css">
     <link rel="stylesheet" href="/assets/css/admin.css">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 </head>
 <body class="admin-body">
     <aside class="sidebar glass-panel">
@@ -19,6 +20,7 @@
             <a href="#" id="tab-coupons">Cupones</a>
             <a href="#" id="tab-carousel">Carrusel</a>
             <a href="#" id="tab-settings">Settings Web</a>
+            <a href="#" id="tab-legal">Páginas Legales</a>
             <a href="/dashboard.html">Volver al Sitio</a>
         </nav>
     </aside>
@@ -238,8 +240,66 @@
                 </div>
             </div>
         </section>
+
+        <!-- Páginas Legales -->
+        <section id="view-legal" class="admin-section" style="display:none;">
+            <div class="header-action">
+                <h2>Páginas Legales (Autoadministrables)</h2>
+                <button id="btn-save-legal" class="btn-primary sm-btn">Guardar Cambios</button>
+            </div>
+            
+            <div class="settings-grid" style="display: grid; gap: 2rem; margin-top: 1.5rem;">
+                
+                <!-- Terms -->
+                <div class="glass-panel" style="padding: 1.5rem;">
+                    <h3>Terms and Conditions</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                        <div>
+                            <label style="display:block; margin-bottom:0.5rem; color:#aaa;">Inglés (EN)</label>
+                            <div id="editor-terms-en" style="background:#fff; color:#000; height: 250px;"></div>
+                        </div>
+                        <div>
+                            <label style="display:block; margin-bottom:0.5rem; color:#aaa;">Español (ES)</label>
+                            <div id="editor-terms-es" style="background:#fff; color:#000; height: 250px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Privacy -->
+                <div class="glass-panel" style="padding: 1.5rem;">
+                    <h3>Privacy Policy</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                        <div>
+                            <label style="display:block; margin-bottom:0.5rem; color:#aaa;">Inglés (EN)</label>
+                            <div id="editor-privacy-en" style="background:#fff; color:#000; height: 250px;"></div>
+                        </div>
+                        <div>
+                            <label style="display:block; margin-bottom:0.5rem; color:#aaa;">Español (ES)</label>
+                            <div id="editor-privacy-es" style="background:#fff; color:#000; height: 250px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Refunds -->
+                <div class="glass-panel" style="padding: 1.5rem;">
+                    <h3>Refund Policy</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                        <div>
+                            <label style="display:block; margin-bottom:0.5rem; color:#aaa;">Inglés (EN)</label>
+                            <div id="editor-refunds-en" style="background:#fff; color:#000; height: 250px;"></div>
+                        </div>
+                        <div>
+                            <label style="display:block; margin-bottom:0.5rem; color:#aaa;">Español (ES)</label>
+                            <div id="editor-refunds-es" style="background:#fff; color:#000; height: 250px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
     </main>
 
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script src="/assets/js/admin.js"></script>
     <script src="/assets/js/i18n.js"></script>
 </body>

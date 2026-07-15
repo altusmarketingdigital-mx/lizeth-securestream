@@ -9,7 +9,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         'tab-users': 'view-users',
         'tab-coupons': 'view-coupons',
         'tab-carousel': 'view-carousel',
-        'tab-settings': 'view-settings'
+        'tab-settings': 'view-settings',
+        'tab-legal': 'view-legal'
     };
 
     for (const [tabId, viewId] of Object.entries(tabs)) {
@@ -30,6 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (tabId === 'tab-coupons') { loadCoupons(); populateCouponVideos(); }
             if (tabId === 'tab-carousel') loadCarousel();
             if (tabId === 'tab-settings') loadSettings();
+            if (tabId === 'tab-legal') loadLegalSettings();
         });
     }
 
@@ -473,6 +475,84 @@ document.addEventListener('DOMContentLoaded', async () => {
             btn.disabled = false;
         }
     });
+
+    // --- LEGAL PAGES LOGIC ---
+    let quillEditors = {};
+    const legalFields = ['terms-en', 'terms-es', 'privacy-en', 'privacy-es', 'refunds-en', 'refunds-es'];
+    
+    // Initialize Quill
+    if (typeof Quill !== 'undefined') {
+        const toolbarOptions = [
+            ['bold', 'italic', 'underline', 'strike'],
+            ['blockquote', 'code-block'],
+            [{ 'header': 1 }, { 'header': 2 }],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'color': [] }, { 'background': [] }],
+            ['clean']
+        ];
+        
+        legalFields.forEach(field => {
+            const el = document.getElementById('editor-' + field);
+            if (el) {
+                quillEditors[field] = new Quill('#editor-' + field, {
+                    theme: 'snow',
+                    modules: { toolbar: toolbarOptions }
+                });
+            }
+        });
+    }
+
+    async function loadLegalSettings() {
+        const data = await apiGet('/api/settings');
+        if (data && typeof Quill !== 'undefined') {
+            legalFields.forEach(field => {
+                const key = 'page_' + field.replace('-', '_');
+                if (data[key] && quillEditors[field]) {
+                    quillEditors[field].root.innerHTML = data[key];
+                }
+            });
+        }
+    }
+
+    const btnSaveLegal = document.getElementById('btn-save-legal');
+    if (btnSaveLegal) {
+        btnSaveLegal.addEventListener('click', async () => {
+            btnSaveLegal.textContent = 'Guardando...';
+            btnSaveLegal.disabled = true;
+
+            const payload = {};
+            legalFields.forEach(field => {
+                const key = 'page_' + field.replace('-', '_');
+                if (quillEditors[field]) {
+                    payload[key] = quillEditors[field].root.innerHTML;
+                }
+            });
+
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch('/api/settings', {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (res.ok) {
+                    alert('Páginas legales actualizadas exitosamente');
+                } else {
+                    alert('Error al guardar las páginas legales');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Error de red');
+            } finally {
+                btnSaveLegal.textContent = 'Guardar Cambios';
+                btnSaveLegal.disabled = false;
+            }
+        });
+    }
 
     // Carga inicial
     loadStats();
