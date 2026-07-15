@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -153,6 +153,7 @@
             <a href="/catalog.html">SHOP</a>
             <a href="/cart.html" class="cart-link">🛒 CART (<span id="cart-count">0</span>)</a>
             <a href="/login.html" class="btn-primary" style="padding: 10px 24px; border-radius: 50px; width: auto;">SIGN IN</a>
+            <button id="lang-toggle" onclick="toggleLanguage()" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:white; padding:5px 15px; border-radius:15px; cursor:pointer; margin-left: 10px; font-weight: bold; transition: background 0.3s;">ES</button>
         </div>
     </header>
 
@@ -176,9 +177,9 @@
             </div>
             <div class="footer-links-col">
                 <h4>Legal</h4>
-                <a href="/terms.html">Términos y Condiciones</a>
-                <a href="/privacy.html">Política de Privacidad</a>
-                <a href="/refunds.html">Política de Reembolsos</a>
+                <a href="/terms.html">Terms and Conditions</a>
+                <a href="/privacy.html">Privacy Policy</a>
+                <a href="/refunds.html">Refund Policy</a>
             </div>
             <div class="footer-social">
                 <h4>Find me on</h4>
@@ -321,5 +322,6 @@
             }
         };
     </script>
+    <script src="/assets/js/i18n.js"></script>
 </body>
 </html>

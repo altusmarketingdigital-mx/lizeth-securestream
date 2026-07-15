@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -137,7 +137,7 @@
             </div>
             <div class="nav-item" onclick="switchTab('settings')" id="tab-settings">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                <span>Mi Cuenta</span>
+                <span>My Account</span>
             </div>
             <div class="nav-item" onclick="switchTab('history')" id="tab-history">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
@@ -151,7 +151,7 @@
         
         <div class="user-profile">
             <span class="user-email" id="user-display">Cargando...</span>
-            <button id="logout-btn" class="btn-logout">Cerrar Sesión</button>
+            <button id="logout-btn" class="btn-logout">Log Out</button>
         </div>
     </aside>
 
@@ -169,7 +169,7 @@
         <section id="section-library" class="content-section active">
             <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
                 <h2 style="margin:0; font-size: 2rem;">Tus Cursos Desbloqueados</h2>
-                <a href="/catalog.html" style="color: var(--primary); text-decoration: none; font-weight: bold; padding: 10px 20px; border: 1px solid rgba(154,34,171,0.5); border-radius: 30px; transition: 0.3s;">Explorar Catálogo →</a>
+                <a href="/catalog.html" style="color: var(--primary); text-decoration: none; font-weight: bold; padding: 10px 20px; border: 1px solid rgba(154,34,171,0.5); border-radius: 30px; transition: 0.3s;">Explore Catálogo →</a>
             </div>
 
             <div class="video-grid" id="my-videos-grid">
@@ -193,15 +193,15 @@
             </div>
         </section>
 
-        <!-- Tab: Configuración -->
+        <!-- Tab: Settings -->
         <section id="section-settings" class="content-section">
-            <h2 style="margin-top:0; font-size: 2rem; margin-bottom: 2rem;">Configuración de Cuenta</h2>
+            <h2 style="margin-top:0; font-size: 2rem; margin-bottom: 2rem;">Settings de Cuenta</h2>
             
             <div class="settings-container" style="margin-bottom: 2rem;">
                 <h3 style="color: var(--primary); margin-top: 0;">Actualizar Correo</h3>
                 <form id="email-form" onsubmit="changeEmail(event)">
                     <div class="form-group">
-                        <label>Nuevo Correo Electrónico</label>
+                        <label>Nuevo Email Address</label>
                         <input type="email" id="new-email" class="form-control" placeholder="nuevo@correo.com" required>
                     </div>
                     <button type="submit" id="email-submit-btn" class="btn-primary" style="width: 100%; margin-top: 1rem;">Actualizar Correo</button>
@@ -213,18 +213,18 @@
                 <h3 style="color: var(--primary); margin-top: 0;">Seguridad</h3>
                 <form id="password-form" onsubmit="changePassword(event)">
                     <div class="form-group">
-                        <label>Contraseña Actual</label>
+                        <label>Password Actual</label>
                         <input type="password" id="current-pwd" class="form-control" placeholder="••••••••" required>
                     </div>
                     <div class="form-group">
-                        <label>Nueva Contraseña</label>
+                        <label>Nueva Password</label>
                         <input type="password" id="new-pwd" class="form-control" placeholder="••••••••" required minlength="6">
                     </div>
                     <div class="form-group">
-                        <label>Confirmar Nueva Contraseña</label>
+                        <label>Confirmar Nueva Password</label>
                         <input type="password" id="confirm-pwd" class="form-control" placeholder="••••••••" required minlength="6">
                     </div>
-                    <button type="submit" id="pwd-submit-btn" class="btn-primary" style="width: 100%; margin-top: 1rem;">Actualizar Contraseña</button>
+                    <button type="submit" id="pwd-submit-btn" class="btn-primary" style="width: 100%; margin-top: 1rem;">Actualizar Password</button>
                     <p id="pwd-msg" style="display:none; font-weight: bold; margin-top: 1rem; text-align: center;"></p>
                 </form>
             </div>
@@ -414,7 +414,7 @@
                 msgBox.style.color = 'var(--error)';
                 msgBox.style.display = 'block';
             } finally {
-                btn.textContent = 'Actualizar Contraseña';
+                btn.textContent = 'Actualizar Password';
                 btn.disabled = false;
             }
         }
@@ -502,5 +502,6 @@
             fetchHistory();
         });
     </script>
+    <script src="/assets/js/i18n.js"></script>
 </body>
 </html>

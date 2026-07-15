@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +18,7 @@
             <a href="#" id="tab-users">Usuarios</a>
             <a href="#" id="tab-coupons">Cupones</a>
             <a href="#" id="tab-carousel">Carrusel</a>
-            <a href="#" id="tab-settings">Configuración Web</a>
+            <a href="#" id="tab-settings">Settings Web</a>
             <a href="/dashboard.html">Volver al Sitio</a>
         </nav>
     </aside>
@@ -151,7 +151,7 @@
 
         <section id="view-carousel" class="admin-section" style="display:none;">
             <div class="header-action">
-                <h2>Carrusel de Inicio</h2>
+                <h2>Carrusel de Home</h2>
                 <button id="btn-add-carousel" class="btn-primary sm-btn">+ Subir Imagen</button>
             </div>
             
@@ -173,8 +173,8 @@
         </section>
         <section id="view-settings" class="admin-section" style="display:none;">
             <div class="header-action">
-                <h2>Configuración Web (CMS)</h2>
-                <button id="btn-save-settings" class="btn-primary sm-btn">Guardar Cambios</button>
+                <h2>Settings Web (CMS)</h2>
+                <button id="btn-save-settings" class="btn-primary sm-btn">Save Changes</button>
             </div>
             
             <div class="settings-grid" style="display: grid; gap: 2rem; margin-top: 1.5rem;">
@@ -193,9 +193,9 @@
                     </div>
                 </div>
 
-                <!-- Inicio (Hero) -->
+                <!-- Home (Hero) -->
                 <div class="glass-panel" style="padding: 1.5rem;">
-                    <h3>Página de Inicio (Textos Principales)</h3>
+                    <h3>Página de Home (Textos Principales)</h3>
                     <div class="form-group" style="margin-top: 1rem;">
                         <label style="display:block; margin-bottom:0.5rem; color:#aaa;">Título Principal (H1)</label>
                         <input type="text" id="set-hero_title">
@@ -214,9 +214,9 @@
                     </div>
                 </div>
 
-                <!-- Inicio (Tarjeta Flotante) -->
+                <!-- Home (Tarjeta Flotante) -->
                 <div class="glass-panel" style="padding: 1.5rem;">
-                    <h3>Página de Inicio (Tarjeta Flotante)</h3>
+                    <h3>Página de Home (Tarjeta Flotante)</h3>
                     <div class="form-group" style="margin-top: 1rem;">
                         <label style="display:block; margin-bottom:0.5rem; color:#aaa;">Título de Tarjeta</label>
                         <input type="text" id="set-hero_card_title">
@@ -241,5 +241,6 @@
     </main>
 
     <script src="/assets/js/admin.js"></script>
+    <script src="/assets/js/i18n.js"></script>
 </body>
 </html>

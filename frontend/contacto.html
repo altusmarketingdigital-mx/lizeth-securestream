@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -114,6 +114,7 @@
             <a href="/">HOME</a>
             <a href="/catalog.html">SHOP</a>
             <a href="/login.html" class="btn-primary" style="padding: 10px 24px; border-radius: 50px; width: auto;" id="auth-link">SIGN IN</a>
+            <button id="lang-toggle" onclick="toggleLanguage()" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:white; padding:5px 15px; border-radius:15px; cursor:pointer; margin-left: 10px; font-weight: bold; transition: background 0.3s;">ES</button>
         </div>
     </header>
 
@@ -124,7 +125,7 @@
             
             <form id="contact-form" style="text-align: left; margin-top: 1rem;">
                 <input type="text" id="c-name" class="auth-input" placeholder="Tu Nombre Completo" required>
-                <input type="email" id="c-email" class="auth-input" placeholder="Tu Correo Electrónico" required>
+                <input type="email" id="c-email" class="auth-input" placeholder="Tu Email Address" required>
                 
                 <select id="c-reason" required>
                     <option value="" disabled selected>Motivo del contacto</option>
@@ -203,5 +204,6 @@
             }
         });
     </script>
+    <script src="/assets/js/i18n.js"></script>
 </body>
 </html>

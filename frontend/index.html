@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -300,6 +300,7 @@
             <a href="/" class="active">HOME</a>
             <a href="/catalog.html">SHOP</a>
             <a href="/login.html" class="btn-primary" style="padding: 10px 24px; border-radius: 50px; width: auto;">SIGN IN</a>
+            <button id="lang-toggle" onclick="toggleLanguage()" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:white; padding:5px 15px; border-radius:15px; cursor:pointer; margin-left: 10px; font-weight: bold; transition: background 0.3s;">ES</button>
         </div>
     </header>
 
@@ -311,7 +312,7 @@
                     <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80" alt="Fallback">
                 </div>
                 <div class="slide-text-col">
-                    <h2>Haz más grande tu experiencia</h2>
+                    <h2>Make your experience bigger</h2>
                     <p>Más sabor para tu visita</p>
                     <button class="slide-btn">Conoce la promoción</button>
                 </div>
@@ -383,9 +384,9 @@
             </div>
             <div class="footer-links-col">
                 <h4>Legal</h4>
-                <a href="/terms.html">Términos y Condiciones</a>
-                <a href="/privacy.html">Política de Privacidad</a>
-                <a href="/refunds.html">Política de Reembolsos</a>
+                <a href="/terms.html">Terms and Conditions</a>
+                <a href="/privacy.html">Privacy Policy</a>
+                <a href="/refunds.html">Refund Policy</a>
             </div>
             <div class="footer-social">
                 <h4>Find me on</h4>
@@ -525,7 +526,7 @@
                                         <img src="${img.image_data}" alt="${img.title || ''}">
                                     </div>
                                     <div class="slide-text-col">
-                                        <h2>${img.title || 'Haz más grande tu experiencia'}</h2>
+                                        <h2>${img.title || 'Make your experience bigger'}</h2>
                                         <p>Contenido Exclusivo para tu visita</p>
                                         ${img.link_url ? `<button onclick="window.location.href='${img.link_url}'" class="slide-btn">Conoce la promoción</button>` : ''}
                                     </div>
@@ -604,5 +605,6 @@
         
         window.addEventListener('DOMContentLoaded', loadLatestVideos);
     </script>
+    <script src="/assets/js/i18n.js"></script>
 </body>
 </html>
