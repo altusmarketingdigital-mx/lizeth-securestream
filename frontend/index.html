@@ -603,7 +603,51 @@
             }
         }
         
-        window.addEventListener('DOMContentLoaded', loadLatestVideos);
+        async function loadSiteSettings() {
+            try {
+                const res = await fetch('/api/settings');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.logo_url) {
+                        const logo = document.getElementById('dyn-logo_img');
+                        const fLogo = document.querySelector('.footer-logo');
+                        if (logo) logo.src = data.logo_url;
+                        if (fLogo) fLogo.src = data.logo_url;
+                    }
+                    if (data.hero_title) {
+                        const el = document.getElementById('dyn-hero_title');
+                        if (el) el.innerHTML = data.hero_title;
+                    }
+                    if (data.hero_subtitle) {
+                        const el = document.getElementById('dyn-hero_subtitle');
+                        if (el) el.innerHTML = data.hero_subtitle;
+                    }
+                    if (data.hero_body) {
+                        const el = document.getElementById('dyn-hero_body');
+                        if (el) el.innerHTML = data.hero_body;
+                    }
+                    if (data.hero_btn_text) {
+                        const el = document.getElementById('dyn-hero_btn_text');
+                        if (el) el.innerHTML = data.hero_btn_text;
+                    }
+                    if (data.hero_card_image) {
+                        const el = document.getElementById('dyn-hero_card_image');
+                        if (el) el.src = data.hero_card_image;
+                    }
+                    if (data.footer_text) {
+                        const el = document.getElementById('dyn-footer_text');
+                        if (el) el.innerHTML = data.footer_text;
+                    }
+                }
+            } catch (e) {
+                console.error('Error fetching settings:', e);
+            }
+        }
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            loadLatestVideos();
+            loadSiteSettings();
+        });
     </script>
     <script src="/assets/js/i18n.js"></script>
 </body>
