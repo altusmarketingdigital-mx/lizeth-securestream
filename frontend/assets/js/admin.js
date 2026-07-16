@@ -226,6 +226,43 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    let allSalesData = [];
+
+    function renderSales(sales) {
+        const tbody = document.getElementById('sales-tbody');
+        if (!tbody) return;
+
+        let totalRevenue = 0;
+        let totalCount = sales.length;
+
+        tbody.innerHTML = sales.map(s => {
+            const price = parseFloat(s.video_price) || 0;
+            totalRevenue += price;
+            const orderNum = s.order_number || '<em style="color:#666;">N/A</em>';
+            const country = s.country || '<em style="color:#666;">N/A</em>';
+            return `
+            <tr>
+                <td>${new Date(s.purchase_date).toLocaleString()}</td>
+                <td><code style="background:rgba(255,255,255,0.1); padding:2px 5px; border-radius:4px;">${orderNum}</code></td>
+                <td>
+                    <div style="display:flex; flex-direction:column;">
+                        <span style="font-weight:bold;">${s.user_name || '<em style="color:#888;">Sin Nombre</em>'}</span>
+                        <span style="font-size:0.85rem; color:#aaa;">${s.user_email}</span>
+                    </div>
+                </td>
+                <td>${country}</td>
+                <td>${s.video_title}</td>
+                <td style="color:#16a34a; font-weight:bold;">$${price.toFixed(2)}</td>
+            </tr>
+            `;
+        }).join('');
+
+        const countEl = document.getElementById('sales-count');
+        const revEl = document.getElementById('sales-revenue');
+        if(countEl) countEl.textContent = totalCount;
+        if(revEl) revEl.textContent = '$' + totalRevenue.toFixed(2);
+    }
+
     async function loadSales() {
         try {
             const token = localStorage.getItem('token');
@@ -233,30 +270,21 @@ document.addEventListener('DOMContentLoaded', async () => {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
             if (!res.ok) throw new Error('Error al obtener ventas');
-            const sales = await res.json();
+            allSalesData = await res.json();
             
-            let totalRevenue = 0;
-            let totalCount = sales.length;
+            renderSales(allSalesData);
 
-            const tbody = document.getElementById('sales-tbody');
-            if (tbody) {
-                tbody.innerHTML = sales.map(s => {
-                    const price = parseFloat(s.video_price) || 0;
-                    totalRevenue += price;
-                    return `
-                    <tr>
-                        <td>${new Date(s.purchase_date).toLocaleString()}</td>
-                        <td>
-                            <div style="display:flex; flex-direction:column;">
-                                <span style="font-weight:bold;">${s.user_name || '<em style="color:#888;">Sin Nombre</em>'}</span>
-                                <span style="font-size:0.85rem; color:#aaa;">${s.user_email}</span>
-                            </div>
-                        </td>
-                        <td>${s.video_title}</td>
-                        <td style="color:#16a34a; font-weight:bold;">$${price.toFixed(2)}</td>
-                    </tr>
-                    `;
-                }).join('');
+            const searchInput = document.getElementById('search-sales');
+            if (searchInput && !searchInput.hasAttribute('data-listener')) {
+                searchInput.setAttribute('data-listener', 'true');
+                searchInput.addEventListener('input', (e) => {
+                    const term = e.target.value.toLowerCase();
+                    const filtered = allSalesData.filter(s => 
+                        (s.user_name && s.user_name.toLowerCase().includes(term)) ||
+                        (s.user_email && s.user_email.toLowerCase().includes(term))
+                    );
+                    renderSales(filtered);
+                });
             }
 
             const countEl = document.getElementById('sales-count');

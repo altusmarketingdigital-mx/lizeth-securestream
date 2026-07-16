@@ -110,7 +110,7 @@ exports.addVideo = async (req, res) => {
 exports.getSales = async (req, res) => {
     try {
         const query = `
-            SELECT p.id as purchase_id, p.purchase_date, 
+            SELECT p.id as purchase_id, p.purchase_date, p.order_number, p.country,
                    u.email as user_email, u.name as user_name, 
                    v.title as video_title, v.price as video_price
             FROM purchases p

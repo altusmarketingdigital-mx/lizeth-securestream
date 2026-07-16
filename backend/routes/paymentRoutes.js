@@ -73,10 +73,11 @@ router.post('/create-checkout-session', requireAuth, async (req, res) => {
 
         // Si es entorno de prueba puro sin key real, simulamos success directo para no bloquear UI
         if (STRIPE_SECRET_KEY === 'sk_test_mock') {
+            const mockOrderNumber = 'MOCK-STRIPE-' + Date.now();
             for (const vidId of videoIds) {
                 await db.query(
-                    "INSERT INTO purchases (id, user_id, video_id) VALUES ($1, $2, $3)", 
-                    [uuidv4(), req.user.id, vidId]
+                    "INSERT INTO purchases (id, user_id, video_id, order_number, country) VALUES ($1, $2, $3, $4, $5)", 
+                    [uuidv4(), req.user.id, vidId, mockOrderNumber, 'N/A']
                 );
             }
             return res.json({ url: '/dashboard.html?payment=success&method=stripe' });
@@ -119,6 +120,8 @@ router.post('/stripe-webhook', async (req, res) => {
         const session = event.data.object;
         const userId = session.metadata.userId;
         const videoIds = JSON.parse(session.metadata.videoIds);
+        const orderNumber = session.id;
+        const country = session.customer_details?.address?.country || 'N/A';
 
         const userRes = await db.query('SELECT email FROM users WHERE id = $1', [userId]);
         const userEmail = userRes.rows[0]?.email;
@@ -126,8 +129,8 @@ router.post('/stripe-webhook', async (req, res) => {
         // Cumplir la orden
         for (const vidId of videoIds) {
             await db.query(
-                "INSERT INTO purchases (id, user_id, video_id) VALUES ($1, $2, $3)", 
-                [uuidv4(), userId, vidId]
+                "INSERT INTO purchases (id, user_id, video_id, order_number, country) VALUES ($1, $2, $3, $4, $5)", 
+                [uuidv4(), userId, vidId, orderNumber, country]
             );
             
             if (userEmail) {
@@ -207,8 +210,8 @@ router.post('/capture-paypal-order', requireAuth, async (req, res) => {
             const userEmail = req.user.email;
             for (const vidId of videoIds) {
                 await db.query(
-                    "INSERT INTO purchases (id, user_id, video_id) VALUES ($1, $2, $3)", 
-                    [uuidv4(), req.user.id, vidId]
+                    "INSERT INTO purchases (id, user_id, video_id, order_number, country) VALUES ($1, $2, $3, $4, $5)", 
+                    [uuidv4(), req.user.id, vidId, orderID, 'N/A']
                 );
                 
                 if (userEmail) {
@@ -236,10 +239,12 @@ router.post('/capture-paypal-order', requireAuth, async (req, res) => {
 
         if (captureData.status === 'COMPLETED') {
             const userEmail = req.user.email;
+            const orderNumber = captureData.id || orderID;
+            const country = captureData.payer?.address?.country_code || 'N/A';
             for (const vidId of videoIds) {
                 await db.query(
-                    "INSERT INTO purchases (id, user_id, video_id) VALUES ($1, $2, $3)", 
-                    [uuidv4(), req.user.id, vidId]
+                    "INSERT INTO purchases (id, user_id, video_id, order_number, country) VALUES ($1, $2, $3, $4, $5)", 
+                    [uuidv4(), req.user.id, vidId, orderNumber, country]
                 );
                 
                 if (userEmail) {

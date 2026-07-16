@@ -58,6 +58,10 @@ async function initializeDatabase() {
             );
         `);
 
+        // Añadir nuevas columnas si no existen
+        await pool.query(`ALTER TABLE purchases ADD COLUMN IF NOT EXISTS order_number VARCHAR(100);`);
+        await pool.query(`ALTER TABLE purchases ADD COLUMN IF NOT EXISTS country VARCHAR(50);`);
+
         await pool.query(`
             CREATE TABLE IF NOT EXISTS coupons (
                 id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
