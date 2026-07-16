@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const email = localStorage.getItem('userEmail');
-    if (!email) window.location.href = '/';
+    if (!email) {
+        window.location.href = '/';
+        return;
+    }
     document.getElementById('admin-user-info').textContent = email;
 
     const tabs = {
