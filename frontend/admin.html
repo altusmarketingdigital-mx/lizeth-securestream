@@ -18,6 +18,7 @@
             <a href="#" id="tab-videos">Videos</a>
             <a href="#" id="tab-users">Usuarios</a>
             <a href="#" id="tab-clients">Clientes</a>
+            <a href="#" id="tab-sales">Ventas / Pedidos</a>
             <a href="#" id="tab-coupons">Cupones</a>
             <a href="#" id="tab-carousel">Carrusel</a>
             <a href="#" id="tab-settings">Settings Web</a>
@@ -134,6 +135,36 @@
                     </tr>
                 </thead>
                 <tbody id="clients-tbody">
+                    <!-- Dinámico -->
+                </tbody>
+            </table>
+        </section>
+
+        <!-- VENTAS / PEDIDOS SECTION -->
+        <section id="view-sales" class="admin-section" style="display:none;">
+            <h2>Historial de Ventas</h2>
+            
+            <div style="display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap;">
+                <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px;">
+                    <h3 style="margin: 0 0 10px 0; color: var(--sec-1); font-size: 1.1rem;">Total Videos Vendidos</h3>
+                    <p id="sales-count" style="margin: 0; font-size: 2rem; font-weight: bold; color: #fff;">0</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px;">
+                    <h3 style="margin: 0 0 10px 0; color: var(--sec-1); font-size: 1.1rem;">Ingresos Totales</h3>
+                    <p id="sales-revenue" style="margin: 0; font-size: 2rem; font-weight: bold; color: #16a34a;">$0.00</p>
+                </div>
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th>Video</th>
+                        <th>Ingreso</th>
+                    </tr>
+                </thead>
+                <tbody id="sales-tbody">
                     <!-- Dinámico -->
                 </tbody>
             </table>

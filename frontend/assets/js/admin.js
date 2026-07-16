@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         'tab-videos': 'view-videos',
         'tab-users': 'view-users',
         'tab-clients': 'view-clients',
+        'tab-sales': 'view-sales',
         'tab-coupons': 'view-coupons',
         'tab-carousel': 'view-carousel',
         'tab-settings': 'view-settings',
@@ -29,6 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (tabId === 'tab-dashboard') { loadStats(); loadUsers(); }
             if (tabId === 'tab-users') loadUsers();
             if (tabId === 'tab-clients') loadUsers();
+            if (tabId === 'tab-sales') loadSales();
             if (tabId === 'tab-videos') loadVideos();
             if (tabId === 'tab-coupons') { loadCoupons(); populateCouponVideos(); }
             if (tabId === 'tab-carousel') loadCarousel();
@@ -183,6 +185,49 @@ document.addEventListener('DOMContentLoaded', async () => {
                     });
                 });
             }
+        }
+    }
+
+    async function loadSales() {
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch('/api/admin/sales', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (!res.ok) throw new Error('Error al obtener ventas');
+            const sales = await res.json();
+            
+            let totalRevenue = 0;
+            let totalCount = sales.length;
+
+            const tbody = document.getElementById('sales-tbody');
+            if (tbody) {
+                tbody.innerHTML = sales.map(s => {
+                    const price = parseFloat(s.video_price) || 0;
+                    totalRevenue += price;
+                    return `
+                    <tr>
+                        <td>${new Date(s.purchase_date).toLocaleString()}</td>
+                        <td>
+                            <div style="display:flex; flex-direction:column;">
+                                <span style="font-weight:bold;">${s.user_name || '<em style="color:#888;">Sin Nombre</em>'}</span>
+                                <span style="font-size:0.85rem; color:#aaa;">${s.user_email}</span>
+                            </div>
+                        </td>
+                        <td>${s.video_title}</td>
+                        <td style="color:#16a34a; font-weight:bold;">$${price.toFixed(2)}</td>
+                    </tr>
+                    `;
+                }).join('');
+            }
+
+            const countEl = document.getElementById('sales-count');
+            const revEl = document.getElementById('sales-revenue');
+            if(countEl) countEl.textContent = totalCount;
+            if(revEl) revEl.textContent = '$' + totalRevenue.toFixed(2);
+
+        } catch (err) {
+            console.error('Error cargando ventas:', err);
         }
     }
 

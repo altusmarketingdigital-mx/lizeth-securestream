@@ -107,6 +107,25 @@ exports.addVideo = async (req, res) => {
     }
 };
 
+exports.getSales = async (req, res) => {
+    try {
+        const query = `
+            SELECT p.id as purchase_id, p.purchase_date, 
+                   u.email as user_email, u.name as user_name, 
+                   v.title as video_title, v.price as video_price
+            FROM purchases p
+            JOIN users u ON p.user_id = u.id
+            JOIN videos v ON p.video_id = v.id
+            ORDER BY p.purchase_date DESC
+        `;
+        const result = await db.query(query);
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error al obtener ventas:', error);
+        res.status(500).json({ error: 'Error al obtener historial de ventas' });
+    }
+};
+
 exports.toggleUserBlock = async (req, res) => {
     try {
         const { id } = req.params;

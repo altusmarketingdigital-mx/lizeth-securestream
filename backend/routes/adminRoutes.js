@@ -24,6 +24,7 @@ router.use(requireAuth, requireAdmin);
 
 router.get('/stats', adminController.getStats);
 router.get('/users', adminController.getUsers);
+router.get('/sales', adminController.getSales);
 router.get('/videos', adminController.getVideos);
 router.post('/videos', adminController.addVideo);
 router.get('/get-upload-url', adminController.getUploadUrl);
