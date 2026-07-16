@@ -861,7 +861,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 try {
                     const token = localStorage.getItem('token');
                     
-                    const chunkSize = 50;
+                    const chunkSize = 10;
                     let totalImported = 0;
                     let totalDuplicates = 0;
                     let hasError = false;

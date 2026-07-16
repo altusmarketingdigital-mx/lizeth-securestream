@@ -194,6 +194,12 @@ exports.importUsers = async (req, res) => {
         let importedCount = 0;
         let duplicateCount = 0;
 
+        // Optimización: si usamos contraseña genérica, calculamos el hash una sola vez.
+        let genericHash = null;
+        if (pwdOption !== 'random') {
+            genericHash = await bcrypt.hash('CursosLizeth2026!', 10);
+        }
+
         for (const user of users) {
             if (!user.email) continue;
             const email = user.email.toLowerCase().trim();
@@ -207,14 +213,13 @@ exports.importUsers = async (req, res) => {
             }
 
             // Generar password
-            let rawPassword;
+            let hash;
             if (pwdOption === 'random') {
-                rawPassword = require('crypto').randomBytes(16).toString('hex');
+                const rawPassword = require('crypto').randomBytes(16).toString('hex');
+                hash = await bcrypt.hash(rawPassword, 10);
             } else {
-                rawPassword = 'CursosLizeth2026!'; // Generic password
+                hash = genericHash;
             }
-            
-            const hash = await bcrypt.hash(rawPassword, 10);
             
             await db.query(
                 'INSERT INTO users (email, name, password_hash) VALUES ($1, $2, $3)', 
