@@ -183,3 +183,49 @@ exports.updateUserName = async (req, res) => {
         res.status(500).json({ error: 'Error al actualizar nombre' });
     }
 };
+
+exports.importUsers = async (req, res) => {
+    try {
+        const { users, pwdOption } = req.body;
+        if (!users || !Array.isArray(users)) {
+            return res.status(400).json({ error: 'Lista de usuarios inválida' });
+        }
+
+        let importedCount = 0;
+        let duplicateCount = 0;
+
+        for (const user of users) {
+            if (!user.email) continue;
+            const email = user.email.toLowerCase().trim();
+            const name = user.name ? user.name.trim() : null;
+
+            // Verificar existencia
+            const check = await db.query('SELECT id FROM users WHERE email = $1', [email]);
+            if (check.rows.length > 0) {
+                duplicateCount++;
+                continue;
+            }
+
+            // Generar password
+            let rawPassword;
+            if (pwdOption === 'random') {
+                rawPassword = require('crypto').randomBytes(16).toString('hex');
+            } else {
+                rawPassword = 'CursosLizeth2026!'; // Generic password
+            }
+            
+            const hash = await bcrypt.hash(rawPassword, 10);
+            
+            await db.query(
+                'INSERT INTO users (email, name, password_hash) VALUES ($1, $2, $3)', 
+                [email, name, hash]
+            );
+            importedCount++;
+        }
+
+        res.json({ message: 'Importación completada', imported: importedCount, duplicates: duplicateCount });
+    } catch (error) {
+        console.error('Error importando usuarios:', error);
+        res.status(500).json({ error: 'Error al importar usuarios' });
+    }
+};

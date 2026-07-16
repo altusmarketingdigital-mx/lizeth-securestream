@@ -123,9 +123,28 @@
         </section>
 
         <section id="view-clients" class="admin-section" style="display:none;">
-            <div class="header-action" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div class="header-action" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                 <h2 style="margin: 0;">Clientes Registrados</h2>
-                <button id="btn-export-clients" class="btn-primary sm-btn" style="background: #16a34a;">Exportar a CSV</button>
+                <div style="display: flex; gap: 10px;">
+                    <button id="btn-show-import" class="btn-primary sm-btn" style="background: var(--primary);">Importar CSV</button>
+                    <button id="btn-export-clients" class="btn-primary sm-btn" style="background: #16a34a;">Exportar a CSV</button>
+                </div>
+            </div>
+            
+            <div id="import-csv-panel" class="glass-panel" style="display:none; padding:1.5rem; margin-bottom:1.5rem;">
+                <h3>Importar Clientes desde CSV/TSV</h3>
+                <p style="font-size: 0.9rem; color: #aaa; margin-bottom: 1rem;">Selecciona el archivo exportado de tu plataforma anterior. Las columnas requeridas son: first_name, last_name, email.</p>
+                <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                    <input type="file" id="csv-file-input" accept=".csv, .tsv, .txt" style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 5px; cursor: pointer;">
+                    
+                    <select id="import-pwd-option" style="background: rgba(0,0,0,0.5); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 10px; border-radius: 5px;">
+                        <option value="generic">Asignar temporal (CursosLizeth2026!)</option>
+                        <option value="random">Aleatoria (Forzar 'Olvidé mi contraseña')</option>
+                    </select>
+                    
+                    <button id="btn-process-import" class="btn-primary sm-btn">Subir e Importar</button>
+                </div>
+                <p id="import-status-msg" style="margin-top: 10px; font-weight: bold;"></p>
             </div>
             <table class="data-table">
                 <thead>

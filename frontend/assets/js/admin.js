@@ -783,6 +783,108 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
+    // --- IMPORT CSV LOGIC ---
+    const btnShowImport = document.getElementById('btn-show-import');
+    if (btnShowImport) {
+        btnShowImport.addEventListener('click', () => {
+            const panel = document.getElementById('import-csv-panel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        });
+    }
+
+    const btnProcessImport = document.getElementById('btn-process-import');
+    if (btnProcessImport) {
+        btnProcessImport.addEventListener('click', async () => {
+            const fileInput = document.getElementById('csv-file-input');
+            const file = fileInput.files[0];
+            const msgEl = document.getElementById('import-status-msg');
+            const pwdOpt = document.getElementById('import-pwd-option').value;
+            
+            if (!file) {
+                msgEl.style.color = 'var(--error)';
+                msgEl.textContent = 'Por favor selecciona un archivo.';
+                return;
+            }
+
+            msgEl.style.color = '#fff';
+            msgEl.textContent = 'Procesando archivo...';
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const text = e.target.result;
+                const rows = text.split('\n').filter(r => r.trim() !== '');
+                if (rows.length < 2) {
+                    msgEl.style.color = 'var(--error)';
+                    msgEl.textContent = 'El archivo parece estar vacío o no tener datos suficientes.';
+                    return;
+                }
+
+                // Detect delimiter
+                const headerLine = rows[0];
+                const delimiter = headerLine.includes('\t') ? '\t' : ',';
+                const headers = headerLine.split(delimiter).map(h => h.trim().toLowerCase());
+
+                const emailIdx = headers.indexOf('email') !== -1 ? headers.indexOf('email') : headers.findIndex(h => h.includes('mail'));
+                const fnIdx = headers.indexOf('first_name') !== -1 ? headers.indexOf('first_name') : headers.findIndex(h => h.includes('name') && !h.includes('last'));
+                const lnIdx = headers.indexOf('last_name');
+
+                if (emailIdx === -1) {
+                    msgEl.style.color = 'var(--error)';
+                    msgEl.textContent = 'No se encontró la columna de email en el archivo.';
+                    return;
+                }
+
+                const usersToImport = [];
+                for (let i = 1; i < rows.length; i++) {
+                    const cols = rows[i].split(delimiter).map(c => c.trim().replace(/^"|"$/g, ''));
+                    const email = cols[emailIdx];
+                    if (!email) continue;
+                    
+                    let name = '';
+                    if (fnIdx !== -1 && cols[fnIdx]) name += cols[fnIdx];
+                    if (lnIdx !== -1 && cols[lnIdx]) name += ' ' + cols[lnIdx];
+                    
+                    usersToImport.push({ email, name: name.trim() });
+                }
+
+                if (usersToImport.length === 0) {
+                    msgEl.style.color = 'var(--error)';
+                    msgEl.textContent = 'No se encontraron usuarios válidos.';
+                    return;
+                }
+
+                msgEl.textContent = `Enviando ${usersToImport.length} usuarios al servidor...`;
+
+                try {
+                    const token = localStorage.getItem('token');
+                    const res = await fetch('/api/admin/import-users', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify({ users: usersToImport, pwdOption: pwdOpt })
+                    });
+                    
+                    const data = await res.json();
+                    if (res.ok) {
+                        msgEl.style.color = 'var(--primary)';
+                        msgEl.textContent = `¡Éxito! ${data.imported} importados. ${data.duplicates} omitidos (ya existían).`;
+                        loadClients();
+                    } else {
+                        msgEl.style.color = 'var(--error)';
+                        msgEl.textContent = data.error || 'Error en la importación.';
+                    }
+                } catch (err) {
+                    console.error(err);
+                    msgEl.style.color = 'var(--error)';
+                    msgEl.textContent = 'Error de conexión con el servidor.';
+                }
+            };
+            reader.readAsText(file);
+        });
+    }
+
     // Cargar inicial
     loadStats();
     loadUsers();
