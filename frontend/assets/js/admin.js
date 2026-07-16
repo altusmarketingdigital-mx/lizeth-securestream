@@ -860,28 +860,46 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 try {
                     const token = localStorage.getItem('token');
-                    const res = await fetch('/api/admin/import-users', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': 'Bearer ' + token
-                        },
-                        body: JSON.stringify({ users: usersToImport, pwdOption: pwdOpt })
-                    });
                     
-                    const data = await res.json();
-                    if (res.ok) {
+                    const chunkSize = 50;
+                    let totalImported = 0;
+                    let totalDuplicates = 0;
+                    let hasError = false;
+
+                    for (let i = 0; i < usersToImport.length; i += chunkSize) {
+                        const chunk = usersToImport.slice(i, i + chunkSize);
+                        msgEl.textContent = `Enviando lote ${Math.floor(i/chunkSize) + 1} de ${Math.ceil(usersToImport.length/chunkSize)} (procesando ${chunk.length} usuarios)...`;
+
+                        const res = await fetch('/api/admin/import-users', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer ' + token
+                            },
+                            body: JSON.stringify({ users: chunk, pwdOption: pwdOpt })
+                        });
+                        
+                        const data = await res.json();
+                        if (res.ok) {
+                            totalImported += data.imported || 0;
+                            totalDuplicates += data.duplicates || 0;
+                        } else {
+                            hasError = true;
+                            msgEl.style.color = 'var(--error)';
+                            msgEl.textContent = data.error || 'Error en la importación de un lote.';
+                            break;
+                        }
+                    }
+                    
+                    if (!hasError) {
                         msgEl.style.color = 'var(--primary)';
-                        msgEl.textContent = `¡Éxito! ${data.imported} importados. ${data.duplicates} omitidos (ya existían).`;
+                        msgEl.textContent = `¡Éxito! ${totalImported} importados. ${totalDuplicates} omitidos (ya existían).`;
                         loadClients();
-                    } else {
-                        msgEl.style.color = 'var(--error)';
-                        msgEl.textContent = data.error || 'Error en la importación.';
                     }
                 } catch (err) {
                     console.error(err);
                     msgEl.style.color = 'var(--error)';
-                    msgEl.textContent = 'Error de conexión con el servidor.';
+                    msgEl.textContent = 'Error de conexión con el servidor (posible tiempo de espera agotado). Intenta subir un archivo más pequeño.';
                 }
             };
             reader.readAsText(file);
