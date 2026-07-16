@@ -135,94 +135,114 @@ document.addEventListener('DOMContentLoaded', async () => {
                 `).join('');
             }
 
-            const clientsTbody = document.getElementById('clients-tbody');
-            if (clientsTbody) {
-                clientsTbody.innerHTML = clients.map(u => `
-                    <tr>
-                        <td style="${u.is_blocked ? 'text-decoration: line-through; color: #888;' : ''}">
-                            <div style="display:flex; align-items:center; gap: 8px;">
-                                <span>${u.name || '<em style="color:#666;">Sin Nombre</em>'}</span>
-                                <button class="btn-primary sm-btn edit-name-btn" data-id="${u.id}" data-name="${u.name || ''}" style="background:transparent; border:1px solid #666; padding:2px 6px; font-size:0.7rem;" title="Editar Nombre">✎</button>
-                            </div>
-                        </td>
-                        <td style="${u.is_blocked ? 'text-decoration: line-through; color: #888;' : ''}">${u.email}</td>
-                        <td>${u.has_premium ? '<span style="color:#16a34a;">Sí</span>' : 'No'}</td>
-                        <td>${new Date(u.created_at).toLocaleDateString()}</td>
-                        <td>
-                            <button class="btn-primary sm-btn block-btn" data-id="${u.id}" style="background: ${u.is_blocked ? '#16a34a' : '#dc2626'}; padding: 4px 8px; font-size: 0.8rem; margin-right: 5px;">
-                                ${u.is_blocked ? 'Desbloquear' : 'Bloquear'}
-                            </button>
-                            <button class="btn-primary sm-btn reset-btn" data-id="${u.id}" style="background: #2563eb; padding: 4px 8px; font-size: 0.8rem;">
-                                Nueva Clave
-                            </button>
-                        </td>
-                    </tr>
-                `).join('');
+            allClientsData = clients;
+            renderClients(clients);
 
-                document.querySelectorAll('.edit-name-btn').forEach(btn => {
-                    btn.addEventListener('click', async (e) => {
-                        const id = e.target.getAttribute('data-id');
-                        const currentName = e.target.getAttribute('data-name');
-                        const newName = prompt('Ingresa el nuevo nombre para este cliente:', currentName);
-                        
-                        if (newName !== null && newName.trim() !== '') {
-                            const token = localStorage.getItem('token');
-                            const res = await fetch(`/api/admin/users/${id}/name`, {
-                                method: 'PUT',
-                                headers: { 
-                                    'Authorization': 'Bearer ' + token,
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({ name: newName.trim() })
-                            });
-                            
-                            const data = await res.json();
-                            if (res.ok) {
-                                loadUsers();
-                            } else {
-                                alert(data.error || 'Error al actualizar el nombre');
-                            }
-                        }
-                    });
-                });
-
-                document.querySelectorAll('.block-btn').forEach(btn => {
-                    btn.addEventListener('click', async (e) => {
-                        if (!confirm('¿Seguro que deseas cambiar el estado de este cliente?')) return;
-                        const id = e.target.getAttribute('data-id');
-                        const token = localStorage.getItem('token');
-                        const res = await fetch(`/api/admin/users/${id}/toggle-block`, {
-                            method: 'PUT',
-                            headers: { 'Authorization': 'Bearer ' + token }
-                        });
-                        const data = await res.json();
-                        if (res.ok) {
-                            alert(data.message);
-                            loadUsers();
-                        } else {
-                            alert(data.error || 'Error');
-                        }
-                    });
-                });
-
-                document.querySelectorAll('.reset-btn').forEach(btn => {
-                    btn.addEventListener('click', async (e) => {
-                        if (!confirm('¿Generar nueva contraseña para este cliente? Se cerrará su sesión actual.')) return;
-                        const id = e.target.getAttribute('data-id');
-                        const token = localStorage.getItem('token');
-                        const res = await fetch(`/api/admin/users/${id}/reset-password`, {
-                            method: 'PUT',
-                            headers: { 'Authorization': 'Bearer ' + token }
-                        });
-                        const data = await res.json();
-                        if (res.ok) {
-                            alert(`NUEVA CONTRASEÑA GENERADA:\n\n${data.newPassword}\n\nCopia y envía esta contraseña al cliente.`);
-                        } else {
-                            alert(data.error || 'Error');
-                        }
-                    });
+            const searchInput = document.getElementById('search-clients');
+            if (searchInput && !searchInput.hasAttribute('data-listener')) {
+                searchInput.setAttribute('data-listener', 'true');
+                searchInput.addEventListener('input', (e) => {
+                    const term = e.target.value.toLowerCase();
+                    const filtered = allClientsData.filter(c => 
+                        (c.name && c.name.toLowerCase().includes(term)) ||
+                        (c.email && c.email.toLowerCase().includes(term))
+                    );
+                    renderClients(filtered);
                 });
             }
+        }
+    }
+
+    let allClientsData = [];
+
+    function renderClients(clientsToRender) {
+        const clientsTbody = document.getElementById('clients-tbody');
+        if (clientsTbody) {
+            clientsTbody.innerHTML = clientsToRender.map(u => `
+                <tr>
+                    <td style="${u.is_blocked ? 'text-decoration: line-through; color: #888;' : ''}">
+                        <div style="display:flex; align-items:center; gap: 8px;">
+                            <span>${u.name || '<em style="color:#666;">Sin Nombre</em>'}</span>
+                            <button class="btn-primary sm-btn edit-name-btn" data-id="${u.id}" data-name="${u.name || ''}" style="background:transparent; border:1px solid #666; padding:2px 6px; font-size:0.7rem;" title="Editar Nombre">✎</button>
+                        </div>
+                    </td>
+                    <td style="${u.is_blocked ? 'text-decoration: line-through; color: #888;' : ''}">${u.email}</td>
+                    <td>${u.has_premium ? '<span style="color:#16a34a;">Sí</span>' : 'No'}</td>
+                    <td>${new Date(u.created_at).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn-primary sm-btn block-btn" data-id="${u.id}" style="background: ${u.is_blocked ? '#16a34a' : '#dc2626'}; padding: 4px 8px; font-size: 0.8rem; margin-right: 5px;">
+                            ${u.is_blocked ? 'Desbloquear' : 'Bloquear'}
+                        </button>
+                        <button class="btn-primary sm-btn reset-btn" data-id="${u.id}" style="background: #2563eb; padding: 4px 8px; font-size: 0.8rem;">
+                            Nueva Clave
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            document.querySelectorAll('.edit-name-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    const currentName = e.target.getAttribute('data-name');
+                    const newName = prompt('Ingresa el nuevo nombre para este cliente:', currentName);
+                    
+                    if (newName !== null && newName.trim() !== '') {
+                        const token = localStorage.getItem('token');
+                        const res = await fetch(`/api/admin/users/${id}/name`, {
+                            method: 'PUT',
+                            headers: { 
+                                'Authorization': 'Bearer ' + token,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ name: newName.trim() })
+                        });
+                        
+                        const data = await res.json();
+                        if (res.ok) {
+                            loadUsers();
+                        } else {
+                            alert(data.error || 'Error al actualizar el nombre');
+                        }
+                    }
+                });
+            });
+
+            document.querySelectorAll('.block-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    if (!confirm('¿Seguro que deseas cambiar el estado de este cliente?')) return;
+                    const id = e.target.getAttribute('data-id');
+                    const token = localStorage.getItem('token');
+                    const res = await fetch(`/api/admin/users/${id}/toggle-block`, {
+                        method: 'PUT',
+                        headers: { 'Authorization': 'Bearer ' + token }
+                    });
+                    const data = await res.json();
+                    if (res.ok) {
+                        alert(data.message);
+                        loadUsers();
+                    } else {
+                        alert(data.error || 'Error');
+                    }
+                });
+            });
+
+            document.querySelectorAll('.reset-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    if (!confirm('¿Generar nueva contraseña para este cliente? Se cerrará su sesión actual.')) return;
+                    const id = e.target.getAttribute('data-id');
+                    const token = localStorage.getItem('token');
+                    const res = await fetch(`/api/admin/users/${id}/reset-password`, {
+                        method: 'PUT',
+                        headers: { 'Authorization': 'Bearer ' + token }
+                    });
+                    const data = await res.json();
+                    if (res.ok) {
+                        alert(`NUEVA CONTRASEÑA GENERADA:\n\n${data.newPassword}\n\nCopia y envía esta contraseña al cliente.`);
+                    } else {
+                        alert(data.error || 'Error');
+                    }
+                });
+            });
         }
     }
 
