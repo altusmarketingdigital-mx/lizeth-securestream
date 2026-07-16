@@ -811,7 +811,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const reader = new FileReader();
             reader.onload = async (e) => {
-                const text = e.target.result;
+                let text = e.target.result;
+                // Normalizar saltos de línea de Windows/Mac a formato estándar
+                text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+                
                 const rows = text.split('\n').filter(r => r.trim() !== '');
                 if (rows.length < 2) {
                     msgEl.style.color = 'var(--error)';
