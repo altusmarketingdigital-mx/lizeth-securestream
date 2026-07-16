@@ -55,7 +55,7 @@ exports.getStats = async (req, res) => {
 
 exports.getUsers = async (req, res) => {
     try {
-        const result = await db.query('SELECT id, email, has_premium, is_admin, last_login_ip, created_at, is_blocked FROM users ORDER BY created_at DESC');
+        const result = await db.query('SELECT id, name, email, has_premium, is_admin, last_login_ip, created_at, is_blocked FROM users ORDER BY created_at DESC');
         res.json(result.rows);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener usuarios' });
@@ -144,5 +144,23 @@ exports.regenerateUserPassword = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al regenerar contraseña' });
+    }
+};
+
+exports.updateUserName = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name } = req.body;
+        
+        if (!name) return res.status(400).json({ error: 'El nombre no puede estar vacío' });
+        
+        const result = await db.query('UPDATE users SET name = $1 WHERE id = $2 RETURNING id', [name, id]);
+        
+        if (result.rows.length === 0) return res.status(404).json({ error: 'Usuario no encontrado' });
+        
+        res.json({ message: 'Nombre actualizado exitosamente' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al actualizar nombre' });
     }
 };

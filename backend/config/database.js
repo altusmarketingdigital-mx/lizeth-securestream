@@ -107,8 +107,9 @@ async function initializeDatabase() {
             await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_password_token VARCHAR(255);`);
             await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_password_expires TIMESTAMP WITH TIME ZONE;`);
             await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS is_blocked BOOLEAN DEFAULT false;`);
+            await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS name VARCHAR(255);`);
         } catch(e) {
-            console.log('Error adding password reset/block columns to users:', e.message);
+            console.log('Error adding password reset/block/name columns to users:', e.message);
         }
 
         // Configuraciones de Sitio (CMS)
