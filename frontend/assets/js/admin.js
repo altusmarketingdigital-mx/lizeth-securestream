@@ -39,6 +39,41 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
+    const btnExport = document.getElementById('btn-export-clients');
+    if (btnExport) {
+        btnExport.addEventListener('click', async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch('/api/admin/users', { headers: { 'Authorization': 'Bearer ' + token } });
+                const data = await res.json();
+                const clients = data.filter(u => !u.is_admin);
+                
+                let csv = "Nombre,Email,Premium,FechaRegistro,Bloqueado\n";
+                clients.forEach(c => {
+                    const name = (c.name || 'Sin Nombre').replace(/,/g, '');
+                    const email = c.email;
+                    const premium = c.has_premium ? 'Si' : 'No';
+                    const date = new Date(c.created_at).toLocaleDateString();
+                    const blocked = c.is_blocked ? 'Si' : 'No';
+                    csv += `${name},${email},${premium},${date},${blocked}\n`;
+                });
+                
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.setAttribute('hidden', '');
+                a.setAttribute('href', url);
+                a.setAttribute('download', 'clientes.csv');
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            } catch (e) {
+                console.error(e);
+                alert('Error al exportar clientes');
+            }
+        });
+    }
+
     // Logout Handler
     const btnLogout = document.getElementById('btn-admin-logout');
     if (btnLogout) {
