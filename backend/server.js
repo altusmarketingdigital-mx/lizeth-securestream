@@ -7,6 +7,15 @@ require('dotenv').config();
 
 const app = express();
 
+// Geo-blocking Middleware (India & Indonesia)
+app.use((req, res, next) => {
+    const country = req.headers['x-vercel-ip-country'];
+    if (country === 'IN' || country === 'ID') {
+        return res.status(403).send('<h1>Access Denied / Acceso Denegado</h1><p>Sorry, this content is not available in your region.</p>');
+    }
+    next();
+});
+
 // Middlewares
 app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:3000', credentials: true }));
 // Webhook de Stripe necesita el body raw para verificar la firma
