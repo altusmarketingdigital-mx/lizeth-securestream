@@ -89,10 +89,67 @@ exports.getStats = async (req, res) => {
 
 exports.getUsers = async (req, res) => {
     try {
-        const result = await db.query('SELECT id, name, email, has_premium, is_admin, last_login_ip, created_at, is_blocked FROM users ORDER BY created_at DESC');
+        const result = await db.query('SELECT id, name, email, has_premium, is_admin, role, last_login_ip, created_at, is_blocked FROM users ORDER BY created_at DESC');
         res.json(result.rows);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener usuarios' });
+    }
+};
+
+exports.createUser = async (req, res) => {
+    try {
+        const { name, email, password, role } = req.body;
+        if (!email || !password) return res.status(400).json({ error: 'Faltan campos obligatorios' });
+        
+        const existing = await db.query('SELECT id FROM users WHERE email = $1', [email.toLowerCase().trim()]);
+        if (existing.rows.length > 0) return res.status(400).json({ error: 'El email ya está registrado' });
+        
+        const hash = await bcrypt.hash(password, 10);
+        const isAdmin = (role && role !== 'client') ? true : false;
+        
+        await db.query(
+            'INSERT INTO users (name, email, password_hash, role, is_admin) VALUES ($1, $2, $3, $4, $5)',
+            [name, email.toLowerCase().trim(), hash, role || 'client', isAdmin]
+        );
+        
+        res.json({ success: true, message: 'Usuario creado exitosamente' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al crear usuario' });
+    }
+};
+
+exports.updateUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, email, role } = req.body;
+        
+        const isAdmin = (role && role !== 'client') ? true : false;
+        
+        await db.query(
+            'UPDATE users SET name = $1, email = $2, role = $3, is_admin = $4 WHERE id = $5',
+            [name, email.toLowerCase().trim(), role, isAdmin, id]
+        );
+        
+        res.json({ success: true, message: 'Usuario actualizado exitosamente' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al actualizar usuario' });
+    }
+};
+
+exports.deleteUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        // Optionally delete purchases, or let them cascade. 
+        // For now just delete the user.
+        await db.query('DELETE FROM users WHERE id = $1', [id]);
+        
+        res.json({ success: true, message: 'Usuario eliminado exitosamente' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al eliminar usuario' });
     }
 };
 

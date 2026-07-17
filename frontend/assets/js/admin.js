@@ -136,11 +136,59 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (usersTbody) {
                 usersTbody.innerHTML = admins.map(u => `
                     <tr>
+                        <td>${u.name || '-'}</td>
                         <td>${u.email}</td>
-                        <td>Admin</td>
+                        <td>${u.role || 'Administrador'}</td>
                         <td>${new Date(u.created_at).toLocaleDateString()}</td>
+                        <td>
+                            <button class="btn-primary sm-btn edit-user-btn" style="background:#2563eb;" data-id="${u.id}" data-name="${u.name || ''}" data-email="${u.email}" data-role="${u.role || 'Administrador'}">Editar</button>
+                            <button class="btn-primary sm-btn delete-user-btn" style="background:#dc2626;" data-id="${u.id}">Eliminar</button>
+                        </td>
                     </tr>
                 `).join('');
+
+                // Listeners for edit/delete buttons
+                document.querySelectorAll('.edit-user-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const id = e.target.getAttribute('data-id');
+                        const name = e.target.getAttribute('data-name');
+                        const email = e.target.getAttribute('data-email');
+                        const role = e.target.getAttribute('data-role');
+                        
+                        document.getElementById('u-id').value = id;
+                        document.getElementById('u-name').value = name;
+                        document.getElementById('u-email').value = email;
+                        document.getElementById('u-role').value = role;
+                        document.getElementById('u-password').placeholder = 'Dejar en blanco para mantener actual';
+                        
+                        document.getElementById('user-form-title').textContent = 'Editar Usuario';
+                        document.getElementById('user-form-panel').style.display = 'block';
+                    });
+                });
+
+                document.querySelectorAll('.delete-user-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        if (!confirm('¿Estás seguro de que deseas eliminar este usuario de forma permanente?')) return;
+                        const id = e.target.getAttribute('data-id');
+                        const token = localStorage.getItem('token');
+                        try {
+                            const res = await fetch(`/api/admin/users/${id}`, {
+                                method: 'DELETE',
+                                headers: { 'Authorization': 'Bearer ' + token }
+                            });
+                            const result = await res.json();
+                            if (res.ok) {
+                                alert('Usuario eliminado');
+                                loadUsers();
+                            } else {
+                                alert(result.error || 'Error al eliminar');
+                            }
+                        } catch(err) {
+                            console.error(err);
+                            alert('Error de red');
+                        }
+                    });
+                });
             }
 
             allClientsData = clients;
@@ -807,6 +855,73 @@ document.addEventListener('DOMContentLoaded', async () => {
             } finally {
                 btnSaveLegal.textContent = 'Guardar Cambios';
                 btnSaveLegal.disabled = false;
+            }
+        });
+    }
+
+    // --- USER CRUD LOGIC ---
+    const btnAddUser = document.getElementById('btn-add-user');
+    if (btnAddUser) {
+        btnAddUser.addEventListener('click', () => {
+            document.getElementById('u-id').value = '';
+            document.getElementById('u-name').value = '';
+            document.getElementById('u-email').value = '';
+            document.getElementById('u-password').value = '';
+            document.getElementById('u-password').placeholder = 'Contraseña obligatoria';
+            document.getElementById('u-role').value = 'Administrador';
+            document.getElementById('user-form-title').textContent = 'Agregar Nuevo Usuario';
+            document.getElementById('user-form-panel').style.display = 'block';
+        });
+    }
+
+    const btnCancelUser = document.getElementById('btn-cancel-user');
+    if (btnCancelUser) {
+        btnCancelUser.addEventListener('click', () => {
+            document.getElementById('user-form-panel').style.display = 'none';
+        });
+    }
+
+    const btnSaveUser = document.getElementById('btn-save-user');
+    if (btnSaveUser) {
+        btnSaveUser.addEventListener('click', async () => {
+            const id = document.getElementById('u-id').value;
+            const name = document.getElementById('u-name').value;
+            const email = document.getElementById('u-email').value;
+            const password = document.getElementById('u-password').value;
+            const role = document.getElementById('u-role').value;
+            const token = localStorage.getItem('token');
+
+            if (!email || (!id && !password)) {
+                alert('Faltan campos obligatorios');
+                return;
+            }
+
+            const payload = { name, email, role };
+            if (password) payload.password = password;
+
+            const url = id ? `/api/admin/users/${id}` : `/api/admin/users`;
+            const method = id ? 'PUT' : 'POST';
+
+            try {
+                const res = await fetch(url, {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    alert(data.message || 'Usuario guardado correctamente');
+                    document.getElementById('user-form-panel').style.display = 'none';
+                    loadUsers();
+                } else {
+                    alert(data.error || 'Error al guardar');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error de red');
             }
         });
     }

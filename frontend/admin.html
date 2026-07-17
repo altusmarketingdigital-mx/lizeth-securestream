@@ -119,13 +119,40 @@
         </section>
 
         <section id="view-users" class="admin-section" style="display:none;">
-            <h2>Usuarios Administradores</h2>
+            <div class="header-action" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0;">Usuarios Administradores</h2>
+                <button id="btn-add-user" class="btn-primary sm-btn">+ Nuevo Usuario</button>
+            </div>
+            
+            <div id="user-form-panel" class="glass-panel" style="display:none; padding:1.5rem; margin-bottom:1.5rem;">
+                <h3 id="user-form-title">Agregar Nuevo Usuario</h3>
+                <input type="hidden" id="u-id">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div class="form-group"><input type="text" id="u-name" placeholder="Nombre completo"></div>
+                    <div class="form-group"><input type="email" id="u-email" placeholder="Correo electrónico"></div>
+                    <div class="form-group"><input type="password" id="u-password" placeholder="Contraseña (solo para crear/cambiar)"></div>
+                    <div class="form-group">
+                        <select id="u-role" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.5); color: white;">
+                            <option value="Administrador">Administrador</option>
+                            <option value="Soporte">Soporte</option>
+                            <option value="Ventas">Ventas</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button id="btn-save-user" class="btn-primary">Guardar Usuario</button>
+                    <button id="btn-cancel-user" class="btn-secondary" style="background: #444; padding: 10px 20px; border-radius: 8px; border: none; color: white; cursor: pointer;">Cancelar</button>
+                </div>
+            </div>
+
             <table class="data-table">
                 <thead>
                     <tr>
+                        <th>Nombre</th>
                         <th>Email</th>
                         <th>Rol</th>
                         <th>Registro</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="users-tbody">

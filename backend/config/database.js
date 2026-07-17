@@ -37,6 +37,12 @@ async function initializeDatabase() {
 
         // Ensure name column exists for users
         await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS name VARCHAR(255);`);
+        
+        // Ensure role column exists
+        await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(50) DEFAULT 'client';`);
+        
+        // Update existing admins to have admin role if not set
+        await pool.query(`UPDATE users SET role = 'Administrador' WHERE is_admin = true AND role = 'client';`);
 
         await pool.query(`
             CREATE TABLE IF NOT EXISTS videos (
