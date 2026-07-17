@@ -70,6 +70,11 @@ exports.streamVideo = async (req, res) => {
 
         const videoPath = videoResult.rows[0].internal_storage_path;
         
+        // Si el video es una URL externa (Drive, Vimeo, S3 manual, etc)
+        if (videoPath.startsWith('http://') || videoPath.startsWith('https://')) {
+            return res.redirect(videoPath);
+        }
+
         // Si el video fue subido a S3, la ruta será algo como "videos/uuid.mp4"
         if (videoPath.startsWith('videos/')) {
             const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');

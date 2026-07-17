@@ -733,9 +733,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         const videoInput = document.getElementById('v-file');
         const videoFile = videoInput.files[0];
+        const videoUrl = document.getElementById('v-url').value.trim();
 
         if(!title || !price) return alert('Título y precio son requeridos');
-        if(!id && !videoFile) return alert('Debes seleccionar un archivo de video para nuevos cursos');
+        if(!id && !videoFile && !videoUrl) return alert('Debes seleccionar un archivo de video o proporcionar un enlace directo para nuevos cursos');
 
         const submitBtn = document.getElementById('submit-video');
         const originalText = submitBtn.textContent;
@@ -745,7 +746,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             let fileKey = null;
 
-            if (videoFile) {
+            if (videoUrl) {
+                fileKey = videoUrl; // El backend lo guardará tal cual
+            } else if (videoFile) {
                 // 1. Obtener Presigned URL
                 const presignRes = await fetch(`/api/admin/get-upload-url?fileName=${encodeURIComponent(videoFile.name)}&fileType=${encodeURIComponent(videoFile.type)}`);
                 if (!presignRes.ok) throw new Error('No se pudo obtener la URL de subida. Verifica tus claves AWS.');
