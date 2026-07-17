@@ -41,8 +41,14 @@ async function initializeDatabase() {
         // Ensure role column exists
         await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(50) DEFAULT 'client';`);
         
+        // Ensure permissions column exists
+        await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS permissions JSONB DEFAULT '[]'::jsonb;`);
+        
         // Update existing admins to have admin role if not set
         await pool.query(`UPDATE users SET role = 'Administrador' WHERE is_admin = true AND role = 'client';`);
+        
+        // Asignar todos los permisos a los administradores existentes si su JSON está vacío
+        await pool.query(`UPDATE users SET permissions = '["manage_users", "manage_clients", "manage_videos", "view_sales", "manage_coupons", "manage_settings"]'::jsonb WHERE is_admin = true AND permissions = '[]'::jsonb;`);
 
         await pool.query(`
             CREATE TABLE IF NOT EXISTS videos (

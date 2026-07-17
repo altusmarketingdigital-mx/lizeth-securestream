@@ -89,7 +89,7 @@ exports.getStats = async (req, res) => {
 
 exports.getUsers = async (req, res) => {
     try {
-        const result = await db.query('SELECT id, name, email, has_premium, is_admin, role, last_login_ip, created_at, is_blocked FROM users ORDER BY created_at DESC');
+        const result = await db.query('SELECT id, name, email, has_premium, is_admin, role, permissions, last_login_ip, created_at, is_blocked FROM users ORDER BY created_at DESC');
         res.json(result.rows);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener usuarios' });
@@ -98,7 +98,7 @@ exports.getUsers = async (req, res) => {
 
 exports.createUser = async (req, res) => {
     try {
-        const { name, email, password, role } = req.body;
+        const { name, email, password, role, permissions } = req.body;
         if (!email || !password) return res.status(400).json({ error: 'Faltan campos obligatorios' });
         
         const existing = await db.query('SELECT id FROM users WHERE email = $1', [email.toLowerCase().trim()]);
@@ -106,10 +106,11 @@ exports.createUser = async (req, res) => {
         
         const hash = await bcrypt.hash(password, 10);
         const isAdmin = (role && role !== 'client') ? true : false;
+        const permsJSON = permissions ? JSON.stringify(permissions) : '[]';
         
         await db.query(
-            'INSERT INTO users (name, email, password_hash, role, is_admin) VALUES ($1, $2, $3, $4, $5)',
-            [name, email.toLowerCase().trim(), hash, role || 'client', isAdmin]
+            'INSERT INTO users (name, email, password_hash, role, is_admin, permissions) VALUES ($1, $2, $3, $4, $5, $6::jsonb)',
+            [name, email.toLowerCase().trim(), hash, role || 'client', isAdmin, permsJSON]
         );
         
         res.json({ success: true, message: 'Usuario creado exitosamente' });
@@ -122,13 +123,14 @@ exports.createUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, email, role } = req.body;
+        const { name, email, role, permissions } = req.body;
         
         const isAdmin = (role && role !== 'client') ? true : false;
+        const permsJSON = permissions ? JSON.stringify(permissions) : '[]';
         
         await db.query(
-            'UPDATE users SET name = $1, email = $2, role = $3, is_admin = $4 WHERE id = $5',
-            [name, email.toLowerCase().trim(), role, isAdmin, id]
+            'UPDATE users SET name = $1, email = $2, role = $3, is_admin = $4, permissions = $5::jsonb WHERE id = $6',
+            [name, email.toLowerCase().trim(), role, isAdmin, permsJSON, id]
         );
         
         res.json({ success: true, message: 'Usuario actualizado exitosamente' });

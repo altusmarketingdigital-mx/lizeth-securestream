@@ -220,6 +220,7 @@
                     localStorage.setItem('userEmail', data.user.email);
                     localStorage.setItem('hasPremium', data.user.has_premium);
                     localStorage.setItem('isAdmin', data.user.is_admin);
+                    localStorage.setItem('permissions', JSON.stringify(data.user.permissions || []));
                     
                     if (data.user.is_admin === 1 || data.user.is_admin === true || data.user.is_admin === "1" || data.user.is_admin === "true") {
                         window.location.href = '/admin.html';

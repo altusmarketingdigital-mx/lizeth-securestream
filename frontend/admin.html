@@ -139,6 +139,19 @@
                         </select>
                     </div>
                 </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 10px;">Permisos de Acceso:</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 14px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px;">
+                        <label><input type="checkbox" class="u-perm" value="view_dashboard"> Dashboard y Estadísticas</label>
+                        <label><input type="checkbox" class="u-perm" value="manage_users"> Gestión de Usuarios</label>
+                        <label><input type="checkbox" class="u-perm" value="manage_clients"> Gestión de Clientes</label>
+                        <label><input type="checkbox" class="u-perm" value="manage_videos"> Videos y Contenido</label>
+                        <label><input type="checkbox" class="u-perm" value="view_sales"> Ventas y Pedidos</label>
+                        <label><input type="checkbox" class="u-perm" value="manage_coupons"> Cupones de Descuento</label>
+                        <label><input type="checkbox" class="u-perm" value="manage_settings"> Personalización (Carrusel/Settings)</label>
+                    </div>
+                </div>
                 <div style="display: flex; gap: 10px;">
                     <button id="btn-save-user" class="btn-primary">Guardar Usuario</button>
                     <button id="btn-cancel-user" class="btn-secondary" style="background: #444; padding: 10px 20px; border-radius: 8px; border: none; color: white; cursor: pointer;">Cancelar</button>

@@ -18,6 +18,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         'tab-legal': 'view-legal'
     };
 
+    let perms = [];
+    try {
+        perms = JSON.parse(localStorage.getItem('permissions') || '[]');
+    } catch(e) {}
+    
+    const hasPerm = (p) => perms.includes('all') || perms.includes(p);
+    
+    if (!hasPerm('view_dashboard')) document.getElementById('tab-dashboard').style.display = 'none';
+    if (!hasPerm('manage_users')) document.getElementById('tab-users').style.display = 'none';
+    if (!hasPerm('manage_clients')) document.getElementById('tab-clients').style.display = 'none';
+    if (!hasPerm('manage_videos')) document.getElementById('tab-videos').style.display = 'none';
+    if (!hasPerm('view_sales')) document.getElementById('tab-sales').style.display = 'none';
+    if (!hasPerm('manage_coupons')) document.getElementById('tab-coupons').style.display = 'none';
+    if (!hasPerm('manage_settings')) {
+        document.getElementById('tab-carousel').style.display = 'none';
+        document.getElementById('tab-settings').style.display = 'none';
+        document.getElementById('tab-legal').style.display = 'none';
+    }
+
+
     for (const [tabId, viewId] of Object.entries(tabs)) {
         document.getElementById(tabId).addEventListener('click', (e) => {
             e.preventDefault();
@@ -41,6 +61,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (tabId === 'tab-legal') loadLegalSettings();
         });
     }
+
+    // Auto-activar el primer tab visible
+    const firstVisibleTab = Object.keys(tabs).find(t => document.getElementById(t).style.display !== 'none');
+    if (firstVisibleTab) document.getElementById(firstVisibleTab).click();
+    else document.getElementById('view-dashboard').style.display = 'none'; // Si no hay nada, ocultar todo
 
     const btnExport = document.getElementById('btn-export-clients');
     if (btnExport) {
@@ -141,7 +166,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <td>${u.role || 'Administrador'}</td>
                         <td>${new Date(u.created_at).toLocaleDateString()}</td>
                         <td>
-                            <button class="btn-primary sm-btn edit-user-btn" style="background:#2563eb;" data-id="${u.id}" data-name="${u.name || ''}" data-email="${u.email}" data-role="${u.role || 'Administrador'}">Editar</button>
+                            <button class="btn-primary sm-btn edit-user-btn" style="background:#2563eb;" data-id="${u.id}" data-name="${u.name || ''}" data-email="${u.email}" data-role="${u.role || 'Administrador'}" data-permissions='${JSON.stringify(u.permissions || [])}'>Editar</button>
                             <button class="btn-primary sm-btn delete-user-btn" style="background:#dc2626;" data-id="${u.id}">Eliminar</button>
                         </td>
                     </tr>
@@ -154,12 +179,19 @@ document.addEventListener('DOMContentLoaded', async () => {
                         const name = e.target.getAttribute('data-name');
                         const email = e.target.getAttribute('data-email');
                         const role = e.target.getAttribute('data-role');
+                        const permsStr = e.target.getAttribute('data-permissions');
+                        let perms = [];
+                        try { perms = JSON.parse(permsStr); } catch (err) {}
                         
                         document.getElementById('u-id').value = id;
                         document.getElementById('u-name').value = name;
                         document.getElementById('u-email').value = email;
                         document.getElementById('u-role').value = role;
                         document.getElementById('u-password').placeholder = 'Dejar en blanco para mantener actual';
+                        
+                        document.querySelectorAll('.u-perm').forEach(chk => {
+                            chk.checked = perms.includes('all') || perms.includes(chk.value);
+                        });
                         
                         document.getElementById('user-form-title').textContent = 'Editar Usuario';
                         document.getElementById('user-form-panel').style.display = 'block';
@@ -869,6 +901,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('u-password').value = '';
             document.getElementById('u-password').placeholder = 'Contraseña obligatoria';
             document.getElementById('u-role').value = 'Administrador';
+            
+            document.querySelectorAll('.u-perm').forEach(chk => chk.checked = false);
+            
             document.getElementById('user-form-title').textContent = 'Agregar Nuevo Usuario';
             document.getElementById('user-form-panel').style.display = 'block';
         });
@@ -889,6 +924,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             const email = document.getElementById('u-email').value;
             const password = document.getElementById('u-password').value;
             const role = document.getElementById('u-role').value;
+            
+            const permissions = Array.from(document.querySelectorAll('.u-perm:checked')).map(chk => chk.value);
+            
             const token = localStorage.getItem('token');
 
             if (!email || (!id && !password)) {
@@ -896,7 +934,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
 
-            const payload = { name, email, role };
+            const payload = { name, email, role, permissions };
             if (password) payload.password = password;
 
             const url = id ? `/api/admin/users/${id}` : `/api/admin/users`;
