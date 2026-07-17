@@ -43,9 +43,43 @@ exports.getStats = async (req, res) => {
         const usersResult = await db.query('SELECT COUNT(*) as count FROM users');
         const videosResult = await db.query('SELECT COUNT(*) as count FROM videos');
         
+        const salesQuery = `
+            SELECT p.purchase_date, v.price as video_price
+            FROM purchases p
+            JOIN videos v ON p.video_id = v.id
+        `;
+        const salesResult = await db.query(salesQuery);
+        
+        const now = new Date();
+        const todayStr = now.toLocaleDateString();
+        const currentMonth = now.getMonth();
+        const currentYear = now.getFullYear();
+
+        let revToday = 0;
+        let revMonth = 0;
+        let revYear = 0;
+
+        salesResult.rows.forEach(s => {
+            const date = new Date(s.purchase_date);
+            const price = parseFloat(s.video_price) || 0;
+            
+            if (date.toLocaleDateString() === todayStr) {
+                revToday += price;
+            }
+            if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
+                revMonth += price;
+            }
+            if (date.getFullYear() === currentYear) {
+                revYear += price;
+            }
+        });
+
         res.json({
             totalUsers: usersResult.rows[0].count,
-            totalVideos: videosResult.rows[0].count
+            totalVideos: videosResult.rows[0].count,
+            revToday,
+            revMonth,
+            revYear
         });
     } catch (error) {
         console.error(error);

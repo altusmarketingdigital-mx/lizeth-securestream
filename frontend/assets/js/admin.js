@@ -112,6 +112,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = await apiGet('/api/admin/stats');
         if (data) {
             document.getElementById('stat-videos').textContent = data.totalVideos;
+            
+            const todayEl = document.getElementById('stat-rev-today');
+            const monthEl = document.getElementById('stat-rev-month');
+            const yearEl = document.getElementById('stat-rev-year');
+            
+            if (todayEl) todayEl.textContent = '$' + (data.revToday || 0).toFixed(2);
+            if (monthEl) monthEl.textContent = '$' + (data.revMonth || 0).toFixed(2);
+            if (yearEl) yearEl.textContent = '$' + (data.revYear || 0).toFixed(2);
         }
     }
 
