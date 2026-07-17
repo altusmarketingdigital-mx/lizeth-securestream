@@ -9,38 +9,25 @@
     <style>
         .hero { 
             position: relative;
-            width: 100%;
-            height: 750px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            margin-bottom: 2rem;
+            justify-content: space-between;
+            padding: 4rem 2rem; 
+            max-width: 1300px; 
+            margin: 0 auto; 
+            min-height: calc(100vh - 100px);
             z-index: 2;
         }
-        .hero-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100%;
-            object-fit: cover;
-            z-index: 1;
-            opacity: 0.5;
-        }
         .hero-text {
-            position: relative;
-            z-index: 3;
-            text-align: center;
-            max-width: 800px;
-            padding: 0 2rem;
+            flex: 1;
+            max-width: 650px;
         }
         .hero h1 { 
             font-size: 4rem; 
             margin-bottom: 1.5rem; 
             line-height: 1.1; 
             font-weight: 900;
-            background: #ffffff;
+            background: linear-gradient(135deg, #ffffff 0%, var(--primary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: -1.5px;
@@ -54,12 +41,12 @@
         }
         .hero p.body-text { 
             font-size: 1.1rem; 
-            color: #dddddd; 
+            color: var(--text-muted); 
             margin-bottom: 2.5rem; 
             line-height: 1.6;
         }
         .cta-group { 
-            justify-content: center;
+            display: flex; 
             gap: 1.5rem; 
             align-items: center;
         }
@@ -341,7 +328,6 @@
     </div>
 
     <main class="hero">
-        <img id="dyn-hero_card_image" class="hero-bg" src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1920&q=80" alt="Hero Background">
         <div class="hero-text">
             <h1 id="dyn-hero_title">Hi, I'm Lizeth, <br>The Barberette...</h1>
             <p id="dyn-hero_subtitle" class="subtitle">and I'd love to shave your head.. no guard, no hair left... BALD!!!</p>
@@ -349,6 +335,12 @@
             
             <div class="cta-group">
                 <button id="dyn-hero_btn_text" onclick="window.location.href='/catalog.html'" class="btn-primary lg" style="width: auto;">ENTER THE SHOP</button>
+            </div>
+        </div>
+
+        <div class="hero-graphics">
+            <div class="floating-card">
+                <img id="dyn-hero_card_image" class="main-pic" src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80" alt="Exclusive Video">
             </div>
         </div>
     </main>
