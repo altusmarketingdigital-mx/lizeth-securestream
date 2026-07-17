@@ -37,6 +37,7 @@ async function initializeDatabase() {
 
         // Ensure name column exists for users
         await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS name VARCHAR(255);`);
+        await pool.query(`ALTER TABLE users ALTER COLUMN current_session_token TYPE TEXT;`);
         
         // Ensure role column exists
         await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(50) DEFAULT 'client';`);
