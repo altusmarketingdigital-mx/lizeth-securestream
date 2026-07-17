@@ -11,7 +11,7 @@ const s3 = new S3Client({
         accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ''
     },
-    // endpoint: process.env.AWS_ENDPOINT // Descomentar si se usa Cloudflare R2
+    endpoint: process.env.AWS_ENDPOINT // Necesario para Cloudflare R2
 });
 
 exports.getUploadUrl = async (req, res) => {
