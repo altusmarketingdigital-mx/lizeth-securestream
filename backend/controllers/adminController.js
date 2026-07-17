@@ -146,15 +146,24 @@ exports.createUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, email, role, permissions } = req.body;
+        const { name, email, role, permissions, password } = req.body;
         
         const isAdmin = (role && role !== 'client') ? true : false;
         const permsJSON = permissions ? JSON.stringify(permissions) : '[]';
         
-        await db.query(
-            'UPDATE users SET name = $1, email = $2, role = $3, is_admin = $4, permissions = $5::jsonb WHERE id = $6',
-            [name, email.toLowerCase().trim(), role, isAdmin, permsJSON, id]
-        );
+        if (password) {
+            const bcrypt = require('bcryptjs');
+            const hash = await bcrypt.hash(password, 10);
+            await db.query(
+                'UPDATE users SET name = $1, email = $2, role = $3, is_admin = $4, permissions = $5::jsonb, password_hash = $6 WHERE id = $7',
+                [name, email.toLowerCase().trim(), role, isAdmin, permsJSON, hash, id]
+            );
+        } else {
+            await db.query(
+                'UPDATE users SET name = $1, email = $2, role = $3, is_admin = $4, permissions = $5::jsonb WHERE id = $6',
+                [name, email.toLowerCase().trim(), role, isAdmin, permsJSON, id]
+            );
+        }
         
         res.json({ success: true, message: 'Usuario actualizado exitosamente' });
     } catch (error) {
