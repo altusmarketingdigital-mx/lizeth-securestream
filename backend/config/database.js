@@ -147,6 +147,20 @@ async function initializeDatabase() {
             console.log('Error adding password reset/block/name columns to users:', e.message);
         }
 
+        // Configuración de sitio y donaciones
+        await pool.query(`ALTER TABLE videos ADD COLUMN IF NOT EXISTS currency VARCHAR(10) DEFAULT 'MXN';`);
+        
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS donations (
+                id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                name VARCHAR(255),
+                email VARCHAR(255),
+                message TEXT,
+                amount NUMERIC(10, 2) DEFAULT 0.00,
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+
         // Configuraciones de Sitio (CMS)
         await pool.query(`
             CREATE TABLE IF NOT EXISTS site_settings (
@@ -168,12 +182,18 @@ async function initializeDatabase() {
                 'hero_card_badge2': "Protected",
                 'hero_card_image': "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80",
                 'footer_text': "Monetizing knowledge with extreme security.<br>No guard, no hair left... BALD!!!",
+                'donation_text': "Apoya nuestro contenido con un donativo",
+                'is_maintenance_mode': "false",
                 'logo_url': "/assets/img/logo.png"
             };
             
             for (const [key, val] of Object.entries(defaults)) {
                 await pool.query('INSERT INTO site_settings (setting_key, setting_value) VALUES ($1, $2)', [key, val]);
             }
+        } else {
+            // Asegurar que existan las nuevas llaves en bases existentes
+            await pool.query(`INSERT INTO site_settings (setting_key, setting_value) VALUES ('is_maintenance_mode', 'false') ON CONFLICT DO NOTHING;`);
+            await pool.query(`INSERT INTO site_settings (setting_key, setting_value) VALUES ('donation_text', 'Apoya nuestro contenido con un donativo') ON CONFLICT DO NOTHING;`);
         }
 
         console.log('✅ Base de datos inicializada correctamente');

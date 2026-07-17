@@ -13,7 +13,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 'hero_btn_text': 'dyn-hero_btn_text',
                 'hero_card_title': 'dyn-hero_card_title',
                 'hero_card_badge1': 'dyn-hero_card_badge1',
-                'hero_card_badge2': 'dyn-hero_card_badge2'
+                'hero_card_badge2': 'dyn-hero_card_badge2',
+                'donation_text': 'dyn-donation_text'
             };
 
             for (const [key, id] of Object.entries(textMappings)) {
@@ -33,6 +34,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const el = document.getElementById(id);
                 if (el && settings[key]) {
                     el.src = settings[key];
+                }
+            }
+
+            // Mantenimiento
+            if (settings['is_maintenance_mode'] === 'true') {
+                const isAdmin = localStorage.getItem('isAdmin') === 'true';
+                const isPathAdmin = window.location.pathname.includes('admin') || window.location.pathname.includes('maintenance') || window.location.pathname.includes('login');
+                if (!isAdmin && !isPathAdmin) {
+                    window.location.href = '/maintenance.html';
                 }
             }
         }

@@ -81,6 +81,7 @@ app.use('/api/carousel', require('./routes/carouselRoutes'));
 app.use('/api/settings', require('./routes/settingsRoutes'));
 app.use('/api/user', require('./routes/userRoutes'));
 app.use('/api/contact', require('./routes/contactRoutes'));
+app.use('/api/donations', require('./routes/donationRoutes'));
 
 // Rutas directas (sin router por simplicidad)
 const currencyController = require('./controllers/currencyController');

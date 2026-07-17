@@ -1,6 +1,6 @@
 const dictEN_to_ES = {
     // Navbar & Footer
-    "HOME": "HOME", // already Spanish in original? Wait, HOME is English. I'll translate to INICIO.
+    "HOME": "INICIO",
     "SHOP": "TIENDA",
     "SIGN IN": "INICIAR SESIÓN",
     "Home": "Inicio",
@@ -74,7 +74,18 @@ const dictEN_to_ES = {
     "Content Management": "Gestión de Contenido",
     "Upload Video": "Subir Video",
     "Sales": "Ventas",
-    "Reports": "Reportes"
+    "Reports": "Reportes",
+
+    // Extras / Nuevos
+    "LOG IN": "INICIAR SESIÓN",
+    "REGISTER": "REGISTRO",
+    "Welcome back to the shop, sweetie!": "¡Bienvenido de nuevo a la tienda, cariño!",
+    "Username / Email": "Usuario / Correo",
+    "ENTER SHOP": "ENTRAR A LA TIENDA",
+    "Join the elite club of shiny bald heads.": "Únete al club de élite de los mejores.",
+    "Name": "Nombre",
+    "E-mail address": "Correo electrónico",
+    "CREATE ACCOUNT": "CREAR CUENTA"
 };
 
 function initLanguage() {
@@ -97,7 +108,8 @@ function toggleLanguage() {
 function applyLanguage(lang) {
     const toggleBtns = document.querySelectorAll('#lang-toggle');
     toggleBtns.forEach(btn => {
-        btn.textContent = lang === 'en' ? 'ES' : 'EN';
+        // Mostrar el idioma en el que YA ESTÁ la página, de esa forma no se confunde
+        btn.innerHTML = lang === 'en' ? '🇺🇸 EN' : '🇪🇸 ES';
     });
 
     if (lang === 'en') return;

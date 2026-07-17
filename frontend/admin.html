@@ -23,6 +23,7 @@
             <a href="#" id="tab-carousel">Carrusel</a>
             <a href="#" id="tab-settings">Settings Web</a>
             <a href="#" id="tab-legal">Páginas Legales</a>
+            <a href="#" id="tab-donations">Donativos</a>
             <a href="#" id="btn-admin-logout">Cerrar Sesión y Volver</a>
         </nav>
     </aside>
@@ -75,9 +76,16 @@
                 <div class="form-group"><input type="text" id="v-title" placeholder="Título"></div>
                 <div class="form-group"><input type="text" id="v-desc" placeholder="Descripción"></div>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
-                    <div class="form-group"><input type="number" id="v-price" placeholder="Precio Original ($ MXN)"></div>
-                    <div class="form-group"><input type="number" id="v-sale-price" placeholder="Precio Rebaja ($ MXN) (Opcional)"></div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 15px;">
+                    <div class="form-group"><input type="number" id="v-price" placeholder="Precio Original"></div>
+                    <div class="form-group"><input type="number" id="v-sale-price" placeholder="Precio Rebaja (Opcional)"></div>
+                    <div class="form-group">
+                        <select id="v-currency" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.5); color: white;">
+                            <option value="MXN">Pesos (MXN)</option>
+                            <option value="USD">Dólares (USD)</option>
+                            <option value="EUR">Euros (EUR)</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
@@ -149,7 +157,12 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
                     <div class="form-group"><input type="text" id="u-name" placeholder="Nombre completo"></div>
                     <div class="form-group"><input type="email" id="u-email" placeholder="Correo electrónico"></div>
-                    <div class="form-group"><input type="password" id="u-password" placeholder="Contraseña (solo para crear/cambiar)"></div>
+                    <div class="form-group" style="position: relative;">
+                        <input type="password" id="u-password" placeholder="Contraseña (solo para crear/cambiar)" style="padding-right: 40px;">
+                        <button type="button" class="toggle-password" data-target="u-password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #aaa; cursor: pointer;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                    </div>
                     <div class="form-group">
                         <select id="u-role" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.5); color: white;">
                             <option value="Administrador">Administrador</option>
@@ -352,6 +365,16 @@
                         <label style="display:block; margin-bottom:0.5rem; color:#aaa;">Texto del Footer</label>
                         <textarea id="set-footer_text" style="width:100%; height:80px; padding:10px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.2); color:#fff; border-radius:8px; resize:vertical;"></textarea>
                     </div>
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label style="display:block; margin-bottom:0.5rem; color:#aaa;">Texto de Donativos</label>
+                        <textarea id="set-donation_text" style="width:100%; height:80px; padding:10px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.2); color:#fff; border-radius:8px; resize:vertical;"></textarea>
+                    </div>
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label style="display:flex; align-items:center; gap: 10px; color:#f87171; font-weight:bold; cursor:pointer;">
+                            <input type="checkbox" id="set-is_maintenance_mode" style="width:20px; height:20px;">
+                            Pausar el sitio (Modo Mantenimiento)
+                        </label>
+                    </div>
                 </div>
 
                 <!-- Home (Hero) -->
@@ -454,6 +477,29 @@
                     </div>
                 </div>
 
+            </div>
+        </section>
+
+        <section id="view-donations" class="admin-section" style="display:none;">
+            <div class="header-action">
+                <h2>Historial de Donativos</h2>
+            </div>
+            
+            <div style="margin-top:20px; overflow-x:auto;">
+                <table class="data-table" style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Mensaje</th>
+                            <th>Monto</th>
+                        </tr>
+                    </thead>
+                    <tbody id="donations-tbody">
+                        <!-- Llenado dinámicamente -->
+                    </tbody>
+                </table>
             </div>
         </section>
     </main>

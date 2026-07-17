@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         'tab-coupons': 'view-coupons',
         'tab-carousel': 'view-carousel',
         'tab-settings': 'view-settings',
-        'tab-legal': 'view-legal'
+        'tab-legal': 'view-legal',
+        'tab-donations': 'view-donations'
     };
 
     let perms = [];
@@ -35,6 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('tab-carousel').style.display = 'none';
         document.getElementById('tab-settings').style.display = 'none';
         document.getElementById('tab-legal').style.display = 'none';
+        document.getElementById('tab-donations').style.display = 'none';
     }
 
 
@@ -59,6 +61,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (tabId === 'tab-carousel') loadCarousel();
             if (tabId === 'tab-settings') loadSettings();
             if (tabId === 'tab-legal') loadLegalSettings();
+            if (tabId === 'tab-donations') loadDonations();
         });
     }
 
@@ -414,13 +417,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const isPublished = new Date(v.published_at) <= new Date();
                 const pubStatus = isPublished ? '<span style="color:#16a34a;">Publicado</span>' : '<span style="color:#f59e0b;">Programado</span>';
                 const visStatus = v.is_hidden ? '<span style="color:#dc2626;">(Oculto)</span>' : '';
-                const salePrice = v.sale_price ? `<br><span style="color:#16a34a;">$${v.sale_price}</span>` : '';
+                const sym = v.currency === 'EUR' ? '€' : '$';
+                const salePrice = v.sale_price ? `<br><span style="color:#16a34a;">${sym}${v.sale_price} ${v.currency}</span>` : '';
                 const pubDateStr = v.published_at ? new Date(v.published_at).toLocaleString() : '';
                 
                 return `
                 <tr>
                     <td><strong>${v.title}</strong><br><span style="font-size:0.8rem;color:#888;">${v.secure_slug}</span></td>
-                    <td>$${v.price} ${salePrice}</td>
+                    <td>${sym}${v.price} ${v.currency} ${salePrice}</td>
                     <td>${pubStatus} ${visStatus}<br><span style="font-size:0.8rem;color:#aaa;">${pubDateStr}</span></td>
                     <td>
                         <button class="btn-primary sm-btn edit-video-btn" style="background:#2563eb;" 
@@ -429,6 +433,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             data-desc="${(v.description||'').replace(/"/g, '&quot;')}"
                             data-price="${v.price}"
                             data-saleprice="${v.sale_price || ''}"
+                            data-currency="${v.currency || 'MXN'}"
                             data-pub="${v.published_at ? new Date(v.published_at).toISOString().slice(0,16) : ''}"
                             data-hidden="${v.is_hidden}">
                             Editar
@@ -446,6 +451,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     document.getElementById('v-desc').value = e.target.getAttribute('data-desc');
                     document.getElementById('v-price').value = e.target.getAttribute('data-price');
                     document.getElementById('v-sale-price').value = e.target.getAttribute('data-saleprice');
+                    document.getElementById('v-currency').value = e.target.getAttribute('data-currency');
                     document.getElementById('v-published-at').value = e.target.getAttribute('data-pub');
                     document.getElementById('v-is-hidden').checked = e.target.getAttribute('data-hidden') === 'true';
                     
@@ -550,7 +556,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const fields = [
                 'footer_text', 'hero_title', 'hero_subtitle', 'hero_body', 
                 'hero_btn_text', 'hero_card_title', 'hero_card_badge1', 
-                'hero_card_badge2', 'hero_card_image'
+                'hero_card_badge2', 'hero_card_image', 'donation_text'
             ];
             fields.forEach(f => {
                 const el = document.getElementById('set-' + f);
@@ -564,6 +570,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                 }
             });
+            const chk = document.getElementById('set-is_maintenance_mode');
+            if (chk) chk.checked = data['is_maintenance_mode'] === 'true';
         }
     }
 
@@ -571,7 +579,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const fields = [
             'footer_text', 'hero_title', 'hero_subtitle', 'hero_body', 
             'hero_btn_text', 'hero_card_title', 'hero_card_badge1', 
-            'hero_card_badge2', 'hero_card_image'
+            'hero_card_badge2', 'hero_card_image', 'donation_text'
         ];
         
         const payload = {};
@@ -579,6 +587,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             const el = document.getElementById('set-' + f);
             if(el) payload[f] = el.value;
         });
+        const chk = document.getElementById('set-is_maintenance_mode');
+        if (chk) payload['is_maintenance_mode'] = chk.checked ? 'true' : 'false';
 
         const btn = document.getElementById('btn-save-settings');
         btn.textContent = 'Guardando...';
@@ -689,6 +699,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const desc = document.getElementById('v-desc').value;
         const price = document.getElementById('v-price').value;
         const sale_price = document.getElementById('v-sale-price').value;
+        const currency = document.getElementById('v-currency').value;
         const published_at = document.getElementById('v-published-at').value;
         const is_hidden = document.getElementById('v-is-hidden').checked;
         
@@ -755,6 +766,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 description: desc, 
                 price, 
                 sale_price,
+                currency,
                 published_at,
                 is_hidden,
                 images: imagesBase64 
@@ -972,10 +984,48 @@ document.addEventListener('DOMContentLoaded', async () => {
                 alert('Error de red');
             } finally {
                 btnSaveLegal.textContent = 'Guardar Cambios';
-                btnSaveLegal.disabled = false;
             }
         });
     }
+
+    async function loadDonations() {
+        const token = localStorage.getItem('token');
+        try {
+            const res = await fetch('/api/donations', { headers: { 'Authorization': 'Bearer ' + token } });
+            const data = await res.json();
+            const tbody = document.getElementById('donations-tbody');
+            if (tbody && Array.isArray(data)) {
+                tbody.innerHTML = data.map(d => `
+                    <tr>
+                        <td>${new Date(d.created_at).toLocaleString()}</td>
+                        <td><strong>${d.name || 'Anónimo'}</strong></td>
+                        <td>${d.email || '-'}</td>
+                        <td>${d.message || '-'}</td>
+                        <td style="color:#16a34a; font-weight:bold;">$${d.amount}</td>
+                    </tr>
+                `).join('');
+            }
+        } catch (err) {
+            console.error('Error cargando donaciones:', err);
+        }
+    }
+
+    // Lógica para mostrar/ocultar contraseñas
+    document.querySelectorAll('.toggle-password').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const targetId = e.currentTarget.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            if (input) {
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    e.currentTarget.style.color = '#fff';
+                } else {
+                    input.type = 'password';
+                    e.currentTarget.style.color = '#aaa';
+                }
+            }
+        });
+    });
 
     // --- USER CRUD LOGIC ---
     const btnAddUser = document.getElementById('btn-add-user');

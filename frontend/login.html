@@ -137,8 +137,13 @@
                 <h2>LOG IN</h2>
                 <p class="desc">Welcome back to the shop, sweetie!</p>
                 <input type="text" id="email" class="auth-input" value="demo@domain.com" placeholder="Username / Email">
-                <input type="password" id="password" class="auth-input" value="password123" placeholder="Password">
-                <button id="login-btn" class="auth-btn">ENTER SHOP</button>
+                <div class="form-group" style="position: relative;">
+                    <input type="password" id="password" class="auth-input" value="password123" placeholder="Password" style="padding-right: 40px; margin-bottom: 0;">
+                    <button type="button" class="toggle-password" data-target="password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #aaa; cursor: pointer;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </button>
+                </div>
+                <button id="login-btn" class="auth-btn" style="margin-top: 15px;">ENTER SHOP</button>
                 <div style="margin-top: 15px;">
                     <a href="/forgot-password.html" style="color: #aaa; font-size: 0.9rem; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='#aaa'">Forgot password?</a>
                 </div>
@@ -152,7 +157,12 @@
                 <p class="desc">Join the elite club of shiny bald heads.</p>
                 <input type="text" id="reg-name" class="auth-input" placeholder="Name">
                 <input type="email" id="reg-email" class="auth-input" placeholder="E-mail address">
-                <input type="password" id="reg-password" class="auth-input" placeholder="Password">
+                <div class="form-group" style="position: relative;">
+                    <input type="password" id="reg-password" class="auth-input" placeholder="Password" style="padding-right: 40px; margin-bottom: 0;">
+                    <button type="button" class="toggle-password" data-target="reg-password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #aaa; cursor: pointer;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </button>
+                </div>
                 <button id="register-btn" class="auth-btn secondary">CREATE ACCOUNT</button>
                 <p id="reg-error-msg" class="error-text" style="display:none; color: var(--error); margin-top: 1rem;"></p>
                 <p id="reg-success-msg" style="display:none; color: #16a34a; margin-top: 1rem;"></p>
@@ -200,6 +210,23 @@
                 if(cc) cc.textContent = cart.length;
             };
             updateCartCount();
+        });
+
+        // Lógica para mostrar/ocultar contraseñas
+        document.querySelectorAll('.toggle-password').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const targetId = e.currentTarget.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                if (input) {
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        e.currentTarget.style.color = '#fff';
+                    } else {
+                        input.type = 'password';
+                        e.currentTarget.style.color = '#aaa';
+                    }
+                }
+            });
         });
 
         document.getElementById('login-btn').addEventListener('click', async () => {

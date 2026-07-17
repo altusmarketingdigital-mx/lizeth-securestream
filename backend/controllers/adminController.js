@@ -165,7 +165,7 @@ exports.getVideos = async (req, res) => {
 };
 
 exports.addVideo = async (req, res) => {
-    const { title, description, internal_storage_path, price, images, sale_price, is_hidden, published_at } = req.body;
+    const { title, description, internal_storage_path, price, images, sale_price, is_hidden, published_at, currency } = req.body;
     
     // Generamos un slug seguro aleatorio para la URL de streaming
     const secure_slug = 'v-' + Math.random().toString(36).substring(2, 9);
@@ -173,14 +173,15 @@ exports.addVideo = async (req, res) => {
     const sPrice = sale_price ? parseFloat(sale_price) : null;
     const hidden = is_hidden === true || is_hidden === 'true';
     const pubDate = published_at || new Date().toISOString();
+    const curr = currency || 'MXN';
     const videoId = uuidv4();
     
     try {
         await db.query('BEGIN');
 
         await db.query(
-            'INSERT INTO videos (id, title, description, price, secure_slug, internal_storage_path, sale_price, is_hidden, published_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
-            [videoId, title, description, videoPrice, secure_slug, internal_storage_path, sPrice, hidden, pubDate]
+            'INSERT INTO videos (id, title, description, price, secure_slug, internal_storage_path, sale_price, is_hidden, published_at, currency) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)',
+            [videoId, title, description, videoPrice, secure_slug, internal_storage_path, sPrice, hidden, pubDate, curr]
         );
 
         if (images && Array.isArray(images) && images.length > 0) {
@@ -206,22 +207,23 @@ exports.addVideo = async (req, res) => {
 exports.updateVideo = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, description, internal_storage_path, price, sale_price, is_hidden, published_at } = req.body;
+        const { title, description, internal_storage_path, price, sale_price, is_hidden, published_at, currency } = req.body;
         
         const videoPrice = parseFloat(price) || 0;
         const sPrice = sale_price ? parseFloat(sale_price) : null;
         const hidden = is_hidden === true || is_hidden === 'true';
         const pubDate = published_at || new Date().toISOString();
+        const curr = currency || 'MXN';
         
         if (internal_storage_path) {
             await db.query(
-                'UPDATE videos SET title = $1, description = $2, price = $3, internal_storage_path = $4, sale_price = $5, is_hidden = $6, published_at = $7 WHERE id = $8',
-                [title, description, videoPrice, internal_storage_path, sPrice, hidden, pubDate, id]
+                'UPDATE videos SET title = $1, description = $2, price = $3, internal_storage_path = $4, sale_price = $5, is_hidden = $6, published_at = $7, currency = $8 WHERE id = $9',
+                [title, description, videoPrice, internal_storage_path, sPrice, hidden, pubDate, curr, id]
             );
         } else {
             await db.query(
-                'UPDATE videos SET title = $1, description = $2, price = $3, sale_price = $4, is_hidden = $5, published_at = $6 WHERE id = $7',
-                [title, description, videoPrice, sPrice, hidden, pubDate, id]
+                'UPDATE videos SET title = $1, description = $2, price = $3, sale_price = $4, is_hidden = $5, published_at = $6, currency = $7 WHERE id = $8',
+                [title, description, videoPrice, sPrice, hidden, pubDate, curr, id]
             );
         }
         
