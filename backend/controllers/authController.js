@@ -36,8 +36,9 @@ exports.login = async (req, res) => {
         );
 
         // 2. Actualizar la base de datos con el nuevo token, invalidando automáticamente el anterior
+        const ipAddress = req.ip || null;
         await db.query('UPDATE users SET current_session_token = $1, last_login_ip = $2 WHERE id = $3', [
-            sessionToken, req.ip, user.id
+            sessionToken, ipAddress, user.id
         ]);
 
         // 3. Enviar Cookie y respuesta
