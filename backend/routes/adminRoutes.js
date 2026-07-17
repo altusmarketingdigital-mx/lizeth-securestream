@@ -32,6 +32,7 @@ router.put('/videos/:id', adminController.updateVideo);
 router.delete('/videos/:id', adminController.deleteVideo);
 router.get('/get-upload-url', adminController.getUploadUrl);
 router.post('/users', adminController.createUser);
+router.post('/fix-cors', adminController.fixCors);
 router.put('/users/:id', adminController.updateUser);
 router.delete('/users/:id', adminController.deleteUser);
 router.put('/users/:id/toggle-block', adminController.toggleUserBlock);

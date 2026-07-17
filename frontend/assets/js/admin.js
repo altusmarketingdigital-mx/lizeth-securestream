@@ -618,6 +618,34 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
+    const btnFixCors = document.getElementById('btn-fix-cors');
+    if (btnFixCors) {
+        btnFixCors.addEventListener('click', async () => {
+            btnFixCors.textContent = 'Aplicando...';
+            btnFixCors.disabled = true;
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch('/api/admin/fix-cors', {
+                    method: 'POST',
+                    headers: { 
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    alert(data.message || 'Permisos CORS aplicados correctamente en S3.');
+                } else {
+                    alert('Error: ' + (data.error || 'No se pudo configurar CORS'));
+                }
+            } catch(e) {
+                alert('Error de red al contactar al servidor.');
+            } finally {
+                btnFixCors.textContent = 'Reparar Permisos CORS de Amazon S3';
+                btnFixCors.disabled = false;
+            }
+        });
+    }
+
     // Image Handlers for Settings
     ['logo_url', 'hero_card_image'].forEach(f => {
         const fileInput = document.getElementById('file-' + f);

@@ -1,7 +1,7 @@
 const db = require('../config/database');
 const { randomUUID: uuidv4 } = require('crypto');
 const bcrypt = require('bcryptjs');
-const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const { S3Client, PutObjectCommand, PutBucketCorsCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
 // Configuración S3 (AWS o Cloudflare R2)
@@ -35,6 +35,29 @@ exports.getUploadUrl = async (req, res) => {
     } catch (error) {
         console.error('Error generando Presigned URL:', error);
         res.status(500).json({ error: 'Error interno de almacenamiento' });
+    }
+};
+
+exports.fixCors = async (req, res) => {
+    try {
+        const command = new PutBucketCorsCommand({
+            Bucket: process.env.AWS_BUCKET_NAME || 'my-bucket',
+            CORSConfiguration: {
+                CORSRules: [
+                    {
+                        AllowedHeaders: ["*"],
+                        AllowedMethods: ["PUT", "POST", "GET", "HEAD"],
+                        AllowedOrigins: ["*"],
+                        ExposeHeaders: []
+                    }
+                ]
+            }
+        });
+        await s3.send(command);
+        res.json({ message: 'CORS configurado exitosamente. Ya puedes intentar subir el video nuevamente.' });
+    } catch (error) {
+        console.error('Error configurando CORS:', error);
+        res.status(500).json({ error: 'Error configurando CORS automáticamente.', details: error.message });
     }
 };
 
