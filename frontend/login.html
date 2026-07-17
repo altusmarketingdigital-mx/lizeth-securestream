@@ -150,8 +150,12 @@
             <div class="auth-col">
                 <h2>REGISTER</h2>
                 <p class="desc">Join the elite club of shiny bald heads.</p>
-                <input type="email" class="auth-input" placeholder="E-mail address">
-                <button class="auth-btn secondary" onclick="alert('Registration is currently disabled in demo mode.')">CREATE ACCOUNT</button>
+                <input type="text" id="reg-name" class="auth-input" placeholder="Name">
+                <input type="email" id="reg-email" class="auth-input" placeholder="E-mail address">
+                <input type="password" id="reg-password" class="auth-input" placeholder="Password">
+                <button id="register-btn" class="auth-btn secondary">CREATE ACCOUNT</button>
+                <p id="reg-error-msg" class="error-text" style="display:none; color: var(--error); margin-top: 1rem;"></p>
+                <p id="reg-success-msg" style="display:none; color: #16a34a; margin-top: 1rem;"></p>
             </div>
         </div>
     </main>
@@ -236,6 +240,58 @@
                 errorMsg.style.display = 'block';
             } finally {
                 btn.textContent = 'ENTER SHOP';
+                btn.disabled = false;
+            }
+        });
+
+        document.getElementById('register-btn').addEventListener('click', async () => {
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            const errorMsg = document.getElementById('reg-error-msg');
+            const successMsg = document.getElementById('reg-success-msg');
+            const btn = document.getElementById('register-btn');
+            
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+
+            if (!email || !password) {
+                errorMsg.textContent = 'El correo y la contraseña son requeridos';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            btn.textContent = 'Creando cuenta...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const data = await res.json();
+                
+                if (res.ok) {
+                    successMsg.textContent = '¡Cuenta creada! Ahora puedes iniciar sesión.';
+                    successMsg.style.display = 'block';
+                    document.getElementById('email').value = email;
+                    document.getElementById('password').value = password;
+                    
+                    // Limpiar el form de registro
+                    document.getElementById('reg-name').value = '';
+                    document.getElementById('reg-email').value = '';
+                    document.getElementById('reg-password').value = '';
+                } else {
+                    errorMsg.textContent = data.error || 'Error al registrar la cuenta';
+                    errorMsg.style.display = 'block';
+                }
+            } catch (err) {
+                errorMsg.textContent = 'Error de conexión';
+                errorMsg.style.display = 'block';
+            } finally {
+                btn.textContent = 'CREATE ACCOUNT';
                 btn.disabled = false;
             }
         });

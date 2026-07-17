@@ -60,6 +60,28 @@ exports.login = async (req, res) => {
     }
 };
 
+exports.register = async (req, res) => {
+    try {
+        const { name, email, password } = req.body;
+        if (!email || !password) return res.status(400).json({ error: 'Email y contraseña son requeridos' });
+
+        const exist = await db.query('SELECT id FROM users WHERE email = $1', [email]);
+        if (exist.rows.length > 0) return res.status(400).json({ error: 'El correo ya está registrado' });
+
+        const passwordHash = await bcrypt.hash(password, 10);
+        
+        await db.query(
+            'INSERT INTO users (email, password_hash, name, is_admin) VALUES ($1, $2, $3, false)',
+            [email, passwordHash, name || email.split('@')[0]]
+        );
+
+        res.status(201).json({ message: 'Usuario registrado exitosamente' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al registrar usuario' });
+    }
+};
+
 exports.logout = async (req, res) => {
     if (req.user) {
         await db.query('UPDATE users SET current_session_token = NULL WHERE id = $1', [req.user.id]);
