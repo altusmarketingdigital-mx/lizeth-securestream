@@ -127,9 +127,15 @@
                         <div class="card-content" style="padding: 1rem 0;">
                             <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem; cursor: pointer;" onclick="window.location.href='/product.html?id=${v.id}'">
                                 <h3 style="margin: 0; color: var(--primary); font-size: 1.1rem; text-transform: uppercase;">${v.title}</h3>
-                                <span class="price-tag" style="color: var(--sec-1); font-size: 1.1rem;">${window.formatPrice ? window.formatPrice(v.price) : '$' + v.price}</span>
+                                <div class="price-container" style="text-align: right;">
+                                    ${v.sale_price 
+                                        ? `<span style="text-decoration: line-through; opacity: 0.6; font-size: 0.9rem; margin-right: 5px;">${window.formatPrice ? window.formatPrice(v.price) : '$' + v.price}</span>
+                                           <span class="price-tag" style="color: var(--sec-1); font-size: 1.1rem; font-weight: bold;">${window.formatPrice ? window.formatPrice(v.sale_price) : '$' + v.sale_price}</span>` 
+                                        : `<span class="price-tag" style="color: var(--sec-1); font-size: 1.1rem;">${window.formatPrice ? window.formatPrice(v.price) : '$' + v.price}</span>`
+                                    }
+                                </div>
                             </div>
-                            <button onclick="addToCart('${v.id}', '${v.title}', ${v.price})" class="btn-primary">ADD TO CART</button>
+                            <button onclick="addToCart('${v.id}', '${v.title}', ${v.sale_price || v.price})" class="btn-primary">ADD TO CART</button>
                         </div>
                     </div>
                     `;

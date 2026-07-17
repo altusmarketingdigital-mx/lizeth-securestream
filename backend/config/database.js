@@ -62,6 +62,12 @@ async function initializeDatabase() {
             );
         `);
 
+        // Ensure video columns exist
+        await pool.query(`ALTER TABLE videos ADD COLUMN IF NOT EXISTS is_hidden BOOLEAN DEFAULT false;`);
+        await pool.query(`ALTER TABLE videos ADD COLUMN IF NOT EXISTS is_deleted BOOLEAN DEFAULT false;`);
+        await pool.query(`ALTER TABLE videos ADD COLUMN IF NOT EXISTS published_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;`);
+        await pool.query(`ALTER TABLE videos ADD COLUMN IF NOT EXISTS sale_price NUMERIC(10, 2) DEFAULT NULL;`);
+
         await pool.query(`
             CREATE TABLE IF NOT EXISTS purchases (
                 id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -76,6 +82,16 @@ async function initializeDatabase() {
         // Añadir nuevas columnas si no existen
         await pool.query(`ALTER TABLE purchases ADD COLUMN IF NOT EXISTS order_number VARCHAR(100);`);
         await pool.query(`ALTER TABLE purchases ADD COLUMN IF NOT EXISTS country VARCHAR(50);`);
+        await pool.query(`ALTER TABLE purchases ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'exitoso';`);
+        await pool.query(`ALTER TABLE purchases ADD COLUMN IF NOT EXISTS amount NUMERIC(10, 2) DEFAULT 0.00;`);
+        
+        // Retroactivamente poner un amount en base al precio del video para purchases antiguos (opcional, pero útil)
+        await pool.query(`
+            UPDATE purchases 
+            SET amount = v.price 
+            FROM videos v 
+            WHERE purchases.video_id = v.id AND purchases.amount = 0.00;
+        `);
 
         await pool.query(`
             CREATE TABLE IF NOT EXISTS coupons (

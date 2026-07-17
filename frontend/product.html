@@ -289,11 +289,19 @@
                     </div>
                     <div class="product-details">
                         <h2>${product.title}</h2>
-                        <span class="product-price">${window.formatPrice ? window.formatPrice(product.price) : '$' + product.price}</span>
+                        
+                        <div class="price-container" style="margin-bottom: 2rem;">
+                            ${product.sale_price 
+                                ? `<span style="text-decoration: line-through; opacity: 0.6; font-size: 1.2rem; margin-right: 10px;">${window.formatPrice ? window.formatPrice(product.price) : '$' + product.price}</span>
+                                   <span class="product-price" style="color: var(--sec-1); font-weight: bold;">${window.formatPrice ? window.formatPrice(product.sale_price) : '$' + product.sale_price}</span>` 
+                                : `<span class="product-price">${window.formatPrice ? window.formatPrice(product.price) : '$' + product.price}</span>`
+                            }
+                        </div>
+
                         <div class="product-description">
                             ${descHTML}
                         </div>
-                        <button class="btn-add" onclick="addToCart('${product.id}', '${product.title}', ${product.price})">ADD TO CART</button>
+                        <button onclick="addToCart('${product.id}', '${product.title.replace(/'/g, "\\'")}', ${product.sale_price || product.price})" class="btn-primary" style="width: 100%; font-size: 1.2rem; margin-top: 2rem;">AÑADIR AL CARRITO</button>
                     </div>
                 `;
             }

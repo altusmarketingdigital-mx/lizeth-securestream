@@ -340,35 +340,36 @@ document.addEventListener('DOMContentLoaded', async () => {
         const tbody = document.getElementById('sales-tbody');
         if (!tbody) return;
 
-        let totalRevenue = 0;
-        let totalCount = sales.length;
-
         tbody.innerHTML = sales.map(s => {
-            const price = parseFloat(s.video_price) || 0;
-            totalRevenue += price;
             const orderNum = s.order_number || '<em style="color:#666;">N/A</em>';
             const country = s.country || '<em style="color:#666;">N/A</em>';
+            const status = s.status || 'exitoso';
+            const amount = parseFloat(s.amount) || 0;
+            
+            let statusColor = '#16a34a'; // verde
+            if (status.toLowerCase() === 'cancelado') statusColor = '#dc2626'; // rojo
+            if (status.toLowerCase() === 'rechazado') statusColor = '#f59e0b'; // naranja
+            
             return `
             <tr>
                 <td>${new Date(s.purchase_date).toLocaleString()}</td>
                 <td><code style="background:rgba(255,255,255,0.1); padding:2px 5px; border-radius:4px;">${orderNum}</code></td>
                 <td>
-                    <div style="display:flex; flex-direction:column;">
-                        <span style="font-weight:bold;">${s.user_name || '<em style="color:#888;">Sin Nombre</em>'}</span>
-                        <span style="font-size:0.85rem; color:#aaa;">${s.user_email}</span>
-                    </div>
+                    <div style="font-weight:bold;">${s.user_name || 'Desconocido'}</div>
+                    <div style="font-size:0.85rem; color:#aaa;">${s.user_email || ''}</div>
                 </td>
                 <td>${country}</td>
                 <td>${s.video_title}</td>
-                <td style="color:#16a34a; font-weight:bold;">$${price.toFixed(2)}</td>
+                <td><span style="background:${statusColor}; color:#fff; padding:2px 6px; border-radius:4px; font-size:0.8rem; text-transform:uppercase;">${status}</span></td>
+                <td style="color:#16a34a; font-weight:bold;">$${amount.toFixed(2)}</td>
             </tr>
             `;
         }).join('');
 
         const countEl = document.getElementById('sales-count');
         const revEl = document.getElementById('sales-revenue');
-        if(countEl) countEl.textContent = totalCount;
-        if(revEl) revEl.textContent = '$' + totalRevenue.toFixed(2);
+        if(countEl) countEl.textContent = sales.length;
+        if(revEl) revEl.textContent = '$' + sales.reduce((acc, s) => acc + (parseFloat(s.amount) || 0), 0).toFixed(2);
     }
 
     async function loadSales() {
@@ -409,13 +410,68 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = await apiGet('/api/admin/videos');
         if (data) {
             const tbody = document.getElementById('videos-tbody');
-            tbody.innerHTML = data.map(v => `
+            tbody.innerHTML = data.map(v => {
+                const isPublished = new Date(v.published_at) <= new Date();
+                const pubStatus = isPublished ? '<span style="color:#16a34a;">Publicado</span>' : '<span style="color:#f59e0b;">Programado</span>';
+                const visStatus = v.is_hidden ? '<span style="color:#dc2626;">(Oculto)</span>' : '';
+                const salePrice = v.sale_price ? `<br><span style="color:#16a34a;">$${v.sale_price}</span>` : '';
+                const pubDateStr = v.published_at ? new Date(v.published_at).toLocaleString() : '';
+                
+                return `
                 <tr>
-                    <td>${v.title}</td>
-                    <td><code>${v.secure_slug}</code></td>
-                    <td>${new Date(v.created_at).toLocaleDateString()}</td>
+                    <td><strong>${v.title}</strong><br><span style="font-size:0.8rem;color:#888;">${v.secure_slug}</span></td>
+                    <td>$${v.price} ${salePrice}</td>
+                    <td>${pubStatus} ${visStatus}<br><span style="font-size:0.8rem;color:#aaa;">${pubDateStr}</span></td>
+                    <td>
+                        <button class="btn-primary sm-btn edit-video-btn" style="background:#2563eb;" 
+                            data-id="${v.id}" 
+                            data-title="${v.title.replace(/"/g, '&quot;')}" 
+                            data-desc="${(v.description||'').replace(/"/g, '&quot;')}"
+                            data-price="${v.price}"
+                            data-saleprice="${v.sale_price || ''}"
+                            data-pub="${v.published_at ? new Date(v.published_at).toISOString().slice(0,16) : ''}"
+                            data-hidden="${v.is_hidden}">
+                            Editar
+                        </button>
+                        <button class="btn-primary sm-btn delete-video-btn" style="background:#dc2626;" data-id="${v.id}">Eliminar</button>
+                    </td>
                 </tr>
-            `).join('');
+                `;
+            }).join('');
+
+            document.querySelectorAll('.edit-video-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.getElementById('v-id').value = e.target.getAttribute('data-id');
+                    document.getElementById('v-title').value = e.target.getAttribute('data-title');
+                    document.getElementById('v-desc').value = e.target.getAttribute('data-desc');
+                    document.getElementById('v-price').value = e.target.getAttribute('data-price');
+                    document.getElementById('v-sale-price').value = e.target.getAttribute('data-saleprice');
+                    document.getElementById('v-published-at').value = e.target.getAttribute('data-pub');
+                    document.getElementById('v-is-hidden').checked = e.target.getAttribute('data-hidden') === 'true';
+                    
+                    document.getElementById('add-video-form').style.display = 'block';
+                    document.getElementById('add-video-form').scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+
+            document.querySelectorAll('.delete-video-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    if (confirm('¿Estás seguro de que deseas eliminar (ocultar) este video? Los clientes que ya lo compraron seguirán teniendo acceso.')) {
+                        const id = e.target.getAttribute('data-id');
+                        const token = localStorage.getItem('token');
+                        const res = await fetch('/api/admin/videos/' + id, {
+                            method: 'DELETE',
+                            headers: { 'Authorization': 'Bearer ' + token }
+                        });
+                        if (res.ok) {
+                            alert('Video eliminado exitosamente');
+                            loadVideos();
+                        } else {
+                            alert('Error al eliminar video');
+                        }
+                    }
+                });
+            });
         }
     }
 
@@ -628,14 +684,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     document.getElementById('submit-video').addEventListener('click', async () => {
+        const id = document.getElementById('v-id').value;
         const title = document.getElementById('v-title').value;
         const desc = document.getElementById('v-desc').value;
         const price = document.getElementById('v-price').value;
+        const sale_price = document.getElementById('v-sale-price').value;
+        const published_at = document.getElementById('v-published-at').value;
+        const is_hidden = document.getElementById('v-is-hidden').checked;
         
         const videoInput = document.getElementById('v-file');
         const videoFile = videoInput.files[0];
 
-        if(!title || !videoFile || !price) return alert('Título, precio y archivo de video son requeridos');
+        if(!title || !price) return alert('Título y precio son requeridos');
+        if(!id && !videoFile) return alert('Debes seleccionar un archivo de video para nuevos cursos');
 
         const submitBtn = document.getElementById('submit-video');
         const originalText = submitBtn.textContent;
@@ -643,69 +704,94 @@ document.addEventListener('DOMContentLoaded', async () => {
         submitBtn.disabled = true;
 
         try {
-            // 1. Obtener Presigned URL
-            const presignRes = await fetch(`/api/admin/get-upload-url?fileName=${encodeURIComponent(videoFile.name)}&fileType=${encodeURIComponent(videoFile.type)}`);
-            if (!presignRes.ok) throw new Error('No se pudo obtener la URL de subida. Verifica tus claves AWS.');
-            const { uploadUrl, fileKey } = await presignRes.json();
+            let fileKey = null;
 
-            // 2. Subir directo a S3 con Barra de Progreso
-            const progressContainer = document.getElementById('upload-progress-container');
-            const progressBar = document.getElementById('upload-progress-bar');
-            const progressText = document.getElementById('upload-percent');
-            
-            progressContainer.style.display = 'block';
+            if (videoFile) {
+                // 1. Obtener Presigned URL
+                const presignRes = await fetch(`/api/admin/get-upload-url?fileName=${encodeURIComponent(videoFile.name)}&fileType=${encodeURIComponent(videoFile.type)}`);
+                if (!presignRes.ok) throw new Error('No se pudo obtener la URL de subida. Verifica tus claves AWS.');
+                const uploadData = await presignRes.json();
+                fileKey = uploadData.fileKey;
 
-            await new Promise((resolve, reject) => {
-                const xhr = new XMLHttpRequest();
-                xhr.open('PUT', uploadUrl, true);
-                xhr.setRequestHeader('Content-Type', videoFile.type);
+                // 2. Subir directo a S3 con Barra de Progreso
+                const progressContainer = document.getElementById('upload-progress-container');
+                const progressBar = document.getElementById('upload-progress-bar');
+                const progressText = document.getElementById('upload-percent');
                 
-                xhr.upload.onprogress = (e) => {
-                    if (e.lengthComputable) {
-                        const percent = Math.round((e.loaded / e.total) * 100);
-                        progressBar.style.width = percent + '%';
-                        progressText.textContent = percent + '%';
-                    }
-                };
-                
-                xhr.onload = () => {
-                    if (xhr.status >= 200 && xhr.status < 300) {
-                        resolve();
-                    } else {
-                        reject(new Error('Falló la subida a S3'));
-                    }
-                };
-                xhr.onerror = () => reject(new Error('Error de red al subir a S3'));
-                xhr.send(videoFile);
-            });
+                progressContainer.style.display = 'block';
+
+                await new Promise((resolve, reject) => {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('PUT', uploadData.uploadUrl, true);
+                    xhr.setRequestHeader('Content-Type', videoFile.type);
+                    
+                    xhr.upload.onprogress = (e) => {
+                        if (e.lengthComputable) {
+                            const percent = Math.round((e.loaded / e.total) * 100);
+                            progressBar.style.width = percent + '%';
+                            progressText.textContent = percent + '%';
+                        }
+                    };
+                    
+                    xhr.onload = () => {
+                        if (xhr.status >= 200 && xhr.status < 300) {
+                            resolve();
+                        } else {
+                            reject(new Error('Falló la subida a S3'));
+                        }
+                    };
+                    xhr.onerror = () => reject(new Error('Error de red al subir a S3'));
+                    xhr.send(videoFile);
+                });
+            }
 
             // 3. Subir metadatos e imágenes a la DB
             submitBtn.textContent = 'Guardando datos...';
             const imagesBase64 = selectedImages.map(img => img.data);
+            const token = localStorage.getItem('token');
 
-            const res = await fetch('/api/admin/videos', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    title, 
-                    description: desc, 
-                    price, 
-                    internal_storage_path: fileKey, 
-                    images: imagesBase64 
-                })
+            const payload = { 
+                title, 
+                description: desc, 
+                price, 
+                sale_price,
+                published_at,
+                is_hidden,
+                images: imagesBase64 
+            };
+            if (fileKey) payload.internal_storage_path = fileKey;
+
+            const url = id ? `/api/admin/videos/${id}` : '/api/admin/videos';
+            const method = id ? 'PUT' : 'POST';
+
+            const res = await fetch(url, {
+                method: method,
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify(payload)
             });
 
             if (res.ok) {
-                alert('Video agregado exitosamente a la Nube');
+                alert(`Video ${id ? 'actualizado' : 'agregado'} exitosamente`);
                 document.getElementById('add-video-form').style.display = 'none';
                 
                 // Limpiar form
+                document.getElementById('v-id').value = '';
                 document.getElementById('v-title').value = '';
                 document.getElementById('v-desc').value = '';
                 document.getElementById('v-price').value = '';
+                document.getElementById('v-sale-price').value = '';
+                document.getElementById('v-published-at').value = '';
+                document.getElementById('v-is-hidden').checked = false;
                 videoInput.value = '';
-                progressContainer.style.display = 'none';
-                progressBar.style.width = '0%';
+                
+                const progressContainer = document.getElementById('upload-progress-container');
+                if(progressContainer) {
+                    progressContainer.style.display = 'none';
+                    document.getElementById('upload-progress-bar').style.width = '0%';
+                }
                 
                 selectedImages = [];
                 updateImagePreviews();

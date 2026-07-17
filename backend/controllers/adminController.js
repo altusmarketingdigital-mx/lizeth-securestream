@@ -157,7 +157,7 @@ exports.deleteUser = async (req, res) => {
 
 exports.getVideos = async (req, res) => {
     try {
-        const result = await db.query('SELECT * FROM videos ORDER BY created_at DESC');
+        const result = await db.query('SELECT * FROM videos WHERE is_deleted = false ORDER BY created_at DESC');
         res.json(result.rows);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener videos' });
@@ -165,19 +165,22 @@ exports.getVideos = async (req, res) => {
 };
 
 exports.addVideo = async (req, res) => {
-    const { title, description, internal_storage_path, price, images } = req.body;
+    const { title, description, internal_storage_path, price, images, sale_price, is_hidden, published_at } = req.body;
     
     // Generamos un slug seguro aleatorio para la URL de streaming
     const secure_slug = 'v-' + Math.random().toString(36).substring(2, 9);
     const videoPrice = parseFloat(price) || 0;
+    const sPrice = sale_price ? parseFloat(sale_price) : null;
+    const hidden = is_hidden === true || is_hidden === 'true';
+    const pubDate = published_at || new Date().toISOString();
     const videoId = uuidv4();
     
     try {
         await db.query('BEGIN');
 
         await db.query(
-            'INSERT INTO videos (id, title, description, price, secure_slug, internal_storage_path) VALUES ($1, $2, $3, $4, $5, $6)',
-            [videoId, title, description, videoPrice, secure_slug, internal_storage_path]
+            'INSERT INTO videos (id, title, description, price, secure_slug, internal_storage_path, sale_price, is_hidden, published_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
+            [videoId, title, description, videoPrice, secure_slug, internal_storage_path, sPrice, hidden, pubDate]
         );
 
         if (images && Array.isArray(images) && images.length > 0) {
@@ -200,10 +203,50 @@ exports.addVideo = async (req, res) => {
     }
 };
 
+exports.updateVideo = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title, description, internal_storage_path, price, sale_price, is_hidden, published_at } = req.body;
+        
+        const videoPrice = parseFloat(price) || 0;
+        const sPrice = sale_price ? parseFloat(sale_price) : null;
+        const hidden = is_hidden === true || is_hidden === 'true';
+        const pubDate = published_at || new Date().toISOString();
+        
+        if (internal_storage_path) {
+            await db.query(
+                'UPDATE videos SET title = $1, description = $2, price = $3, internal_storage_path = $4, sale_price = $5, is_hidden = $6, published_at = $7 WHERE id = $8',
+                [title, description, videoPrice, internal_storage_path, sPrice, hidden, pubDate, id]
+            );
+        } else {
+            await db.query(
+                'UPDATE videos SET title = $1, description = $2, price = $3, sale_price = $4, is_hidden = $5, published_at = $6 WHERE id = $7',
+                [title, description, videoPrice, sPrice, hidden, pubDate, id]
+            );
+        }
+        
+        res.json({ success: true, message: 'Video actualizado exitosamente' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al actualizar video' });
+    }
+};
+
+exports.deleteVideo = async (req, res) => {
+    try {
+        const { id } = req.params;
+        await db.query('UPDATE videos SET is_deleted = true WHERE id = $1', [id]);
+        res.json({ success: true, message: 'Video ocultado/eliminado exitosamente' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al eliminar video' });
+    }
+};
+
 exports.getSales = async (req, res) => {
     try {
         const query = `
-            SELECT p.id as purchase_id, p.purchase_date, p.order_number, p.country,
+            SELECT p.id as purchase_id, p.purchase_date, p.order_number, p.country, p.status, p.amount,
                    u.email as user_email, u.name as user_name, 
                    v.title as video_title, v.price as video_price
             FROM purchases p
@@ -216,6 +259,27 @@ exports.getSales = async (req, res) => {
     } catch (error) {
         console.error('Error al obtener ventas:', error);
         res.status(500).json({ error: 'Error al obtener historial de ventas' });
+    }
+};
+
+exports.getSalesAnalytics = async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                COUNT(*) as total_units,
+                SUM(amount) as total_revenue
+            FROM purchases
+            WHERE status = 'exitoso'
+        `;
+        const result = await db.query(query);
+        const data = result.rows[0];
+        res.json({
+            total_units: parseInt(data.total_units || 0),
+            total_revenue: parseFloat(data.total_revenue || 0)
+        });
+    } catch (error) {
+        console.error('Error al obtener analíticas de ventas:', error);
+        res.status(500).json({ error: 'Error al obtener analíticas' });
     }
 };
 

@@ -4,7 +4,14 @@ const path = require('path');
 
 exports.getCatalog = async (req, res) => {
     try {
-        const result = await db.query('SELECT id, title, description, price, secure_slug FROM videos ORDER BY created_at DESC');
+        const result = await db.query(`
+            SELECT id, title, description, price, sale_price, secure_slug 
+            FROM videos 
+            WHERE is_hidden = false 
+              AND is_deleted = false 
+              AND published_at <= CURRENT_TIMESTAMP
+            ORDER BY created_at DESC
+        `);
         res.json(result.rows);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener catálogo' });
