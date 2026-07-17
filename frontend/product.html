@@ -207,6 +207,7 @@
             const productId = urlParams.get('id');
             const container = document.getElementById('product-container');
             let currentProduct = null;
+            let videosList = [];
 
             if (!productId) {
                 container.innerHTML = '<p style="text-align:center;width:100%;">Producto no encontrado.</p>';
@@ -217,8 +218,8 @@
                 try {
                     // Fetch all videos and find the matching one
                     const res = await fetch('/api/videos/catalog');
-                    const videos = await res.json();
-                    currentProduct = videos.find(v => v.id === productId);
+                    videosList = await res.json();
+                    currentProduct = videosList.find(v => v.id === productId);
 
                     if (!currentProduct) {
                         container.innerHTML = '<p style="text-align:center;width:100%;">Producto no encontrado en el catálogo.</p>';
@@ -246,7 +247,7 @@
                     'photo-1593720213428-28a5b9e94613'
                 ];
                 
-                const productIndex = videos.findIndex(v => v.id === productId);
+                const productIndex = videosList.findIndex(v => v.id === productId);
                 const coverId = covers[Math.max(0, productIndex) % covers.length];
 
                 // Obtener imágenes del backend

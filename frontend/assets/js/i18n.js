@@ -85,7 +85,16 @@ const dictEN_to_ES = {
     "Join the elite club of shiny bald heads.": "Únete al club de élite de los mejores.",
     "Name": "Nombre",
     "E-mail address": "Correo electrónico",
-    "CREATE ACCOUNT": "CREAR CUENTA"
+    "CREATE ACCOUNT": "CREAR CUENTA",
+
+    // Donations
+    "💖  Support the Production": "💖  Apoya la Producción",
+    "Every donation helps me create better content and buy better equipment. Thank you for your support!": "Cada donativo me permite crear mejor contenido y comprar mejores equipos. ¡Gracias por tu apoyo!",
+    "Your Name (Optional)": "Tu Nombre (Opcional)",
+    "Your Email (Optional)": "Tu Email (Opcional)",
+    "Leave me a special message...": "Déjame un mensaje especial...",
+    "Other amount": "Otro monto",
+    "Donate with Card": "Donar con Tarjeta"
 };
 
 function initLanguage() {
