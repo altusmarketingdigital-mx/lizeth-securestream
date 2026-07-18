@@ -731,9 +731,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         counter.textContent = `(${selectedImages.length} / 10)`;
         container.innerHTML = selectedImages.map((img, index) => `
-            <div style="position: relative; width: 80px; height: 80px; border-radius: 5px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
+            <div style="position: relative; width: 100px; height: 100px; border-radius: 5px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
                 <img src="${img.data}" style="width: 100%; height: 100%; object-fit: cover;">
-                <button type="button" onclick="removeImage(${index})" style="position: absolute; top: 2px; right: 2px; background: rgba(220, 38, 38, 0.9); border: none; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center;">✕</button>
+                <button type="button" onclick="removeImage(${index})" style="position: absolute; top: 2px; right: 2px; background: rgba(220, 38, 38, 0.9); border: none; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10;" title="Eliminar">✕</button>
+                ${index === 0 
+                    ? `<div style="position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(16, 185, 129, 0.9); color: white; font-size: 0.65rem; text-align: center; padding: 3px 0; font-weight: bold; pointer-events: none;">PORTADA</div>`
+                    : `<button type="button" onclick="makeCover(${index})" style="position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0, 0, 0, 0.7); color: white; border: none; font-size: 0.65rem; text-align: center; padding: 3px 0; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(37, 99, 235, 0.9)'" onmouseout="this.style.background='rgba(0, 0, 0, 0.7)'">Hacer Portada</button>`
+                }
             </div>
         `).join('');
     }
@@ -741,6 +745,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.removeImage = (index) => {
         selectedImages.splice(index, 1);
         updateImagePreviews();
+    };
+
+    window.makeCover = (index) => {
+        if (index > 0 && index < selectedImages.length) {
+            const img = selectedImages.splice(index, 1)[0];
+            selectedImages.unshift(img);
+            updateImagePreviews();
+        }
     };
 
     document.getElementById('submit-video').addEventListener('click', async () => {
