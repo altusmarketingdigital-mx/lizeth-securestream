@@ -239,7 +239,7 @@ exports.addVideo = async (req, res) => {
 exports.updateVideo = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, description, internal_storage_path, price, sale_price, is_hidden, published_at, currency } = req.body;
+        const { title, description, internal_storage_path, price, sale_price, is_hidden, published_at, currency, images } = req.body;
         
         const videoPrice = parseFloat(price) || 0;
         const sPrice = sale_price ? parseFloat(sale_price) : null;
@@ -247,6 +247,8 @@ exports.updateVideo = async (req, res) => {
         const pubDate = published_at || new Date().toISOString();
         const curr = currency || 'MXN';
         
+        await db.query('BEGIN');
+
         if (internal_storage_path) {
             await db.query(
                 'UPDATE videos SET title = $1, description = $2, price = $3, internal_storage_path = $4, sale_price = $5, is_hidden = $6, published_at = $7, currency = $8 WHERE id = $9',
@@ -258,9 +260,23 @@ exports.updateVideo = async (req, res) => {
                 [title, description, videoPrice, sPrice, hidden, pubDate, curr, id]
             );
         }
-        
+
+        // Si se envían nuevas imágenes, eliminamos las viejas y guardamos las nuevas
+        if (images && Array.isArray(images) && images.length > 0) {
+            await db.query('DELETE FROM video_images WHERE video_id = $1', [id]);
+            const imagesToProcess = images.slice(0, 10);
+            for (const imgBase64 of imagesToProcess) {
+                await db.query(
+                    'INSERT INTO video_images (id, video_id, image_data) VALUES ($1, $2, $3)',
+                    [uuidv4(), id, imgBase64]
+                );
+            }
+        }
+
+        await db.query('COMMIT');
         res.json({ success: true, message: 'Video actualizado exitosamente' });
     } catch (error) {
+        await db.query('ROLLBACK');
         console.error(error);
         res.status(500).json({ error: 'Error al actualizar video' });
     }
