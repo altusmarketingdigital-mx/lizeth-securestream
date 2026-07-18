@@ -904,7 +904,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 loadVideos(); // recargar
             } else {
-                alert('Error al registrar el video en la base de datos');
+                if (res.status === 413) {
+                    alert('Error: Las imágenes son demasiado pesadas. Como subiste estas imágenes antes de la actualización del compresor, necesitas borrarlas de este video y volverlas a subir para que el sistema las comprima.');
+                    return;
+                }
+                let errorMsg = 'Error al registrar el video en la base de datos (Código ' + res.status + ')';
+                try {
+                    const errorData = await res.json();
+                    if (errorData.details) {
+                        errorMsg += '\\nDetalles: ' + errorData.details;
+                    } else if (errorData.error) {
+                        errorMsg += '\\nError: ' + errorData.error;
+                    }
+                } catch (e) {
+                    errorMsg += '\\nNo se pudo obtener más información del servidor.';
+                }
+                alert(errorMsg);
             }
         } catch (err) {
             console.error(err);

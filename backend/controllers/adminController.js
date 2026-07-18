@@ -232,7 +232,7 @@ exports.addVideo = async (req, res) => {
     } catch (error) {
         await db.query('ROLLBACK');
         console.error(error);
-        res.status(500).json({ error: 'Error al registrar video' });
+        res.status(500).json({ error: 'Error al registrar video', details: error.message });
     }
 };
 
@@ -278,7 +278,7 @@ exports.updateVideo = async (req, res) => {
     } catch (error) {
         await db.query('ROLLBACK');
         console.error(error);
-        res.status(500).json({ error: 'Error al actualizar video' });
+        res.status(500).json({ error: 'Error al actualizar video', details: error.message });
     }
 };
 
