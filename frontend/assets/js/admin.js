@@ -705,18 +705,47 @@ document.addEventListener('DOMContentLoaded', async () => {
                 alert('No puedes subir más de 10 imágenes.');
                 break;
             }
-            if (file.size > 2 * 1024 * 1024) {
-                alert(`La imagen ${file.name} excede los 2MB permitidos.`);
+            if (!file.type.startsWith('image/')) {
+                alert('Solo se permiten archivos de imagen.');
                 continue;
             }
             
             const reader = new FileReader();
             reader.onload = (ev) => {
-                selectedImages.push({
-                    name: file.name,
-                    data: ev.target.result // Base64
-                });
-                updateImagePreviews();
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    const maxDim = 800; // Resize to max 800px to keep payload very small
+                    
+                    if (width > height) {
+                        if (width > maxDim) {
+                            height = Math.round((height *= maxDim / width));
+                            width = maxDim;
+                        }
+                    } else {
+                        if (height > maxDim) {
+                            width = Math.round((width *= maxDim / height));
+                            height = maxDim;
+                        }
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Compress as WebP with 0.7 quality
+                    const compressedDataUrl = canvas.toDataURL('image/webp', 0.7);
+                    
+                    selectedImages.push({
+                        name: file.name,
+                        data: compressedDataUrl
+                    });
+                    updateImagePreviews();
+                };
+                img.src = ev.target.result;
             };
             reader.readAsDataURL(file);
         }
