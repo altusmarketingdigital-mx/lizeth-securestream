@@ -5,7 +5,7 @@ const path = require('path');
 exports.getCatalog = async (req, res) => {
     try {
         const result = await db.query(`
-            SELECT id, title, description, price, sale_price, secure_slug 
+            SELECT id, title, description, price, sale_price, secure_slug, currency
             FROM videos 
             WHERE is_hidden = false 
               AND is_deleted = false 
