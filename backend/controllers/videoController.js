@@ -5,12 +5,13 @@ const path = require('path');
 exports.getCatalog = async (req, res) => {
     try {
         const result = await db.query(`
-            SELECT id, title, description, price, sale_price, secure_slug, currency
-            FROM videos 
-            WHERE is_hidden = false 
-              AND is_deleted = false 
-              AND published_at <= CURRENT_TIMESTAMP
-            ORDER BY created_at DESC
+            SELECT v.id, v.title, v.description, v.price, v.sale_price, v.secure_slug, v.currency,
+                   (SELECT image_data FROM video_images vi WHERE vi.video_id = v.id ORDER BY created_at ASC LIMIT 1) as cover_image
+            FROM videos v
+            WHERE v.is_hidden = false 
+              AND v.is_deleted = false 
+              AND v.published_at <= CURRENT_TIMESTAMP
+            ORDER BY v.created_at DESC
         `);
         res.json(result.rows);
     } catch (error) {

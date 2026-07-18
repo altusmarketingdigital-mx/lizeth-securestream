@@ -591,7 +591,7 @@
                     <div class="card interactive">
                         <div class="card-img-wrapper" style="cursor: pointer;" onclick="window.location.href='/product.html?id=${v.id}'">
                             <div class="overlay-play">Ver Detalles</div>
-                            <img src="https://images.unsplash.com/${coverId}?auto=format&fit=crop&w=600&q=80" alt="${v.title}">
+                            <img src="${v.cover_image || `https://images.unsplash.com/${coverId}?auto=format&fit=crop&w=600&q=80`}" alt="${v.title}">
                         </div>
                         <div class="card-content" style="padding: 1rem 0;">
                             <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem; cursor: pointer;" onclick="window.location.href='/product.html?id=${v.id}'">
