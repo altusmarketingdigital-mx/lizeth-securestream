@@ -598,9 +598,9 @@
                                 <h3 style="margin: 0; color: var(--primary); font-size: 1.1rem; text-transform: uppercase;">${v.title}</h3>
                                 <div class="price-container" style="text-align: right;">
                                     ${v.sale_price 
-                                        ? `<span style="text-decoration: line-through; opacity: 0.6; font-size: 0.9rem; margin-right: 5px;">$${v.price}</span>
-                                           <span class="price-tag" style="color: var(--sec-1); font-size: 1.1rem; font-weight: bold;">$${v.sale_price}</span>` 
-                                        : `<span class="price-tag" style="color: var(--sec-1); font-size: 1.1rem;">$${v.price}</span>`
+                                        ? `<span style="text-decoration: line-through; opacity: 0.6; font-size: 0.9rem; margin-right: 5px;">${window.formatPrice ? window.formatPrice(v.price, v.currency) : '$' + v.price}</span>
+                                           <span class="price-tag" style="color: var(--sec-1); font-size: 1.1rem; font-weight: bold;">${window.formatPrice ? window.formatPrice(v.sale_price, v.currency) : '$' + v.sale_price}</span>` 
+                                        : `<span class="price-tag" style="color: var(--sec-1); font-size: 1.1rem;">${window.formatPrice ? window.formatPrice(v.price, v.currency) : '$' + v.price}</span>`
                                     }
                                 </div>
                             </div>

@@ -74,10 +74,10 @@
             };
             updateCartCount();
 
-            window.addToCart = (id, title, price) => {
-                const cart = JSON.parse(localStorage.getItem('videoCart')) || [];
-                if(!cart.find(v => v.id === id)) {
-                    cart.push({ id, title, price });
+            window.addToCart = (id, title, price, currency = 'MXN') => {
+            const cart = JSON.parse(localStorage.getItem('videoCart')) || [];
+            if(!cart.find(v => v.id === id)) {
+                cart.push({ id, title, price, currency });
                     localStorage.setItem('videoCart', JSON.stringify(cart));
                     updateCartCount();
                     alert(`"${title}" agregado al carrito`);
@@ -129,13 +129,13 @@
                                 <h3 style="margin: 0; color: var(--primary); font-size: 1.1rem; text-transform: uppercase;">${v.title}</h3>
                                 <div class="price-container" style="text-align: right;">
                                     ${v.sale_price 
-                                        ? `<span style="text-decoration: line-through; opacity: 0.6; font-size: 0.9rem; margin-right: 5px;">${window.formatPrice ? window.formatPrice(v.price) : '$' + v.price}</span>
-                                           <span class="price-tag" style="color: var(--sec-1); font-size: 1.1rem; font-weight: bold;">${window.formatPrice ? window.formatPrice(v.sale_price) : '$' + v.sale_price}</span>` 
-                                        : `<span class="price-tag" style="color: var(--sec-1); font-size: 1.1rem;">${window.formatPrice ? window.formatPrice(v.price) : '$' + v.price}</span>`
+                                        ? `<span style="text-decoration: line-through; opacity: 0.6; font-size: 0.9rem; margin-right: 5px;">${window.formatPrice ? window.formatPrice(v.price, v.currency) : '$' + v.price}</span>
+                                           <span class="price-tag" style="color: var(--sec-1); font-size: 1.1rem; font-weight: bold;">${window.formatPrice ? window.formatPrice(v.sale_price, v.currency) : '$' + v.sale_price}</span>` 
+                                        : `<span class="price-tag" style="color: var(--sec-1); font-size: 1.1rem;">${window.formatPrice ? window.formatPrice(v.price, v.currency) : '$' + v.price}</span>`
                                     }
                                 </div>
                             </div>
-                            <button onclick="addToCart('${v.id}', '${v.title}', ${v.sale_price || v.price})" class="btn-primary">ADD TO CART</button>
+                            <button onclick="addToCart('${v.id}', '${v.title.replace(/'/g, "\\'")}', ${v.sale_price || v.price}, '${v.currency || 'MXN'}')" class="btn-primary">ADD TO CART</button>
                         </div>
                     </div>
                     `;

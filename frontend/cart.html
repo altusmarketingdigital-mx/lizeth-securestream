@@ -233,7 +233,7 @@
                 originalTotal = 0;
                 currentTotal = 0;
                 container.innerHTML = cart.map(v => {
-                    let price = parseFloat(v.price) || 0;
+                    let price = window.convertToMXN ? window.convertToMXN(v.price, v.currency) : parseFloat(v.price) || 0;
                     originalTotal += price;
                     
                     let itemFinalPrice = price;
@@ -253,13 +253,13 @@
                     return `
                     <div class="cart-item">
                         <span>${v.title} ${discountLabel}</span>
-                        <strong>${window.formatPrice ? window.formatPrice(v.price) : '$' + v.price}</strong>
+                        <strong>${window.formatPrice ? window.formatPrice(v.price, v.currency) : '$' + v.price}</strong>
                     </div>`;
                 }).join('');
                 
                 const displayEl = document.getElementById('total-price-display');
                 if (displayEl) {
-                    displayEl.textContent = window.formatPrice ? window.formatPrice(currentTotal) : `$${currentTotal.toFixed(2)}`;
+                    displayEl.textContent = window.formatPrice ? window.formatPrice(currentTotal, 'MXN') : `$${currentTotal.toFixed(2)}`;
                 }
             }
             

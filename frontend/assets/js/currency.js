@@ -76,10 +76,20 @@ function setCurrency(currencyCode) {
     }
 }
 
+window.convertToMXN = (price, baseCurrency = 'MXN') => {
+    const baseRate = exchangeRates[baseCurrency] || 1;
+    return parseFloat(price) / baseRate;
+};
+
+window.convertPrice = (price, baseCurrency = 'MXN') => {
+    const mxnPrice = window.convertToMXN(price, baseCurrency);
+    const targetRate = exchangeRates[currentCurrency] || 1;
+    return mxnPrice * targetRate;
+};
+
 // Para uso en templates JS literales
-window.formatPrice = (priceInMXN) => {
-    const rate = exchangeRates[currentCurrency] || 1;
-    const converted = parseFloat(priceInMXN) * rate;
+window.formatPrice = (price, baseCurrency = 'MXN') => {
+    const converted = window.convertPrice(price, baseCurrency);
     const symbol = currencySymbols[currentCurrency] || '$';
     
     return `${symbol}${converted.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currentCurrency}`;

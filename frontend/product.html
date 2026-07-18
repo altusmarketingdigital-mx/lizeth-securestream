@@ -294,16 +294,16 @@
                         
                         <div class="price-container" style="margin-bottom: 2rem;">
                             ${product.sale_price 
-                                ? `<span style="text-decoration: line-through; opacity: 0.6; font-size: 1.2rem; margin-right: 10px;">${window.formatPrice ? window.formatPrice(product.price) : '$' + product.price}</span>
-                                   <span class="product-price" style="color: var(--sec-1); font-weight: bold;">${window.formatPrice ? window.formatPrice(product.sale_price) : '$' + product.sale_price}</span>` 
-                                : `<span class="product-price">${window.formatPrice ? window.formatPrice(product.price) : '$' + product.price}</span>`
+                                ? `<span style="text-decoration: line-through; opacity: 0.6; font-size: 1.2rem; margin-right: 10px;">${window.formatPrice ? window.formatPrice(product.price, product.currency) : '$' + product.price}</span>
+                                   <span class="product-price" style="color: var(--sec-1); font-weight: bold;">${window.formatPrice ? window.formatPrice(product.sale_price, product.currency) : '$' + product.sale_price}</span>` 
+                                : `<span class="product-price">${window.formatPrice ? window.formatPrice(product.price, product.currency) : '$' + product.price}</span>`
                             }
                         </div>
 
                         <div class="product-description">
                             ${descHTML}
                         </div>
-                        <button onclick="addToCart('${product.id}', '${product.title.replace(/'/g, "\\'")}', ${product.sale_price || product.price})" class="btn-primary" style="width: 100%; font-size: 1.2rem; margin-top: 2rem;">AÑADIR AL CARRITO</button>
+                        <button onclick="addToCart('${product.id}', '${product.title.replace(/'/g, "\\'")}', ${product.sale_price || product.price}, '${product.currency || 'MXN'}')" class="btn-primary" style="width: 100%; font-size: 1.2rem; margin-top: 2rem;">AÑADIR AL CARRITO</button>
                     </div>
                 `;
             }
@@ -318,10 +318,10 @@
         });
 
         // Add to cart global function
-        window.addToCart = (id, title, price) => {
+        window.addToCart = (id, title, price, currency = 'MXN') => {
             const cart = JSON.parse(localStorage.getItem('videoCart')) || [];
             if(!cart.find(v => v.id === id)) {
-                cart.push({ id, title, price });
+                cart.push({ id, title, price, currency });
                 localStorage.setItem('videoCart', JSON.stringify(cart));
                 alert(`"${title}" agregado al carrito`);
                 
