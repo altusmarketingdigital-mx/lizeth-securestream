@@ -42,24 +42,19 @@ document.addEventListener("DOMContentLoaded", () => {
         playbackRates: [0.5, 1, 1.25, 1.5, 2]
     });
 
-    // En producción, aquí haríamos fetch a /api/videos/stream/slug
-    // Si el servidor o S3 devuelve HLS, usamos type: 'application/x-mpegURL'
-    // Para el demo usaremos un HLS público o fallback a MP4
-    setTimeout(() => {
-        // Simulando que recibimos una URL de HLS (m3u8) o MP4 seguro
-        // Cambiar src por tu URL real de S3 (.m3u8)
+    const urlParams = new URLSearchParams(window.location.search);
+    const slug = urlParams.get('v');
+    
+    if (slug) {
         player.src({
-            src: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
-            type: 'application/x-mpegURL'
+            src: `/api/videos/stream/${slug}`,
+            type: 'video/mp4' // The backend redirect or stream will handle this
         });
         
-        // Manejar errores si no soporta HLS en algunos navegadores viejos sin hls.js integrado
         player.on('error', function() {
-            console.warn('HLS falló, intentando MP4 fallback...');
-            player.src({
-                src: 'https://www.w3schools.com/html/mov_bbb.mp4',
-                type: 'video/mp4'
-            });
+            console.warn('Error loading video stream');
         });
-    }, 1000);
+    } else {
+        alert('No se especificó un video');
+    }
 });
