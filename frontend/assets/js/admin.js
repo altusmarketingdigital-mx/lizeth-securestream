@@ -540,7 +540,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = await apiGet('/api/admin/videos');
         if (data) {
             const select = document.getElementById('c-video');
-            select.innerHTML = '<option value="">Válido para cualquier curso (Global)</option>' + 
+            select.innerHTML = '<option value="">Válido para cualquier video (Global)</option>' + 
                 data.map(v => `<option value="${v.id}">${v.title}</option>`).join('');
         }
     }
@@ -799,7 +799,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const videoUrl = document.getElementById('v-url').value.trim();
 
         if(!title || !price) return alert('Título y precio son requeridos');
-        if(!id && !videoFile && !videoUrl) return alert('Debes seleccionar un archivo de video o proporcionar un enlace directo para nuevos cursos');
+        if(!id && !videoFile && !videoUrl) return alert('Debes seleccionar un archivo de video o proporcionar un enlace directo para nuevos videos');
 
         const submitBtn = document.getElementById('submit-video');
         const originalText = submitBtn.textContent;

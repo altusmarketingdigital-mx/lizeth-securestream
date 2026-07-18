@@ -41,7 +41,7 @@ const dictEN_to_ES = {
     "Back to Login": "Volver al Login",
 
     // Catalog & Cart
-    "Course Catalog": "Catálogo de Cursos",
+    "Video Catalog": "Catálogo de Videos",
     "Filter by:": "Filtrar por:",
     "All": "Todos",
     "Add to Cart": "Añadir al Carrito",
@@ -56,7 +56,7 @@ const dictEN_to_ES = {
 
     // Dashboard
     "Dashboard": "Panel de Control",
-    "My Courses": "Mis Cursos",
+    "My Courses": "Mis Videos",
     "My Account": "Mi Cuenta",
     "Log Out": "Cerrar Sesión",
     "Purchase History": "Historial de Compras",

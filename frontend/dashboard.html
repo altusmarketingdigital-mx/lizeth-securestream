@@ -157,14 +157,14 @@
         <div class="hero-banner">
             <div class="hero-content">
                 <h1>Hola, <span id="hero-name">Amante de los Cortes</span></h1>
-                <p>Aquí tienes acceso exclusivo a tus cursos adquiridos. Disfruta del mejor contenido en calidad HD.</p>
+                <p>Aquí tienes acceso exclusivo a tus videos adquiridos. Disfruta del mejor contenido en calidad HD.</p>
             </div>
         </div>
 
         <!-- Tab: Mi Biblioteca -->
         <section id="section-library" class="content-section active">
             <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
-                <h2 style="margin:0; font-size: 2rem;">Tus Cursos Desbloqueados</h2>
+                <h2 style="margin:0; font-size: 2rem;">Tus Videos Desbloqueados</h2>
                 <a href="/catalog.html" style="color: var(--primary); text-decoration: none; font-weight: bold; padding: 10px 20px; border: 1px solid rgba(154,34,171,0.5); border-radius: 30px; transition: 0.3s;">Explore Catálogo →</a>
             </div>
 
@@ -392,7 +392,7 @@
                 // Notificación elegante
                 const notif = document.createElement('div');
                 notif.style.cssText = "position:fixed; top:20px; right:20px; background:var(--primary); color:white; padding:15px 25px; border-radius:8px; z-index:9999; font-weight:bold; box-shadow:0 10px 30px rgba(154,34,171,0.5);";
-                notif.textContent = "¡Pago exitoso! Disfruta tu nuevo curso.";
+                notif.textContent = "¡Pago exitoso! Disfruta tu nuevo video.";
                 document.body.appendChild(notif);
                 setTimeout(() => notif.remove(), 5000);
                 window.history.replaceState({}, document.title, "/dashboard.html");
@@ -415,7 +415,7 @@
                 const grid = document.getElementById('my-videos-grid');
 
                 if (videos.length === 0) {
-                    grid.innerHTML = '<div style="grid-column: 1/-1; padding: 3rem; text-align: center; background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px dashed rgba(255,255,255,0.1);"><h3 style="color:#aaa;">Aún no tienes cursos en tu biblioteca</h3><a href="/catalog.html" class="btn-primary" style="display:inline-block; margin-top:15px; width:auto;">Ir al Catálogo</a></div>';
+                    grid.innerHTML = '<div style="grid-column: 1/-1; padding: 3rem; text-align: center; background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px dashed rgba(255,255,255,0.1);"><h3 style="color:#aaa;">Aún no tienes videos en tu biblioteca</h3><a href="/catalog.html" class="btn-primary" style="display:inline-block; margin-top:15px; width:auto;">Ir al Catálogo</a></div>';
                     return;
                 }
 
@@ -438,7 +438,7 @@
                         </div>
                         <div class="card-overlay">
                             <div class="card-meta">
-                                <span class="badge">CURSO HD</span>
+                                <span class="badge">VIDEO HD</span>
                                 <span class="card-duration">Acceso Completo</span>
                             </div>
                             <h3 class="card-title">${v.title}</h3>

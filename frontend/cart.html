@@ -285,12 +285,12 @@
                     const data = await res.json();
                     
                     if(res.ok) {
-                        // Verificar si el curso específico está en el carrito
+                        // Verificar si el video específico está en el carrito
                         if (data.video_id) {
                             const hasVideo = cart.some(v => v.id === data.video_id);
                             if (!hasVideo) {
                                 msg.style.color = 'var(--error)';
-                                msg.textContent = 'Este cupón es válido solo para un curso específico que no está en tu carrito.';
+                                msg.textContent = 'Este cupón es válido solo para un video específico que no está en tu carrito.';
                                 return;
                             }
                         }
