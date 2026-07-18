@@ -446,15 +446,37 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             document.querySelectorAll('.edit-video-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    document.getElementById('v-id').value = e.target.getAttribute('data-id');
+                    const id = e.target.getAttribute('data-id');
+                    document.getElementById('v-id').value = id;
                     document.getElementById('v-title').value = e.target.getAttribute('data-title');
-                    document.getElementById('v-desc').value = e.target.getAttribute('data-desc');
+                    
+                    if (window.videoDescEditor) {
+                        window.videoDescEditor.root.innerHTML = e.target.getAttribute('data-desc');
+                    } else {
+                        const el = document.getElementById('v-desc-editor');
+                        if (el) el.innerHTML = e.target.getAttribute('data-desc');
+                    }
+                    
                     document.getElementById('v-price').value = e.target.getAttribute('data-price');
                     document.getElementById('v-sale-price').value = e.target.getAttribute('data-saleprice');
                     document.getElementById('v-currency').value = e.target.getAttribute('data-currency');
                     document.getElementById('v-published-at').value = e.target.getAttribute('data-pub');
                     document.getElementById('v-is-hidden').checked = e.target.getAttribute('data-hidden') === 'true';
                     
+                    const token = localStorage.getItem('token');
+                    fetch(`/api/videos/${id}/images`, { headers: { 'Authorization': 'Bearer ' + token } })
+                        .then(res => res.ok ? res.json() : [])
+                        .then(images => {
+                            if (Array.isArray(images)) {
+                                selectedImages = images.map(img => ({
+                                    file: null,
+                                    data: img.image_data,
+                                    id: img.id
+                                }));
+                                updateImagePreviews();
+                            }
+                        }).catch(console.error);
+
                     document.getElementById('add-video-form').style.display = 'block';
                     document.getElementById('add-video-form').scrollIntoView({ behavior: 'smooth' });
                 });
@@ -724,7 +746,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('submit-video').addEventListener('click', async () => {
         const id = document.getElementById('v-id').value;
         const title = document.getElementById('v-title').value;
-        const desc = document.getElementById('v-desc').value;
+        const desc = window.videoDescEditor ? window.videoDescEditor.root.innerHTML : document.getElementById('v-desc-editor').innerHTML;
         const price = document.getElementById('v-price').value;
         const sale_price = document.getElementById('v-sale-price').value;
         const currency = document.getElementById('v-currency').value;
@@ -823,7 +845,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Limpiar form
                 document.getElementById('v-id').value = '';
                 document.getElementById('v-title').value = '';
-                document.getElementById('v-desc').value = '';
+                if (window.videoDescEditor) window.videoDescEditor.root.innerHTML = '';
                 document.getElementById('v-price').value = '';
                 document.getElementById('v-sale-price').value = '';
                 document.getElementById('v-published-at').value = '';
@@ -966,6 +988,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
             }
         });
+
+        // Initialize Video Description Editor
+        const descEl = document.getElementById('v-desc-editor');
+        if (descEl) {
+            window.videoDescEditor = new Quill('#v-desc-editor', {
+                theme: 'snow',
+                modules: { toolbar: toolbarOptions }
+            });
+        }
     }
 
     async function loadLegalSettings() {

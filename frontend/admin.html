@@ -74,7 +74,10 @@
                 <h3>Gestión de Video</h3>
                 <input type="hidden" id="v-id">
                 <div class="form-group"><input type="text" id="v-title" placeholder="Título"></div>
-                <div class="form-group"><input type="text" id="v-desc" placeholder="Descripción"></div>
+                <div class="form-group">
+                    <label style="display: block; font-size: 0.9rem; margin-bottom: 5px; color: #ccc;">Descripción del Video</label>
+                    <div id="v-desc-editor" style="height: 150px; background: rgba(0,0,0,0.5); color: white; border-radius: 0 0 8px 8px; border: 1px solid rgba(255,255,255,0.2);"></div>
+                </div>
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 15px;">
                     <div class="form-group"><input type="number" id="v-price" placeholder="Precio Original"></div>
