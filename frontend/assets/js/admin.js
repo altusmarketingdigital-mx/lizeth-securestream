@@ -946,7 +946,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     sharedUrl += '?raw=1';
                 }
                 
-                finalVideoPath = sharedUrl;
+                fileKey = sharedUrl;
             }
 
             // 3. Subir metadatos e imágenes a la DB
