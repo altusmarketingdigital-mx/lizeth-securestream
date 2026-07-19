@@ -46,32 +46,52 @@ async function getPayPalAccessToken() {
     return data.access_token;
 }
 
+// Helper para calcular total con descuento
+async function calculateCart(videoIds, couponCode) {
+    let lineItems = [];
+    let total = 0;
+    
+    let coupon = null;
+    if (couponCode) {
+        const couponRes = await db.query('SELECT * FROM coupons WHERE code = $1 AND is_active = true LIMIT 1', [couponCode.trim().toUpperCase()]);
+        if (couponRes.rows.length > 0) {
+            coupon = couponRes.rows[0];
+        }
+    }
+
+    for (const vidId of videoIds) {
+        const vidRes = await db.query('SELECT id, title, price FROM videos WHERE id = $1', [vidId]);
+        if (vidRes.rows.length > 0) {
+            const video = vidRes.rows[0];
+            let price = parseFloat(video.price);
+            
+            if (coupon && (!coupon.video_id || coupon.video_id === video.id)) {
+                price = price * ((100 - parseFloat(coupon.discount_percentage)) / 100);
+            }
+            
+            total += price;
+            lineItems.push({
+                price_data: {
+                    currency: 'mxn',
+                    product_data: { name: video.title },
+                    unit_amount: Math.round(price * 100),
+                },
+                quantity: 1,
+            });
+        }
+    }
+    return { lineItems, total };
+}
+
 // STRIPE CHECKOUT
 router.post('/create-checkout-session', requireAuth, async (req, res) => {
     try {
-        const { videoIds } = req.body;
+        const { videoIds, couponCode } = req.body;
         if (!videoIds || videoIds.length === 0) {
             return res.status(400).json({ error: 'Carrito vacío' });
         }
 
-        // Obtener detalles reales de los videos desde la base de datos
-        let lineItems = [];
-        for (const vidId of videoIds) {
-            const vidRes = await db.query('SELECT title, price FROM videos WHERE id = $1', [vidId]);
-            if (vidRes.rows.length > 0) {
-                const video = vidRes.rows[0];
-                lineItems.push({
-                    price_data: {
-                        currency: 'usd',
-                        product_data: {
-                            name: video.title,
-                        },
-                        unit_amount: Math.round(video.price * 100), // Stripe usa centavos
-                    },
-                    quantity: 1,
-                });
-            }
-        }
+        const { lineItems, total } = await calculateCart(videoIds, couponCode);
 
         if (lineItems.length === 0) return res.status(400).json({ error: 'Videos no válidos' });
 
@@ -165,13 +185,7 @@ router.post('/create-paypal-order', requireAuth, async (req, res) => {
             return res.json({ approvalUrl: '/dashboard.html?payment=success&method=paypal' });
         }
 
-        let total = 0;
-        for (const vidId of videoIds) {
-            const vidRes = await db.query('SELECT price FROM videos WHERE id = $1', [vidId]);
-            if (vidRes.rows.length > 0) {
-                total += parseFloat(vidRes.rows[0].price);
-            }
-        }
+        const { total } = await calculateCart(videoIds, couponCode);
 
         if (total <= 0) return res.status(400).json({ error: 'Total invalido' });
 
