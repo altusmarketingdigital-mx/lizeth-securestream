@@ -1,4 +1,4 @@
-const { Resend } = require('resend');
+ï»¿const { Resend } = require('resend');
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 const FROM_EMAIL = process.env.EMAIL_FROM || 'Lizeth The Barberette <no-reply@lizeththebarberette.com>';
@@ -121,18 +121,20 @@ exports.sendContactMessage = async (name, userEmail, reason, message) => {
 };
 
 exports.sendNewPassword = async (email, name, newPassword) => {
-    const html = getBaseTemplate(` 
-        <h2>¡Tu Contraseña ha sido Restablecida!</h2>
-        <p>Hola ,</p>
-        <p>El administrador de Lizeth The Barberette ha generado una nueva contraseña temporal para tu cuenta.</p>
+    const displayName = name || 'Usuario';
+    const loginUrl = (process.env.FRONTEND_URL || 'https://www.lizethbarberette.com') + '/login.html';
+    const html = getBaseTemplate(`
+        <h2>Tu contrasena fue restablecida</h2>
+        <p>Hola ${displayName},</p>
+        <p>El administrador de <strong>Lizeth The Barberette</strong> genero una nueva contrasena temporal para tu cuenta.</p>
         <div style="background: #222; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center;">
-            <p style="font-size: 24px; font-weight: bold; letter-spacing: 2px; margin: 0; color: #9a22ab;"></p>
+            <p style="font-size: 13px; color: #aaa; margin-bottom: 8px;">Tu nueva contrasena:</p>
+            <p style="font-size: 28px; font-weight: bold; letter-spacing: 4px; margin: 0; color: #9a22ab; font-family: monospace;">${newPassword}</p>
         </div>
-        <p>Por favor, inicia sesión con esta contraseña. Te recomendamos cambiarla por una de tu preferencia desde la sección <strong>Seguridad</strong> en tu panel.</p>
+        <p>Inicia sesion con esta contrasena y cambiarla desde la seccion <strong>Seguridad</strong> de tu panel.</p>
         <div style="text-align: center; margin-top: 30px;">
-            <a href="/login.html" class="btn">Iniciar Sesión Ahora</a>
+            <a href="${loginUrl}" class="btn">Iniciar Sesion</a>
         </div>
     `);
-    return sendEmail({ to: email, subject: 'Tu nueva contraseña de acceso', html });
+    return sendEmail({ to: email, subject: 'Tu nueva contrasena - Lizeth The Barberette', html });
 };
-
