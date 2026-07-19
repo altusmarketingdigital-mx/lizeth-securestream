@@ -3,6 +3,7 @@ const { randomUUID: uuidv4 } = require('crypto');
 const bcrypt = require('bcryptjs');
 const { S3Client, PutObjectCommand, PutBucketCorsCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+const emailService = require('../utils/emailService');
 
 // Configuración S3 (AWS o Cloudflare R2)
 const s3 = new S3Client({
@@ -388,13 +389,19 @@ exports.toggleUserBlock = async (req, res) => {
 exports.regenerateUserPassword = async (req, res) => {
     try {
         const { id } = req.params;
-        const result = await db.query('SELECT id FROM users WHERE id = $1', [id]);
+        const result = await db.query('SELECT id, email, name FROM users WHERE id = $1', [id]);
         if (result.rows.length === 0) return res.status(404).json({ error: 'Usuario no encontrado' });
+        const user = result.rows[0];
 
         const newPassword = require('crypto').randomBytes(4).toString('hex');
         const hash = await bcrypt.hash(newPassword, 10);
 
         await db.query('UPDATE users SET password_hash = $1, current_session_token = NULL WHERE id = $2', [hash, id]);
+        
+        // Enviar correo al usuario de forma asíncrona (no bloqueante)
+        if (user.email) {
+            emailService.sendNewPassword(user.email, user.name, newPassword).catch(err => console.error('Error enviando correo:', err));
+        }
 
         res.json({ message: 'Contraseña regenerada', newPassword });
     } catch (error) {

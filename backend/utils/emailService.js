@@ -119,3 +119,20 @@ exports.sendContactMessage = async (name, userEmail, reason, message) => {
     `);
     return sendEmail({ to: SUPPORT_EMAIL, subject: `Soporte: ${reason} - ${name}`, html });
 };
+
+exports.sendNewPassword = async (email, name, newPassword) => {
+    const html = getBaseTemplate(` 
+        <h2>¡Tu Contraseña ha sido Restablecida!</h2>
+        <p>Hola ,</p>
+        <p>El administrador de Lizeth The Barberette ha generado una nueva contraseña temporal para tu cuenta.</p>
+        <div style="background: #222; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center;">
+            <p style="font-size: 24px; font-weight: bold; letter-spacing: 2px; margin: 0; color: #9a22ab;"></p>
+        </div>
+        <p>Por favor, inicia sesión con esta contraseña. Te recomendamos cambiarla por una de tu preferencia desde la sección <strong>Seguridad</strong> en tu panel.</p>
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="/login.html" class="btn">Iniciar Sesión Ahora</a>
+        </div>
+    `);
+    return sendEmail({ to: email, subject: 'Tu nueva contraseña de acceso', html });
+};
+
