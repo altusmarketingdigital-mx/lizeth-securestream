@@ -869,11 +869,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (videoUrl) {
                 fileKey = videoUrl; // El backend lo guardará tal cual
             } else if (videoFile) {
-                // 1. Obtener Presigned URL
-                const presignRes = await fetch(`/api/admin/get-upload-url?fileName=${encodeURIComponent(videoFile.name)}&fileType=${encodeURIComponent(videoFile.type)}`);
-                if (!presignRes.ok) throw new Error('No se pudo obtener la URL de subida. Verifica tus claves AWS.');
-                const uploadData = await presignRes.json();
-                fileKey = uploadData.fileKey;
 
                 // Obtenemos el token de acceso temporal de Dropbox
                 const resToken = await fetch(`/api/admin/dropbox-token`, {
