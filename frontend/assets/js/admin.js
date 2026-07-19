@@ -4,7 +4,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.location.href = '/';
         return;
     }
-    document.getElementById('admin-user-info').textContent = email;
+    const userName = localStorage.getItem('userName');
+    if (userName && userName.trim() !== '') {
+        document.getElementById('admin-user-info').textContent = userName;
+    } else {
+        document.getElementById('admin-user-info').textContent = email;
+    }
 
     const tabs = {
         'tab-dashboard': 'view-dashboard',
