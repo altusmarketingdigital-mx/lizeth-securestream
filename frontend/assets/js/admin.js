@@ -328,7 +328,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     });
                     const data = await res.json();
                     if (res.ok) {
-                        alert(`NUEVA CONTRASEÑA GENERADA:\n\n${data.newPassword}\n\nCopia y envía esta contraseña al cliente.`);
+                        prompt('NUEVA CONTRASEÑA GENERADA:\n\nCópiala de aquí abajo para enviarla al cliente:', data.newPassword);
                     } else {
                         alert(data.error || 'Error');
                     }
