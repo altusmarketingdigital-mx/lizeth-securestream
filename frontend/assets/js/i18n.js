@@ -42,6 +42,7 @@ const dictEN_to_ES = {
 
     // Catalog & Cart
     "Video Catalog": "Catálogo de Videos",
+    "Select the videos you want to acquire.": "Selecciona los videos que deseas adquirir.",
     "Filter by:": "Filtrar por:",
     "All": "Todos",
     "Add to Cart": "Añadir al Carrito",

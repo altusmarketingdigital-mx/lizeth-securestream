@@ -261,11 +261,11 @@
                         window.location.href = '/dashboard.html';
                     }
                 } else {
-                    errorMsg.textContent = data.error || 'Error al iniciar sesión';
+                    errorMsg.textContent = translateError(data.error) || 'Error';
                     errorMsg.style.display = 'block';
                 }
             } catch (err) {
-                errorMsg.textContent = 'Error de conexión';
+                errorMsg.textContent = translateError('Error de conexión');
                 errorMsg.style.display = 'block';
             } finally {
                 btn.textContent = 'ENTER SHOP';
