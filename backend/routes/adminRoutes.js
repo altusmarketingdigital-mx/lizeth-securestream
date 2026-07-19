@@ -31,6 +31,7 @@ router.post('/videos', adminController.addVideo);
 router.put('/videos/:id', adminController.updateVideo);
 router.delete('/videos/:id', adminController.deleteVideo);
 router.get('/get-upload-url', adminController.getUploadUrl);
+router.get('/dropbox-token', adminController.getDropboxToken);
 router.post('/users', adminController.createUser);
 router.post('/fix-cors', adminController.fixCors);
 router.put('/users/:id', adminController.updateUser);

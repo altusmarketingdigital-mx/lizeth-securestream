@@ -875,36 +875,78 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const uploadData = await presignRes.json();
                 fileKey = uploadData.fileKey;
 
-                // 2. Subir directo a S3 con Barra de Progreso
-                const progressContainer = document.getElementById('upload-progress-container');
-                const progressBar = document.getElementById('upload-progress-bar');
-                const progressText = document.getElementById('upload-percent');
-                
-                progressContainer.style.display = 'block';
-
-                await new Promise((resolve, reject) => {
-                    const xhr = new XMLHttpRequest();
-                    xhr.open('PUT', uploadData.uploadUrl, true);
-                    xhr.setRequestHeader('Content-Type', videoFile.type);
-                    
-                    xhr.upload.onprogress = (e) => {
-                        if (e.lengthComputable) {
-                            const percent = Math.round((e.loaded / e.total) * 100);
-                            progressBar.style.width = percent + '%';
-                            progressText.textContent = percent + '%';
-                        }
-                    };
-                    
-                    xhr.onload = () => {
-                        if (xhr.status >= 200 && xhr.status < 300) {
-                            resolve();
-                        } else {
-                            reject(new Error('Falló la subida a S3'));
-                        }
-                    };
-                    xhr.onerror = () => reject(new Error('Error de red al subir a S3'));
-                    xhr.send(videoFile);
+                // Obtenemos el token de acceso temporal de Dropbox
+                const resToken = await fetch(`/api/admin/dropbox-token`, {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
                 });
+                const tokenData = await resToken.json();
+                
+                if (!resToken.ok || !tokenData.accessToken) {
+                    throw new Error("No se pudo conectar con Dropbox. Verifica la configuración.");
+                }
+                
+                const dbx = new window.Dropbox.Dropbox({ accessToken: tokenData.accessToken });
+                
+                const CHUNK_SIZE = 10 * 1024 * 1024; // 10MB por trozo
+                const safeName = videoFile.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+                const dbPath = `/videos/${Date.now()}_${safeName}`;
+                
+                document.getElementById('upload-percent').textContent = '0%';
+                document.getElementById('upload-progress-bar').style.width = '0%';
+                document.getElementById('upload-progress-container').style.display = 'block';
+                
+                if (videoFile.size < CHUNK_SIZE) {
+                    // Subida directa si es menor al chunk
+                    await dbx.filesUpload({ path: dbPath, contents: videoFile });
+                    document.getElementById('upload-percent').textContent = '100%';
+                    document.getElementById('upload-progress-bar').style.width = '100%';
+                } else {
+                    // Subida por partes (chunked)
+                    let offset = 0;
+                    const firstChunk = videoFile.slice(offset, offset + CHUNK_SIZE);
+                    const sessionRes = await dbx.filesUploadSessionStart({ close: false, contents: firstChunk });
+                    const sessionId = sessionRes.result.session_id;
+                    offset += CHUNK_SIZE;
+                    
+                    while (offset < videoFile.size) {
+                        const chunk = videoFile.slice(offset, offset + CHUNK_SIZE);
+                        const isLast = (offset + CHUNK_SIZE) >= videoFile.size;
+                        
+                        if (isLast) {
+                            await dbx.filesUploadSessionFinish({
+                                cursor: { session_id: sessionId, offset: offset },
+                                commit: { path: dbPath, mode: 'add', autorename: true, mute: false },
+                                contents: chunk
+                            });
+                            offset += chunk.size;
+                        } else {
+                            await dbx.filesUploadSessionAppendV2({
+                                cursor: { session_id: sessionId, offset: offset },
+                                close: false,
+                                contents: chunk
+                            });
+                            offset += CHUNK_SIZE;
+                        }
+                        
+                        const p = Math.min(Math.round((offset / videoFile.size) * 100), 100);
+                        document.getElementById('upload-percent').textContent = p + '%';
+                        document.getElementById('upload-progress-bar').style.width = p + '%';
+                    }
+                }
+                
+                // Generar el enlace público
+                document.getElementById('upload-percent').textContent = 'Creando enlace...';
+                const shareRes = await dbx.sharingCreateSharedLinkWithSettings({ path: dbPath });
+                let sharedUrl = shareRes.result.url;
+                
+                // Cambiar el dl=0 por raw=1
+                if (sharedUrl.includes('?dl=0')) {
+                    sharedUrl = sharedUrl.replace('?dl=0', '?raw=1');
+                } else {
+                    sharedUrl += '?raw=1';
+                }
+                
+                finalVideoPath = sharedUrl;
             }
 
             // 3. Subir metadatos e imágenes a la DB

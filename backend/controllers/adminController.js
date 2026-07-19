@@ -38,6 +38,36 @@ exports.getUploadUrl = async (req, res) => {
     }
 };
 
+exports.getDropboxToken = async (req, res) => {
+    try {
+        const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args)).catch(() => global.fetch(...args));
+        const auth = Buffer.from(`${process.env.DROPBOX_APP_KEY}:${process.env.DROPBOX_APP_SECRET}`).toString('base64');
+        
+        const response = await fetch('https://api.dropbox.com/oauth2/token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `Basic ${auth}`
+            },
+            body: new URLSearchParams({
+                grant_type: 'refresh_token',
+                refresh_token: process.env.DROPBOX_REFRESH_TOKEN
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            console.error('Dropbox token error:', data);
+            return res.status(500).json({ error: 'Error obteniendo token de Dropbox', details: data });
+        }
+        
+        res.json({ accessToken: data.access_token });
+    } catch (error) {
+        console.error('Error in getDropboxToken:', error);
+        res.status(500).json({ error: 'Error interno de servidor al obtener token de Dropbox' });
+    }
+};
 exports.fixCors = async (req, res) => {
     try {
         const command = new PutBucketCorsCommand({
