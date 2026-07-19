@@ -156,13 +156,13 @@
         <div class="cart-layout">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                 <h2 style="margin: 0; margin-bottom: 0;">Your Cart</h2>
-                <button onclick="if(confirm('¿Estás seguro de que quieres vaciar el carrito?')) { localStorage.removeItem('videoCart'); location.reload(); }" style="background: rgba(255,0,0,0.1); border: 1px solid rgba(255,0,0,0.3); color: #ff6b6b; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-family: 'Century Gothic', sans-serif; font-weight: bold; transition: all 0.3s;" onmouseover="this.style.background='rgba(255,0,0,0.2)'" onmouseout="this.style.background='rgba(255,0,0,0.1)'">Vaciar Carrito</button>
+                <button onclick="if(confirm('Are you sure you want to empty the cart?')) { localStorage.removeItem('videoCart'); location.reload(); }" style="background: rgba(255,0,0,0.1); border: 1px solid rgba(255,0,0,0.3); color: #ff6b6b; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-family: 'Century Gothic', sans-serif; font-weight: bold; transition: all 0.3s;" onmouseover="this.style.background='rgba(255,0,0,0.2)'" onmouseout="this.style.background='rgba(255,0,0,0.1)'">Empty Cart</button>
             </div>
             <div id="cart-container" class="cart-list"></div>
             
             <div id="coupon-section" style="display:flex; gap: 10px; margin-top: 1rem;">
-                <input type="text" id="coupon-code" placeholder="Código de descuento" style="flex:1; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; font-family: Bahnschrift;">
-                <button id="apply-coupon-btn" class="btn-checkout" style="padding: 12px 24px;">Aplicar</button>
+                <input type="text" id="coupon-code" placeholder="Discount Code" style="flex:1; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; font-family: Bahnschrift;">
+                <button id="apply-coupon-btn" class="btn-checkout" style="padding: 12px 24px;">Apply</button>
             </div>
             <p id="coupon-msg" style="margin-top: 5px; font-family: Bahnschrift;"></p>
 
@@ -171,7 +171,7 @@
                 <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: flex-end; align-items: center;">
                     <button id="stripe-btn" class="btn-checkout" style="background: #635bff; height: fit-content;">
                         <svg style="vertical-align: middle; margin-right: 5px;" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-                        Pagar con Tarjeta
+                        Pay with Card
                     </button>
                     <div id="paypal-button-container" style="width: 250px; min-height: 45px; z-index: 1;"></div>
                 </div>

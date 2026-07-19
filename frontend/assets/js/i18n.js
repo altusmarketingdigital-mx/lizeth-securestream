@@ -53,6 +53,10 @@ const dictEN_to_ES = {
     "Proceed to Checkout": "Proceder al Pago",
     "Your cart is empty": "Tu carrito está vacío",
     "Continue Shopping": "Continuar Comprando",
+    "Empty Cart": "Vaciar Carrito",
+    "Discount Code": "Código de descuento",
+    "Apply": "Aplicar",
+    "Pay with Card": "Pagar con Tarjeta",
 
     // Dashboard
     "Dashboard": "Panel de Control",
