@@ -154,7 +154,10 @@
 
     <main class="cart-content">
         <div class="cart-layout">
-            <h2>Your Cart</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="margin: 0; margin-bottom: 0;">Your Cart</h2>
+                <button onclick="if(confirm('¿Estás seguro de que quieres vaciar el carrito?')) { localStorage.removeItem('videoCart'); location.reload(); }" style="background: rgba(255,0,0,0.1); border: 1px solid rgba(255,0,0,0.3); color: #ff6b6b; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-family: 'Century Gothic', sans-serif; font-weight: bold; transition: all 0.3s;" onmouseover="this.style.background='rgba(255,0,0,0.2)'" onmouseout="this.style.background='rgba(255,0,0,0.1)'">Vaciar Carrito</button>
+            </div>
             <div id="cart-container" class="cart-list"></div>
             
             <div id="coupon-section" style="display:flex; gap: 10px; margin-top: 1rem;">
