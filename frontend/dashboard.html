@@ -388,10 +388,16 @@
             const isAdmin = localStorage.getItem('isAdmin') == '1' || localStorage.getItem('isAdmin') === 'true';
             
             document.getElementById('user-display').textContent = email;
-            // Extraer nombre del email para el hero
-            const namePart = email.split('@')[0];
-            document.getElementById('hero-name').textContent = namePart.charAt(0).toUpperCase() + namePart.slice(1);
-
+            // Usar userName si existe, sino extraer nombre del email
+            const userName = localStorage.getItem('userName');
+            let displayName = '';
+            if (userName && userName.trim() !== '') {
+                displayName = userName.charAt(0).toUpperCase() + userName.slice(1);
+            } else {
+                const namePart = email.split('@')[0];
+                displayName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
+            }
+            document.getElementById('hero-name').textContent = displayName;
             if (isAdmin) {
                 document.getElementById('admin-link').style.display = 'flex';
             }

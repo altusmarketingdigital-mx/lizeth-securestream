@@ -51,7 +51,7 @@ exports.login = async (req, res) => {
 
         res.json({
             message: 'Login exitoso',
-            user: { id: user.id, email: user.email, has_premium: user.has_premium, is_admin: user.is_admin, role: user.role, permissions: user.permissions },
+            user: { id: user.id, name: user.name, email: user.email, has_premium: user.has_premium, is_admin: user.is_admin, role: user.role, permissions: user.permissions },
             token: sessionToken // Opcional, para que el frontend lo use en el header si no usa cookies
         });
 

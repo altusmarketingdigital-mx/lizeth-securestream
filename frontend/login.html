@@ -250,6 +250,7 @@
                 
                 if (res.ok) {
                     localStorage.setItem('userEmail', data.user.email);
+                    localStorage.setItem('userName', data.user.name || '');
                     localStorage.setItem('hasPremium', data.user.has_premium);
                     localStorage.setItem('isAdmin', data.user.is_admin);
                     localStorage.setItem('permissions', JSON.stringify(data.user.permissions || []));
