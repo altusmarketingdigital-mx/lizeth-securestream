@@ -37,7 +37,7 @@ exports.getMyVideos = async (req, res) => {
             SELECT v.id, v.title, v.description, v.secure_slug 
             FROM videos v
             JOIN purchases p ON v.id = p.video_id
-            WHERE p.user_id = $1
+            WHERE p.user_id = $1 AND v.is_deleted = false
             ORDER BY p.purchase_date DESC
         `, [userId]);
         res.json(result.rows);
@@ -64,7 +64,7 @@ exports.streamVideo = async (req, res) => {
             }
         }
 
-        const videoResult = await db.query('SELECT internal_storage_path FROM videos WHERE secure_slug = $1', [slug]);
+        const videoResult = await db.query('SELECT internal_storage_path FROM videos WHERE secure_slug = $1 AND is_deleted = false', [slug]);
         if (videoResult.rows.length === 0) {
             return res.status(404).json({ error: 'Video no encontrado' });
         }

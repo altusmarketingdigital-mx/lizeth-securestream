@@ -539,7 +539,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             document.querySelectorAll('.delete-video-btn').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
-                    if (confirm('¿Estás seguro de que deseas eliminar (ocultar) este video? Los clientes que ya lo compraron seguirán teniendo acceso.')) {
+                    if (confirm('¿Estás seguro de que deseas eliminar este video? Nadie podrá volver a tener acceso a él (ni siquiera quienes ya lo compraron).')) {
                         const id = e.target.getAttribute('data-id');
                         const token = localStorage.getItem('token');
                         const res = await fetch('/api/admin/videos/' + id, {
