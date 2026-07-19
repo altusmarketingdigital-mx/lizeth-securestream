@@ -435,7 +435,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                             data-saleprice="${v.sale_price || ''}"
                             data-currency="${v.currency || 'MXN'}"
                             data-pub="${v.published_at ? new Date(v.published_at).toISOString().slice(0,16) : ''}"
-                            data-hidden="${v.is_hidden}">
+                            data-hidden="${v.is_hidden}"
+                            data-path="${(v.internal_storage_path||'').replace(/"/g, '&quot;')}">
                             Editar
                         </button>
                         <button class="btn-primary sm-btn delete-video-btn" style="background:#dc2626;" data-id="${v.id}">Eliminar</button>
@@ -462,6 +463,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                     document.getElementById('v-currency').value = e.target.getAttribute('data-currency');
                     document.getElementById('v-published-at').value = e.target.getAttribute('data-pub');
                     document.getElementById('v-is-hidden').checked = e.target.getAttribute('data-hidden') === 'true';
+                    
+                    const videoPath = e.target.getAttribute('data-path');
+                    if (videoPath && videoPath.trim() !== '') {
+                        document.getElementById('v-current-video-container').style.display = 'block';
+                        document.getElementById('v-current-video').textContent = videoPath;
+                    } else {
+                        document.getElementById('v-current-video-container').style.display = 'none';
+                        document.getElementById('v-current-video').textContent = '';
+                    }
                     
                     const token = localStorage.getItem('token');
                     fetch(`/api/videos/${id}/images`, { headers: { 'Authorization': 'Bearer ' + token } })
@@ -693,6 +703,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     document.getElementById('btn-add-video').addEventListener('click', () => {
         document.getElementById('add-video-form').style.display = 'block';
+        document.getElementById('v-current-video-container').style.display = 'none';
+        document.getElementById('v-current-video').textContent = '';
         selectedImages = [];
         updateImagePreviews();
     });
