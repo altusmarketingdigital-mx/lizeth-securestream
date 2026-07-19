@@ -181,7 +181,7 @@ router.post('/create-paypal-order', requireAuth, async (req, res) => {
             intent: 'CAPTURE',
             purchase_units: [{
                 amount: {
-                    currency_code: 'USD',
+                    currency_code: 'MXN',
                     value: total.toFixed(2)
                 }
             }]
