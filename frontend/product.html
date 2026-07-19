@@ -303,7 +303,10 @@
                         <div class="product-description">
                             ${descHTML}
                         </div>
-                        <button onclick="addToCart('${product.id}', '${product.title.replace(/'/g, "\\'")}', ${product.sale_price || product.price}, '${product.currency || 'MXN'}')" class="btn-primary" style="width: 100%; font-size: 1.2rem; margin-top: 2rem;">AÑADIR AL CARRITO</button>
+                        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 2rem;">
+                            <button onclick="addToCart('${product.id}', '${product.title.replace(/'/g, "\\'")}', ${product.sale_price || product.price}, '${product.currency || 'MXN'}'); window.location.href='/cart.html'" class="btn-primary" style="width: 100%; font-size: 1.2rem; padding: 15px;">COMPRAR AHORA</button>
+                            <button onclick="addToCart('${product.id}', '${product.title.replace(/'/g, "\\'")}', ${product.sale_price || product.price}, '${product.currency || 'MXN'}')" class="btn-primary" style="width: 100%; font-size: 1.1rem; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color: white;">AÑADIR AL CARRITO</button>
+                        </div>
                     </div>
                 `;
             }
