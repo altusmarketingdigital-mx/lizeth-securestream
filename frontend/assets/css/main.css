@@ -87,7 +87,7 @@ body {
 /* Botones */
 .btn-primary {
     background: linear-gradient(135deg, var(--primary), var(--sec-1));
-    color: #ffffff;
+    color: #ffffff !important;
     border: none;
     padding: 12px 24px;
     border-radius: 6px;
