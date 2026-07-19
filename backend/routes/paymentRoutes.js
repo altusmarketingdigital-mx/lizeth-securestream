@@ -152,17 +152,17 @@ router.post('/stripe-webhook', async (req, res) => {
     res.json({ received: true });
 });
 
-// PAYPAL ORDER CREATE
+// PAYPAL ORDER CREATE (Redirect flow - no popup)
 router.post('/create-paypal-order', requireAuth, async (req, res) => {
     try {
-        const { videoIds } = req.body;
+        const { videoIds, couponCode } = req.body;
         if (!videoIds || videoIds.length === 0) {
-            return res.status(400).json({ error: 'Carrito vacío' });
+            return res.status(400).json({ error: 'Carrito vacio' });
         }
 
         // Modo MOCK si no hay credenciales
         if (PAYPAL_CLIENT_ID === 'test') {
-            return res.json({ orderID: 'PAYPAL_MOCK_' + uuidv4() });
+            return res.json({ approvalUrl: '/dashboard.html?payment=success&method=paypal' });
         }
 
         let total = 0;
@@ -173,9 +173,10 @@ router.post('/create-paypal-order', requireAuth, async (req, res) => {
             }
         }
 
-        if (total <= 0) return res.status(400).json({ error: 'Total inválido' });
+        if (total <= 0) return res.status(400).json({ error: 'Total invalido' });
 
         const accessToken = await getPayPalAccessToken();
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
 
         const orderData = {
             intent: 'CAPTURE',
@@ -184,7 +185,20 @@ router.post('/create-paypal-order', requireAuth, async (req, res) => {
                     currency_code: 'MXN',
                     value: total.toFixed(2)
                 }
-            }]
+            }],
+            payment_source: {
+                paypal: {
+                    experience_context: {
+                        payment_method_preference: 'IMMEDIATE_PAYMENT_REQUIRED',
+                        brand_name: 'Lizeth The Barberette',
+                        locale: 'es-MX',
+                        landing_page: 'LOGIN',
+                        user_action: 'PAY_NOW',
+                        return_url: `${frontendUrl}/cart.html?paypal=success`,
+                        cancel_url: `${frontendUrl}/cart.html?paypal=cancel`
+                    }
+                }
+            }
         };
 
         const response = await fetch(`${PAYPAL_API}/v2/checkout/orders`, {
@@ -197,7 +211,16 @@ router.post('/create-paypal-order', requireAuth, async (req, res) => {
         });
 
         const order = await response.json();
-        res.json({ orderID: order.id });
+        
+        // Find approval link
+        const approvalLink = order.links && order.links.find(l => l.rel === 'payer-action');
+        if (approvalLink) {
+            // Store videoIds in session for later capture
+            res.json({ approvalUrl: approvalLink.href, orderID: order.id });
+        } else {
+            console.error('PayPal order response:', JSON.stringify(order));
+            res.status(500).json({ error: 'No se obtuvo enlace de PayPal' });
+        }
     } catch (error) {
         console.error('Error PayPal Create Order:', error);
         res.status(500).json({ error: 'Error al iniciar PayPal' });

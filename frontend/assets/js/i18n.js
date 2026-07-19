@@ -58,6 +58,7 @@ const dictEN_to_ES = {
     "Discount Code": "Código de descuento",
     "Apply": "Aplicar",
     "Pay with Card": "Pagar con Tarjeta",
+    "Pay with PayPal": "Pagar con PayPal",
 
     // Dashboard
     "Dashboard": "Panel de Control",
