@@ -7,7 +7,6 @@
     <link rel="icon" href="/assets/img/barber-pole.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/main.css">
-    <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
     <script src="/assets/js/currency.js"></script>
     <style>
         .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 4rem; position: relative; z-index: 10; }
@@ -369,49 +368,61 @@
 
             document.getElementById('stripe-btn').addEventListener('click', () => handleCheckout('stripe', 'stripe-btn'));
 
-            // PayPal SDK Integration
-            if (window.paypal) {
-                paypal.Buttons({
-                    createOrder: async function(data, actions) {
-                        if(!localStorage.getItem('userEmail')) {
-                            alert('Debes iniciar sesión para comprar.');
-                            window.location.href = '/login.html';
-                            return;
-                        }
-                        const videoIds = cart.map(v => v.id);
-                        const res = await fetch('/api/payment/create-paypal-order', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ videoIds, couponCode: appliedCoupon })
-                        });
-                        const orderData = await res.json();
-                        if (orderData.error) {
-                            alert(orderData.error);
-                            return;
-                        }
-                        return orderData.orderID;
-                    },
-                    onApprove: async function(data, actions) {
-                        const videoIds = cart.map(v => v.id);
-                        const res = await fetch('/api/payment/capture-paypal-order', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ orderID: data.orderID, videoIds })
-                        });
-                        const captureData = await res.json();
-                        if (captureData.success) {
-                            localStorage.removeItem('videoCart');
-                            window.location.href = captureData.url;
-                        } else {
-                            alert('Error al capturar el pago: ' + captureData.error);
-                        }
-                    },
-                    onError: function(err) {
-                        console.error('PayPal Error:', err);
-                        alert('Ha ocurrido un error al cargar PayPal.');
+            // PayPal SDK Integration - Dynamic Load
+            fetch('/api/payment/paypal-client-id')
+                .then(res => res.json())
+                .then(data => {
+                    if(data.clientId) {
+                        const script = document.createElement('script');
+                        script.src = `https://www.paypal.com/sdk/js?client-id=${data.clientId}&currency=MXN`;
+                        script.onload = () => {
+                            if (window.paypal) {
+                                paypal.Buttons({
+                                    createOrder: async function(data, actions) {
+                                        if(!localStorage.getItem('userEmail')) {
+                                            alert('Debes iniciar sesión para comprar.');
+                                            window.location.href = '/login.html';
+                                            return;
+                                        }
+                                        const videoIds = cart.map(v => v.id);
+                                        const res = await fetch('/api/payment/create-paypal-order', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ videoIds, couponCode: appliedCoupon })
+                                        });
+                                        const orderData = await res.json();
+                                        if (orderData.error) {
+                                            alert(orderData.error);
+                                            return;
+                                        }
+                                        return orderData.orderID;
+                                    },
+                                    onApprove: async function(data, actions) {
+                                        const videoIds = cart.map(v => v.id);
+                                        const res = await fetch('/api/payment/capture-paypal-order', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ orderID: data.orderID, videoIds })
+                                        });
+                                        const captureData = await res.json();
+                                        if (captureData.success) {
+                                            localStorage.removeItem('videoCart');
+                                            window.location.href = captureData.url;
+                                        } else {
+                                            alert('Error al capturar el pago: ' + captureData.error);
+                                        }
+                                    },
+                                    onError: function(err) {
+                                        console.error('PayPal Error:', err);
+                                        alert('Ha ocurrido un error al cargar PayPal. Verifica la configuración de tu cuenta.');
+                                    }
+                                }).render('#paypal-button-container');
+                            }
+                        };
+                        document.head.appendChild(script);
                     }
-                }).render('#paypal-button-container');
-            }
+                })
+                .catch(err => console.error('Error loading PayPal client ID:', err));
         });
     </script>
     <script src="/assets/js/i18n.js"></script>

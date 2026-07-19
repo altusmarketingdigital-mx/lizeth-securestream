@@ -24,6 +24,10 @@ const requireAuth = (req, res, next) => {
     }
 };
 
+router.get('/paypal-client-id', (req, res) => {
+    res.json({ clientId: process.env.PAYPAL_CLIENT_ID || 'test' });
+});
+
 // Genera token de acceso para PayPal
 async function getPayPalAccessToken() {
     // Si usamos credenciales falsas fallara, retornamos mock si es test
