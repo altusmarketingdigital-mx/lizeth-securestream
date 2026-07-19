@@ -436,7 +436,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                             data-currency="${v.currency || 'MXN'}"
                             data-pub="${v.published_at ? new Date(v.published_at).toISOString().slice(0,16) : ''}"
                             data-hidden="${v.is_hidden}"
-                            data-path="${(v.internal_storage_path||'').replace(/"/g, '&quot;')}">
+                            data-path="${(v.internal_storage_path||'').replace(/"/g, '&quot;')}"
+                            data-slug="${v.secure_slug}">
                             Editar
                         </button>
                         <button class="btn-primary sm-btn delete-video-btn" style="background:#dc2626;" data-id="${v.id}">Eliminar</button>
@@ -465,12 +466,56 @@ document.addEventListener('DOMContentLoaded', async () => {
                     document.getElementById('v-is-hidden').checked = e.target.getAttribute('data-hidden') === 'true';
                     
                     const videoPath = e.target.getAttribute('data-path');
+                    const videoSlug = e.target.getAttribute('data-slug');
+                    
                     if (videoPath && videoPath.trim() !== '') {
                         document.getElementById('v-current-video-container').style.display = 'block';
                         document.getElementById('v-current-video').textContent = videoPath;
+                        
+                        let downloadBtn = document.getElementById('v-current-video-download');
+                        if (!downloadBtn) {
+                            downloadBtn = document.createElement('a');
+                            downloadBtn.id = 'v-current-video-download';
+                            downloadBtn.target = '_blank';
+                            // We don't force 'download' attribute if it's external, but it's safe to have it
+                            downloadBtn.style.background = 'rgba(255,255,255,0.1)';
+                            downloadBtn.style.border = '1px solid rgba(255,255,255,0.2)';
+                            downloadBtn.style.padding = '5px 10px';
+                            downloadBtn.style.borderRadius = '6px';
+                            downloadBtn.style.color = 'white';
+                            downloadBtn.style.textDecoration = 'none';
+                            downloadBtn.style.fontSize = '0.85rem';
+                            downloadBtn.style.marginLeft = '10px';
+                            downloadBtn.style.whiteSpace = 'nowrap';
+                            downloadBtn.title = 'Descargar / Ver Video';
+                            downloadBtn.innerHTML = '⬇️ Ver / Descargar';
+                            
+                            const parentDiv = document.getElementById('v-current-video').parentNode;
+                            if (parentDiv.tagName === 'DIV') {
+                                parentDiv.parentNode.appendChild(downloadBtn);
+                            } else {
+                                parentDiv.appendChild(downloadBtn);
+                            }
+                        }
+                        
+                        if (videoPath.startsWith('http')) {
+                            downloadBtn.href = videoPath;
+                            downloadBtn.style.display = 'inline-block';
+                        } else if (videoSlug && videoSlug !== 'undefined' && videoSlug !== 'null' && videoSlug.trim() !== '') {
+                            downloadBtn.href = `/api/videos/stream/${videoSlug}`;
+                            downloadBtn.style.display = 'inline-block';
+                        } else {
+                            // If no slug and no external URL, fallback to internal storage path directly (might not be accessible from frontend but worth a try)
+                            downloadBtn.href = `/${videoPath}`;
+                            downloadBtn.style.display = 'inline-block';
+                        }
                     } else {
                         document.getElementById('v-current-video-container').style.display = 'none';
                         document.getElementById('v-current-video').textContent = '';
+                        const downloadBtn = document.getElementById('v-current-video-download');
+                        if (downloadBtn) {
+                            downloadBtn.style.display = 'none';
+                        }
                     }
                     
                     const token = localStorage.getItem('token');
