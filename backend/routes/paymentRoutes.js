@@ -56,6 +56,8 @@ async function calculateCart(videoIds, couponCode) {
         const couponRes = await db.query('SELECT * FROM coupons WHERE code = $1 AND is_active = true LIMIT 1', [couponCode.trim().toUpperCase()]);
         if (couponRes.rows.length > 0) {
             coupon = couponRes.rows[0];
+        } else {
+            throw new Error(`Cupón '${couponCode}' no encontrado o inactivo.`);
         }
     }
 
@@ -65,8 +67,12 @@ async function calculateCart(videoIds, couponCode) {
             const video = vidRes.rows[0];
             let price = parseFloat(video.price);
             
-            if (coupon && (!coupon.video_id || coupon.video_id === video.id)) {
-                price = price * ((100 - parseFloat(coupon.discount_percentage)) / 100);
+            if (coupon) {
+                if (!coupon.video_id || String(coupon.video_id) === String(video.id)) {
+                    price = price * ((100 - parseFloat(coupon.discount_percentage)) / 100);
+                } else {
+                    // Coupon does not apply to this video
+                }
             }
             
             total += price;
@@ -122,7 +128,7 @@ router.post('/create-checkout-session', requireAuth, async (req, res) => {
         res.json({ url: session.url });
     } catch (error) {
         console.error('Error Stripe Checkout:', error);
-        res.status(500).json({ error: 'Error al iniciar Stripe' });
+        res.status(500).json({ error: error.message || 'Error al iniciar Stripe' });
     }
 });
 
@@ -237,7 +243,7 @@ router.post('/create-paypal-order', requireAuth, async (req, res) => {
         }
     } catch (error) {
         console.error('Error PayPal Create Order:', error);
-        res.status(500).json({ error: 'Error al iniciar PayPal' });
+        res.status(500).json({ error: error.message || 'Error al iniciar PayPal' });
     }
 });
 
