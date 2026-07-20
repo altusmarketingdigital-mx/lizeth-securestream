@@ -330,8 +330,15 @@
         </div>
 
         <div class="hero-graphics">
-            <div class="floating-card">
+            <div class="floating-card" style="position: relative;">
+                <div style="position: absolute; top: 15px; left: 15px; z-index: 10;">
+                    <span id="dyn-hero_card_badge1" class="badge" style="background: rgba(154, 34, 171, 0.8); color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; margin-right: 5px; display: none;"></span>
+                    <span id="dyn-hero_card_badge2" class="badge" style="background: rgba(0, 0, 0, 0.6); color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; display: none;"></span>
+                </div>
                 <img id="dyn-hero_card_image" class="main-pic" src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80" alt="Exclusive Video">
+                <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 30px 20px 15px 20px; text-align: center; pointer-events: none;">
+                    <h3 id="dyn-hero_card_title" style="margin: 0; color: white; font-size: 1.5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5); display: none;"></h3>
+                </div>
             </div>
         </div>
     </main>
@@ -444,25 +451,19 @@
             btn.disabled = true;
 
             try {
-                // Primero guardamos los datos de la donación en la DB
-                await fetch('/api/donations', {
+                // Solo abrimos Stripe Checkout y mandamos los datos
+                const res = await fetch('/api/payments/create-donation', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, email, message, amount })
-                }).catch(e => console.error("Donation record error:", e));
-
-                // Luego procesamos el pago
-                const res = await fetch('/api/payment/donate-stripe', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ amount })
+                    body: JSON.stringify({ amount, name, email, message })
                 });
-                
                 const data = await res.json();
                 if (data.url) {
                     window.location.href = data.url;
                 } else {
-                    throw new Error(data.error || 'Error al iniciar donativo');
+                    alert('Error: ' + (data.error || 'No se pudo iniciar el pago'));
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
                 }
             } catch (err) {
                 alert('Hubo un problema al conectar con la pasarela de pagos.');
@@ -639,6 +640,18 @@
                     if (data.hero_btn_text) {
                         const el = document.getElementById('dyn-hero_btn_text');
                         if (el) el.innerHTML = data.hero_btn_text;
+                    }
+                    if (data.hero_card_title) {
+                        const el = document.getElementById('dyn-hero_card_title');
+                        if (el) { el.innerHTML = data.hero_card_title; el.style.display = 'block'; }
+                    }
+                    if (data.hero_card_badge1) {
+                        const el = document.getElementById('dyn-hero_card_badge1');
+                        if (el) { el.innerHTML = data.hero_card_badge1; el.style.display = 'inline-block'; }
+                    }
+                    if (data.hero_card_badge2) {
+                        const el = document.getElementById('dyn-hero_card_badge2');
+                        if (el) { el.innerHTML = data.hero_card_badge2; el.style.display = 'inline-block'; }
                     }
                     if (data.hero_card_image) {
                         const el = document.getElementById('dyn-hero_card_image');

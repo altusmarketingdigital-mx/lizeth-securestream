@@ -141,6 +141,50 @@ router.post('/create-checkout-session', requireAuth, async (req, res) => {
     }
 });
 
+// STRIPE DONATION
+router.post('/create-donation', async (req, res) => {
+    try {
+        const { amount, name, email, message } = req.body;
+        const valAmount = parseFloat(amount) || 0;
+        if (valAmount <= 0) return res.status(400).json({ error: 'Monto inválido' });
+
+        if (STRIPE_SECRET_KEY === 'sk_test_mock') {
+            await db.query(
+                'INSERT INTO donations (name, email, message, amount) VALUES ($1, $2, $3, $4)',
+                [name || 'Anónimo', email, message, valAmount]
+            );
+            return res.json({ url: '/?donation=success' });
+        }
+
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            line_items: [{
+                price_data: {
+                    currency: 'usd',
+                    product_data: { name: 'Donativo - Apoyo al canal' },
+                    unit_amount: Math.round(valAmount * 100),
+                },
+                quantity: 1,
+            }],
+            mode: 'payment',
+            success_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/?donation=success`,
+            cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/`,
+            metadata: {
+                type: 'donation',
+                name: name || 'Anónimo',
+                email: email || '',
+                message: message || '',
+                amount: valAmount.toString()
+            }
+        });
+
+        res.json({ url: session.url });
+    } catch (error) {
+        console.error('Error Stripe Donation:', error);
+        res.status(500).json({ error: error.message || 'Error al iniciar Stripe' });
+    }
+});
+
 // STRIPE WEBHOOK (Requiere express.raw en server.js)
 router.post('/stripe-webhook', async (req, res) => {
     const sig = req.headers['stripe-signature'];
@@ -157,31 +201,41 @@ router.post('/stripe-webhook', async (req, res) => {
 
     if (event.type === 'checkout.session.completed') {
         const session = event.data.object;
-        const userId = session.metadata.userId;
-        const videoIds = JSON.parse(session.metadata.videoIds);
-        const orderNumber = session.id;
-        const country = session.customer_details?.address?.country || 'N/A';
-
-        const userRes = await db.query('SELECT email FROM users WHERE id = $1', [userId]);
-        const userEmail = userRes.rows[0]?.email;
-
-        // Cumplir la orden
-        for (const vidId of videoIds) {
+        
+        if (session.metadata?.type === 'donation') {
+            const { name, email, message, amount } = session.metadata;
             await db.query(
-                "INSERT INTO purchases (id, user_id, video_id, order_number, country) VALUES ($1, $2, $3, $4, $5)", 
-                [uuidv4(), userId, vidId, orderNumber, country]
+                'INSERT INTO donations (name, email, message, amount) VALUES ($1, $2, $3, $4)',
+                [name, email, message, parseFloat(amount)]
             );
-            
-            if (userEmail) {
-                const vidRes = await db.query('SELECT title, price, secure_slug FROM videos WHERE id = $1', [vidId]);
-                if (vidRes.rows.length > 0) {
-                    const video = vidRes.rows[0];
-                    const videoUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/player.html?v=${video.secure_slug}`;
-                    emailService.sendPurchaseReceipt(userEmail, video.title, video.price, 'USD', videoUrl).catch(console.error);
+            console.log(`✅ Donativo de Stripe registrado: $${amount} de ${name}`);
+        } else {
+            const userId = session.metadata.userId;
+            const videoIds = JSON.parse(session.metadata.videoIds);
+            const orderNumber = session.id;
+            const country = session.customer_details?.address?.country || 'N/A';
+
+            const userRes = await db.query('SELECT email FROM users WHERE id = $1', [userId]);
+            const userEmail = userRes.rows[0]?.email;
+
+            // Cumplir la orden
+            for (const vidId of videoIds) {
+                await db.query(
+                    "INSERT INTO purchases (id, user_id, video_id, order_number, country) VALUES ($1, $2, $3, $4, $5)", 
+                    [uuidv4(), userId, vidId, orderNumber, country]
+                );
+                
+                if (userEmail) {
+                    const vidRes = await db.query('SELECT title, price, secure_slug FROM videos WHERE id = $1', [vidId]);
+                    if (vidRes.rows.length > 0) {
+                        const video = vidRes.rows[0];
+                        const videoUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/player.html?v=${video.secure_slug}`;
+                        emailService.sendPurchaseReceipt(userEmail, video.title, video.price, 'USD', videoUrl).catch(console.error);
+                    }
                 }
             }
+            console.log(`✅ Pago de Stripe completado. Videos asignados al usuario ${userId}`);
         }
-        console.log(`✅ Pago de Stripe completado. Videos asignados al usuario ${userId}`);
     }
 
     res.json({ received: true });
