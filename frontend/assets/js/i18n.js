@@ -62,6 +62,15 @@ const dictEN_to_ES = {
 
     // Dashboard
     "Dashboard": "Panel de Control",
+    "My Library": "Mi Biblioteca",
+    "Hello,": "Hola,",
+    "Haircut Lover": "Amante de los Cortes",
+    "Here you have exclusive access to your purchased videos. Enjoy the best content in HD quality.": "Aquí tienes acceso exclusivo a tus videos adquiridos. Disfruta del mejor contenido en calidad HD.",
+    "Your Unlocked Videos": "Tus Videos Desbloqueados",
+    "Explore Catalog →": "Explore Catálogo →",
+    "Loading your exclusive content...": "Cargando tu contenido exclusivo...",
+    "You don't have any videos in your library yet": "Aún no tienes videos en tu biblioteca",
+    "GO TO CATALOG": "IR AL CATÁLOGO",
     "My Courses": "Mis Videos",
     "My Account": "Mi Cuenta",
     "Log Out": "Cerrar Sesión",
