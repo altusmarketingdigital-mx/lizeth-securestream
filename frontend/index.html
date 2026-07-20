@@ -452,7 +452,7 @@
 
             try {
                 // Solo abrimos Stripe Checkout y mandamos los datos
-                const res = await fetch('/api/payments/create-donation', {
+                const res = await fetch('/api/payment/create-donation', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ amount, name, email, message })

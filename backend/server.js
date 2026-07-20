@@ -47,7 +47,7 @@ app.get('/curso/:slug', async (req, res) => {
         const result = await db.query('SELECT title, description, price, cover_url FROM videos WHERE secure_slug = $1', [slug]);
         
         const playerHtmlPath = path.join(__dirname, '../frontend/player.html');
-        let htmlData = fs.readFileSync(playerHtmlPath, 'utf8');
+        let htmlData = await fs.promises.readFile(playerHtmlPath, 'utf8');
 
         if (result.rows.length > 0) {
             const video = result.rows[0];

@@ -351,6 +351,13 @@ router.post('/capture-paypal-order', requireAuth, async (req, res) => {
             const userEmail = req.user.email;
             const orderNumber = captureData.id || orderID;
             const country = captureData.payer?.address?.country_code || 'N/A';
+            
+            // PREVENT DUPLICATES
+            const checkOrder = await db.query('SELECT id FROM purchases WHERE order_number = $1 LIMIT 1', [orderNumber]);
+            if (checkOrder.rows.length > 0) {
+                return res.json({ success: true, url: '/dashboard.html?payment=success&method=paypal', note: 'already_captured' });
+            }
+
             for (const vidId of videoIds) {
                 await db.query(
                     "INSERT INTO purchases (id, user_id, video_id, order_number, country) VALUES ($1, $2, $3, $4, $5)", 
