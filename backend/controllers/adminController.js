@@ -95,7 +95,7 @@ exports.fixCors = async (req, res) => {
 exports.getStats = async (req, res) => {
     try {
         const usersResult = await db.query('SELECT COUNT(*) as count FROM users');
-        const videosResult = await db.query('SELECT COUNT(*) as count FROM videos');
+        const videosResult = await db.query('SELECT COUNT(*) as count FROM videos WHERE is_hidden = false AND is_deleted = false AND published_at <= CURRENT_TIMESTAMP');
         
         const salesQuery = `
             SELECT p.purchase_date, v.price as video_price

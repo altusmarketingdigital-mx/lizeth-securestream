@@ -1122,6 +1122,53 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- LEGAL PAGES LOGIC ---
     let quillEditors = {};
     const legalFields = ['terms-en', 'terms-es', 'privacy-en', 'privacy-es', 'refunds-en', 'refunds-es'];
+    const cmsFields = ['hero_title', 'hero_subtitle', 'hero_body', 'hero_btn_text', 'hero_card_title', 'hero_card_badge1', 'hero_card_badge2', 'hero_card_image'];
+    
+    // CMS Image logic
+    const heroImageInput = document.getElementById('file-hero_card_image');
+    if (heroImageInput) {
+        heroImageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            if (file.size > 2 * 1024 * 1024) return alert('La imagen excede los 2MB.');
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                document.getElementById('set-hero_card_image').value = ev.target.result;
+                document.getElementById('preview-hero_card_image').innerHTML = `<img src="${ev.target.result}" style="max-width:100%; max-height:200px; border-radius: 8px;">`;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    const btnSaveSettings = document.getElementById('btn-save-settings');
+    if (btnSaveSettings) {
+        btnSaveSettings.addEventListener('click', async () => {
+            btnSaveSettings.textContent = 'Guardando...';
+            btnSaveSettings.disabled = true;
+            
+            const payload = {};
+            cmsFields.forEach(f => {
+                const el = document.getElementById('set-' + f);
+                if (el) payload[f] = el.value;
+            });
+
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch('/api/settings', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) alert('Settings Web actualizados exitosamente');
+                else alert('Error al guardar Settings Web');
+            } catch (error) {
+                alert('Error de red');
+            } finally {
+                btnSaveSettings.textContent = 'Save Changes';
+                btnSaveSettings.disabled = false;
+            }
+        });
+    }
     
     // Initialize Quill
     if (typeof Quill !== 'undefined') {
@@ -1156,13 +1203,27 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function loadLegalSettings() {
         const data = await apiGet('/api/settings');
-        if (data && typeof Quill !== 'undefined') {
-            legalFields.forEach(field => {
-                const key = 'page_' + field.replace('-', '_');
-                if (data[key] && quillEditors[field]) {
-                    quillEditors[field].root.innerHTML = data[key];
+        if (data) {
+            // Load CMS
+            cmsFields.forEach(f => {
+                const el = document.getElementById('set-' + f);
+                if (el && data[f]) {
+                    el.value = data[f];
+                    if (f === 'hero_card_image' && data[f]) {
+                        document.getElementById('preview-hero_card_image').innerHTML = `<img src="${data[f]}" style="max-width:100%; max-height:200px; border-radius: 8px;">`;
+                    }
                 }
             });
+
+            // Load Legal Pages
+            if (typeof Quill !== 'undefined') {
+                legalFields.forEach(field => {
+                    const key = 'page_' + field.replace('-', '_');
+                    if (data[key] && quillEditors[field]) {
+                        quillEditors[field].root.innerHTML = data[key];
+                    }
+                });
+            }
         }
     }
 
