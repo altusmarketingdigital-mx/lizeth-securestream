@@ -50,6 +50,7 @@ async function getPayPalAccessToken() {
 async function calculateCart(videoIds, couponCode) {
     let lineItems = [];
     let total = 0;
+    let cartCurrency = 'usd'; // Default fallback
     
     let coupon = null;
     if (couponCode) {
@@ -61,32 +62,40 @@ async function calculateCart(videoIds, couponCode) {
         }
     }
 
-    for (const vidId of videoIds) {
-        const vidRes = await db.query('SELECT id, title, price FROM videos WHERE id = $1', [vidId]);
+    for (let i = 0; i < videoIds.length; i++) {
+        const vidId = videoIds[i];
+        const vidRes = await db.query('SELECT id, title, price, sale_price, currency FROM videos WHERE id = $1', [vidId]);
         if (vidRes.rows.length > 0) {
             const video = vidRes.rows[0];
-            let price = parseFloat(video.price);
             
+            // Usar sale_price si existe, de lo contrario price
+            let basePrice = parseFloat(video.sale_price) > 0 ? parseFloat(video.sale_price) : parseFloat(video.price);
+            let currency = (video.currency || 'usd').toLowerCase();
+            
+            if (i === 0) {
+                cartCurrency = currency;
+            }
+
             if (coupon) {
                 if (!coupon.video_id || String(coupon.video_id) === String(video.id)) {
-                    price = price * ((100 - parseFloat(coupon.discount_percentage)) / 100);
+                    basePrice = basePrice * ((100 - parseFloat(coupon.discount_percentage)) / 100);
                 } else {
                     // Coupon does not apply to this video
                 }
             }
             
-            total += price;
+            total += basePrice;
             lineItems.push({
                 price_data: {
-                    currency: 'mxn',
+                    currency: currency,
                     product_data: { name: video.title },
-                    unit_amount: Math.round(price * 100),
+                    unit_amount: Math.round(basePrice * 100),
                 },
                 quantity: 1,
             });
         }
     }
-    return { lineItems, total };
+    return { lineItems, total, currency: cartCurrency };
 }
 
 // STRIPE CHECKOUT
@@ -191,7 +200,7 @@ router.post('/create-paypal-order', requireAuth, async (req, res) => {
             return res.json({ approvalUrl: '/dashboard.html?payment=success&method=paypal' });
         }
 
-        const { total } = await calculateCart(videoIds, couponCode);
+        const { total, currency } = await calculateCart(videoIds, couponCode);
 
         if (total <= 0) return res.status(400).json({ error: 'Total invalido' });
 
@@ -202,7 +211,7 @@ router.post('/create-paypal-order', requireAuth, async (req, res) => {
             intent: 'CAPTURE',
             purchase_units: [{
                 amount: {
-                    currency_code: 'MXN',
+                    currency_code: currency.toUpperCase(),
                     value: total.toFixed(2)
                 }
             }],
