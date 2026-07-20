@@ -191,53 +191,53 @@
 
         <!-- Tab: Settings -->
         <section id="section-settings" class="content-section">
-            <h2 style="margin-top:0; font-size: 2rem; margin-bottom: 2rem;">Settings de Cuenta</h2>
+            <h2 style="margin-top:0; font-size: 2rem; margin-bottom: 2rem;">Account Settings</h2>
             
             <div class="settings-container" style="margin-bottom: 2rem;">
-                <h3 style="color: var(--primary); margin-top: 0;">Actualizar Correo</h3>
+                <h3 style="color: var(--primary); margin-top: 0;">Update Email</h3>
                 <form id="email-form" onsubmit="changeEmail(event)">
                     <div class="form-group">
-                        <label>Nuevo Email Address</label>
-                        <input type="email" id="new-email" class="form-control" placeholder="nuevo@correo.com" required>
+                        <label>New Email Address</label>
+                        <input type="email" id="new-email" class="form-control" placeholder="new@email.com" required>
                     </div>
-                    <button type="submit" id="email-submit-btn" class="btn-primary" style="width: 100%; margin-top: 1rem;">Actualizar Correo</button>
+                    <button type="submit" id="email-submit-btn" class="btn-primary" style="width: 100%; margin-top: 1rem;">Update Email</button>
                     <p id="email-msg" style="display:none; font-weight: bold; margin-top: 1rem; text-align: center;"></p>
                 </form>
             </div>
 
             <div class="settings-container">
-                <h3 style="color: var(--primary); margin-top: 0;">Seguridad</h3>
+                <h3 style="color: var(--primary); margin-top: 0;">Security</h3>
                 <form id="password-form" onsubmit="changePassword(event)">
                     <div class="form-group" style="position: relative;">
-                        <label>Password Actual</label>
+                        <label>Current Password</label>
                         <input type="password" id="current-pwd" class="form-control" placeholder="••••••••" style="padding-right: 40px; margin-bottom: 0;" required>
                         <button type="button" class="toggle-password" data-target="current-pwd" style="position: absolute; right: 10px; bottom: 12px; background: none; border: none; color: #aaa; cursor: pointer;">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                         </button>
                     </div>
                     <div class="form-group" style="position: relative;">
-                        <label>Nueva Password</label>
+                        <label>New Password</label>
                         <input type="password" id="new-pwd" class="form-control" placeholder="••••••••" style="padding-right: 40px; margin-bottom: 0;" required minlength="6">
                         <button type="button" class="toggle-password" data-target="new-pwd" style="position: absolute; right: 10px; bottom: 12px; background: none; border: none; color: #aaa; cursor: pointer;">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                         </button>
                     </div>
                     <div class="form-group" style="position: relative;">
-                        <label>Confirmar Nueva Password</label>
+                        <label>Confirm New Password</label>
                         <input type="password" id="confirm-pwd" class="form-control" placeholder="••••••••" style="padding-right: 40px; margin-bottom: 0;" required minlength="6">
                         <button type="button" class="toggle-password" data-target="confirm-pwd" style="position: absolute; right: 10px; bottom: 12px; background: none; border: none; color: #aaa; cursor: pointer;">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                         </button>
                     </div>
-                    <button type="submit" id="pwd-submit-btn" class="btn-primary" style="width: 100%; margin-top: 1rem;">Actualizar Password</button>
+                    <button type="submit" id="pwd-submit-btn" class="btn-primary" style="width: 100%; margin-top: 1rem;">Update Password</button>
                     <p id="pwd-msg" style="display:none; font-weight: bold; margin-top: 1rem; text-align: center;"></p>
                 </form>
             </div>
             
             <div class="settings-container" style="margin-top: 2rem; border-color: rgba(255, 50, 50, 0.2);">
-                <h3 style="color: #ff4d4d; margin-top: 0;">Zona Peligrosa</h3>
-                <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 1.5rem;">Una vez que elimines tu cuenta, no hay vuelta atrás. Perderás el acceso a todos tus videos adquiridos.</p>
-                <button class="btn-secondary" style="border-color: #ff4d4d; color: #ff4d4d;" onclick="alert('Contacta a soporte para eliminar tu cuenta.')">Eliminar Cuenta</button>
+                <h3 style="color: #ff4d4d; margin-top: 0;">Danger Zone</h3>
+                <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 1.5rem;">Once you delete your account, there is no going back. You will lose access to all your purchased videos.</p>
+                <button class="btn-secondary" style="border-color: #ff4d4d; color: #ff4d4d;" onclick="alert(t('Contact support to delete your account.'))">Delete Account</button>
             </div>
         </section>
 
@@ -250,7 +250,7 @@
             const msgBox = document.getElementById('email-msg');
             const btn = document.getElementById('email-submit-btn');
 
-            btn.textContent = 'Actualizando...';
+            btn.textContent = t('Updating...');
             btn.disabled = true;
             msgBox.style.display = 'none';
 
@@ -263,7 +263,7 @@
 
                 const data = await res.json();
                 
-                msgBox.textContent = data.message || data.error;
+                msgBox.textContent = t(data.message || data.error);
                 msgBox.style.color = res.ok ? 'var(--sec-3)' : 'var(--error)';
                 msgBox.style.display = 'block';
 
@@ -274,11 +274,11 @@
                     }, 3000);
                 }
             } catch (err) {
-                msgBox.textContent = 'Error de conexión con el servidor.';
+                msgBox.textContent = t('Connection error with the server.');
                 msgBox.style.color = 'var(--error)';
                 msgBox.style.display = 'block';
             } finally {
-                btn.textContent = 'Actualizar Correo';
+                btn.textContent = t('Update Email');
                 btn.disabled = false;
             }
         }
@@ -300,13 +300,13 @@
         async function processDonation() {
             const amount = document.getElementById('custom-don').value;
             if (!amount || amount <= 0) {
-                alert('Por favor, ingresa un monto válido.');
+                alert(t('Please enter a valid amount.'));
                 return;
             }
             
             const btn = document.querySelector('.donation-actions .btn-primary');
             const originalText = btn.innerHTML;
-            btn.innerHTML = 'Procesando...';
+            btn.innerHTML = t('Processing...');
             btn.disabled = true;
 
             try {
@@ -323,7 +323,7 @@
                     throw new Error(data.error || 'Error al iniciar donativo');
                 }
             } catch (err) {
-                alert('Hubo un problema al conectar con la pasarela de pagos.');
+                alert(t('There was a problem connecting to the payment gateway.'));
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
@@ -338,13 +338,13 @@
             const btn = document.getElementById('pwd-submit-btn');
 
             if (newPassword !== confirmPassword) {
-                msgBox.textContent = 'Las nuevas contraseñas no coinciden.';
+                msgBox.textContent = t('The new passwords do not match.');
                 msgBox.style.color = 'var(--error)';
                 msgBox.style.display = 'block';
                 return;
             }
 
-            btn.textContent = 'Actualizando...';
+            btn.textContent = t('Updating...');
             btn.disabled = true;
             msgBox.style.display = 'none';
 
@@ -357,7 +357,7 @@
 
                 const data = await res.json();
                 
-                msgBox.textContent = data.message || data.error;
+                msgBox.textContent = t(data.message || data.error);
                 msgBox.style.color = res.ok ? 'var(--sec-3)' : 'var(--error)';
                 msgBox.style.display = 'block';
 
@@ -369,11 +369,11 @@
                     }, 3000);
                 }
             } catch (err) {
-                msgBox.textContent = 'Error de conexión con el servidor.';
+                msgBox.textContent = t('Connection error with the server.');
                 msgBox.style.color = 'var(--error)';
                 msgBox.style.display = 'block';
             } finally {
-                btn.textContent = 'Actualizar Password';
+                btn.textContent = t('Update Password');
                 btn.disabled = false;
             }
         }

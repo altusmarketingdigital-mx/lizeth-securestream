@@ -77,6 +77,24 @@ const dictEN_to_ES = {
     "Purchase History": "Historial de Compras",
     "Settings": "Configuración",
     "Save Changes": "Guardar Cambios",
+    "Account Settings": "Settings de Cuenta",
+    "Update Email": "Actualizar Correo",
+    "New Email Address": "Nuevo Email Address",
+    "Security": "Seguridad",
+    "Current Password": "Password Actual",
+    "New Password": "Nueva Password",
+    "Confirm New Password": "Confirmar Nueva Password",
+    "Update Password": "Actualizar Password",
+    "Danger Zone": "Zona Peligrosa",
+    "Once you delete your account, there is no going back. You will lose access to all your purchased videos.": "Una vez que elimines tu cuenta, no hay vuelta atrás. Perderás el acceso a todos tus videos adquiridos.",
+    "Delete Account": "Eliminar Cuenta",
+    "Contact support to delete your account.": "Contacta a soporte para eliminar tu cuenta.",
+    "Updating...": "Actualizando...",
+    "Connection error with the server.": "Error de conexión con el servidor.",
+    "The new passwords do not match.": "Las nuevas contraseñas no coinciden.",
+    "Please enter a valid amount.": "Por favor, ingresa un monto válido.",
+    "Processing...": "Procesando...",
+    "There was a problem connecting to the payment gateway.": "Hubo un problema al conectar con la pasarela de pagos.",
     
     // Contact
     "Contact Us": "Contáctanos",
@@ -174,5 +192,13 @@ function applyLanguage(lang) {
         }
     });
 }
+
+// Global dynamic translation function for Javascript alerts and messages
+window.t = function(text) {
+    if (localStorage.getItem('language') === 'es' && dictEN_to_ES[text]) {
+        return dictEN_to_ES[text];
+    }
+    return text;
+};
 
 document.addEventListener('DOMContentLoaded', initLanguage);
