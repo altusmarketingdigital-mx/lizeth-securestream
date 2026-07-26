@@ -86,12 +86,13 @@ async function initializeDatabase() {
         await pool.query(`ALTER TABLE purchases ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'exitoso';`);
         await pool.query(`ALTER TABLE purchases ADD COLUMN IF NOT EXISTS amount NUMERIC(10, 2) DEFAULT 0.00;`);
         
-        // Retroactivamente poner un amount en base al precio del video para purchases antiguos (opcional, pero útil)
+        // Retroactivamente poner un amount y status en base al precio del video para purchases antiguos
         await pool.query(`
             UPDATE purchases 
-            SET amount = v.price 
+            SET amount = COALESCE(NULLIF(v.sale_price, 0), v.price),
+                status = 'exitoso'
             FROM videos v 
-            WHERE purchases.video_id = v.id AND purchases.amount = 0.00;
+            WHERE purchases.video_id = v.id AND (purchases.amount = 0.00 OR purchases.amount IS NULL OR purchases.status IS NULL);
         `);
 
         await pool.query(`

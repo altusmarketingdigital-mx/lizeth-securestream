@@ -114,9 +114,11 @@ router.post('/create-checkout-session', requireAuth, async (req, res) => {
         if (STRIPE_SECRET_KEY === 'sk_test_mock') {
             const mockOrderNumber = 'MOCK-STRIPE-' + Date.now();
             for (const vidId of videoIds) {
+                const vidRes = await db.query('SELECT price, sale_price FROM videos WHERE id = $1', [vidId]);
+                const itemPrice = vidRes.rows.length > 0 ? (parseFloat(vidRes.rows[0].sale_price) || parseFloat(vidRes.rows[0].price) || 0) : 0;
                 await db.query(
-                    "INSERT INTO purchases (id, user_id, video_id, order_number, country) VALUES ($1, $2, $3, $4, $5)", 
-                    [uuidv4(), req.user.id, vidId, mockOrderNumber, 'N/A']
+                    "INSERT INTO purchases (id, user_id, video_id, order_number, country, amount, status) VALUES ($1, $2, $3, $4, $5, $6, $7)", 
+                    [uuidv4(), req.user.id, vidId, mockOrderNumber, 'N/A', itemPrice, 'exitoso']
                 );
             }
             return res.json({ url: '/dashboard.html?payment=success&method=stripe' });
@@ -220,18 +222,18 @@ router.post('/stripe-webhook', async (req, res) => {
 
             // Cumplir la orden
             for (const vidId of videoIds) {
+                const vidRes = await db.query('SELECT title, price, sale_price, secure_slug FROM videos WHERE id = $1', [vidId]);
+                const video = vidRes.rows[0];
+                const itemPrice = video ? (parseFloat(video.sale_price) || parseFloat(video.price) || 0) : 0;
+
                 await db.query(
-                    "INSERT INTO purchases (id, user_id, video_id, order_number, country) VALUES ($1, $2, $3, $4, $5)", 
-                    [uuidv4(), userId, vidId, orderNumber, country]
+                    "INSERT INTO purchases (id, user_id, video_id, order_number, country, amount, status) VALUES ($1, $2, $3, $4, $5, $6, $7)", 
+                    [uuidv4(), userId, vidId, orderNumber, country, itemPrice, 'exitoso']
                 );
                 
-                if (userEmail) {
-                    const vidRes = await db.query('SELECT title, price, secure_slug FROM videos WHERE id = $1', [vidId]);
-                    if (vidRes.rows.length > 0) {
-                        const video = vidRes.rows[0];
-                        const videoUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/player.html?v=${video.secure_slug}`;
-                        emailService.sendPurchaseReceipt(userEmail, video.title, video.price, 'USD', videoUrl).catch(console.error);
-                    }
+                if (userEmail && video) {
+                    const videoUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/player.html?v=${video.secure_slug}`;
+                    emailService.sendPurchaseReceipt(userEmail, video.title, itemPrice, 'USD', videoUrl).catch(console.error);
                 }
             }
             console.log(`✅ Pago de Stripe completado. Videos asignados al usuario ${userId}`);
@@ -319,18 +321,18 @@ router.post('/capture-paypal-order', requireAuth, async (req, res) => {
         if (PAYPAL_CLIENT_ID === 'test' || orderID.startsWith('PAYPAL_MOCK_')) {
             const userEmail = req.user.email;
             for (const vidId of videoIds) {
+                const vidRes = await db.query('SELECT title, price, sale_price, secure_slug FROM videos WHERE id = $1', [vidId]);
+                const video = vidRes.rows[0];
+                const itemPrice = video ? (parseFloat(video.sale_price) || parseFloat(video.price) || 0) : 0;
+
                 await db.query(
-                    "INSERT INTO purchases (id, user_id, video_id, order_number, country) VALUES ($1, $2, $3, $4, $5)", 
-                    [uuidv4(), req.user.id, vidId, orderID, 'N/A']
+                    "INSERT INTO purchases (id, user_id, video_id, order_number, country, amount, status) VALUES ($1, $2, $3, $4, $5, $6, $7)", 
+                    [uuidv4(), req.user.id, vidId, orderID, 'N/A', itemPrice, 'exitoso']
                 );
                 
-                if (userEmail) {
-                    const vidRes = await db.query('SELECT title, price, secure_slug FROM videos WHERE id = $1', [vidId]);
-                    if (vidRes.rows.length > 0) {
-                        const video = vidRes.rows[0];
-                        const videoUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/player.html?v=${video.secure_slug}`;
-                        emailService.sendPurchaseReceipt(userEmail, video.title, video.price, 'USD', videoUrl).catch(console.error);
-                    }
+                if (userEmail && video) {
+                    const videoUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/player.html?v=${video.secure_slug}`;
+                    emailService.sendPurchaseReceipt(userEmail, video.title, itemPrice, 'USD', videoUrl).catch(console.error);
                 }
             }
             return res.json({ success: true, url: '/dashboard.html?payment=success&method=paypal' });
@@ -359,18 +361,18 @@ router.post('/capture-paypal-order', requireAuth, async (req, res) => {
             }
 
             for (const vidId of videoIds) {
+                const vidRes = await db.query('SELECT title, price, sale_price, secure_slug FROM videos WHERE id = $1', [vidId]);
+                const video = vidRes.rows[0];
+                const itemPrice = video ? (parseFloat(video.sale_price) || parseFloat(video.price) || 0) : 0;
+
                 await db.query(
-                    "INSERT INTO purchases (id, user_id, video_id, order_number, country) VALUES ($1, $2, $3, $4, $5)", 
-                    [uuidv4(), req.user.id, vidId, orderNumber, country]
+                    "INSERT INTO purchases (id, user_id, video_id, order_number, country, amount, status) VALUES ($1, $2, $3, $4, $5, $6, $7)", 
+                    [uuidv4(), req.user.id, vidId, orderNumber, country, itemPrice, 'exitoso']
                 );
                 
-                if (userEmail) {
-                    const vidRes = await db.query('SELECT title, price, secure_slug FROM videos WHERE id = $1', [vidId]);
-                    if (vidRes.rows.length > 0) {
-                        const video = vidRes.rows[0];
-                        const videoUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/player.html?v=${video.secure_slug}`;
-                        emailService.sendPurchaseReceipt(userEmail, video.title, video.price, 'USD', videoUrl).catch(console.error);
-                    }
+                if (userEmail && video) {
+                    const videoUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/player.html?v=${video.secure_slug}`;
+                    emailService.sendPurchaseReceipt(userEmail, video.title, itemPrice, 'USD', videoUrl).catch(console.error);
                 }
             }
             res.json({ success: true, url: '/dashboard.html?payment=success&method=paypal' });
@@ -472,6 +474,39 @@ router.post('/capture-donation-paypal', async (req, res) => {
     } catch (error) {
         console.error('Error PayPal Donation Capture:', error);
         res.status(500).json({ error: 'Error al capturar donativo PayPal' });
+    }
+// DIRECT TEST / DEMO PURCHASE
+router.post('/direct-purchase', requireAuth, async (req, res) => {
+    try {
+        const { videoIds } = req.body;
+        if (!videoIds || !Array.isArray(videoIds) || videoIds.length === 0) {
+            return res.status(400).json({ error: 'Carrito vacío' });
+        }
+
+        const orderNumber = 'DIRECT-' + Date.now();
+        const userId = req.user.id;
+        const userEmail = req.user.email;
+
+        for (const vidId of videoIds) {
+            const vidRes = await db.query('SELECT title, price, sale_price, secure_slug FROM videos WHERE id = $1', [vidId]);
+            const video = vidRes.rows[0];
+            const itemPrice = video ? (parseFloat(video.sale_price) || parseFloat(video.price) || 0) : 0;
+
+            await db.query(
+                "INSERT INTO purchases (id, user_id, video_id, order_number, country, amount, status) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+                [uuidv4(), userId, vidId, orderNumber, 'MX', itemPrice, 'exitoso']
+            );
+
+            if (userEmail && video) {
+                const videoUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/player.html?v=${video.secure_slug}`;
+                emailService.sendPurchaseReceipt(userEmail, video.title, itemPrice, 'MXN', videoUrl).catch(console.error);
+            }
+        }
+
+        res.json({ success: true, url: '/dashboard.html?payment=success&method=direct' });
+    } catch (error) {
+        console.error('Error Direct Purchase:', error);
+        res.status(500).json({ error: 'Error al registrar la compra' });
     }
 });
 

@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lizeth The Barberette | Home</title>
-    <link rel="icon" href="/assets/img/barber-pole.png" type="image/png">
-    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="icon" href="assets/img/barber-pole.png" type="image/png">
+    <link rel="stylesheet" href="assets/css/main.css">
     <style>
         .hero { 
             position: relative;
@@ -268,14 +268,14 @@
             .top-bar { flex-direction: column; gap: 1.5rem; }
         }
     </style>
-<script src="/assets/js/auth-check.js"></script>
+<script src="assets/js/auth-check.js"></script>
 </head>
 <body>
-    <!-- Preloader -->
-    <div id="page-preloader" style="position: fixed; top:0; left:0; width:100%; height:100%; background-color:#0a0a0a; z-index: 99999; display:flex; justify-content:center; align-items:center; transition: opacity 0.5s ease;">
+    <!-- Preloader Disabled for Instant Loading -->
+    <div id="page-preloader" style="display: none !important;">
         <div style="text-align: center; display: flex; flex-direction: column; align-items: center; gap: 20px;">
-            <video src="/assets/img/icono-de-carga.webm" autoplay loop muted playsinline style="height: 150px; border-radius: 50%;"></video>
-            <img src="/assets/img/logo.png" alt="Lizeth The Barberette" style="height: 45px; opacity: 0.8; animation: pulseLogo 2s infinite ease-in-out;">
+            <video src="assets/img/icono-de-carga.webm" autoplay loop muted playsinline style="height: 150px; border-radius: 50%;"></video>
+            <img src="assets/img/logo.png" alt="Lizeth The Barberette" style="height: 45px; opacity: 0.8; animation: pulseLogo 2s infinite ease-in-out;">
             <style>
                 @keyframes pulseLogo {
                     0%, 100% { opacity: 0.5; transform: scale(0.95); }
@@ -285,19 +285,18 @@
             </style>
         </div>
     </div>
-    <script>document.body.classList.add('no-scroll');</script>
 
     <div class="bg-animated-mesh"></div>
     
     <header class="top-bar">
-        <a href="/" class="logo" style="display: flex; align-items: center; gap: 15px; text-decoration: none;">
-            <img src="/assets/img/barber-pole.png" alt="Poste de Barbero" style="height: 70px; filter: drop-shadow(0 0 15px rgba(154, 34, 171, 0.5));">
-            <img id="dyn-logo_img" src="/assets/img/logo.png" alt="Lizeth The Barberette" style="height: 60px; object-fit: contain;">
+        <a href="index.html" class="logo" style="display: flex; align-items: center; gap: 15px; text-decoration: none;">
+            <img src="assets/img/barber-pole.png" alt="Poste de Barbero" style="height: 70px; filter: drop-shadow(0 0 15px rgba(154, 34, 171, 0.5));">
+            <img id="dyn-logo_img" src="assets/img/logo.png" alt="Lizeth The Barberette" style="height: 60px; object-fit: contain;">
         </a>
         <div class="header-nav">
-            <a href="/" class="active">HOME</a>
-            <a href="/catalog.html">SHOP</a>
-            <a href="/login.html" class="btn-primary" style="padding: 10px 24px; border-radius: 50px; width: auto;">SIGN IN</a>
+            <a href="index.html" class="active">HOME</a>
+            <a href="catalog.html">SHOP</a>
+            <a href="login.html" class="btn-primary" style="padding: 10px 24px; border-radius: 50px; width: auto;">SIGN IN</a>
             <button id="lang-toggle" onclick="toggleLanguage()" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:white; padding:5px 15px; border-radius:15px; cursor:pointer; margin-left: 10px; font-weight: bold; transition: background 0.3s;">ES</button>
         </div>
     </header>
@@ -377,14 +376,14 @@
     <footer class="site-footer">
         <div class="footer-content">
             <div class="footer-brand">
-                <img src="/assets/img/logo.png" alt="Lizeth The Barberette" class="footer-logo">
+                <img src="assets/img/logo.png" alt="Lizeth The Barberette" class="footer-logo">
             <p id="dyn-footer_text">Monetizing knowledge with extreme security.<br>No guard, no hair left... BALD!!!</p>
             </div>
             <div class="footer-links-col">
                 <h4>Explore</h4>
-                <a href="/">Home</a>
-                <a href="/catalog.html">Shop</a>
-                <a href="/login.html">Sign In</a>
+                <a href="index.html">Home</a>
+                <a href="catalog.html">Shop</a>
+                <a href="login.html">Sign In</a>
             </div>
             <div class="footer-links-col">
                 <h4>Legal</h4>
@@ -416,16 +415,15 @@
                 setTimeout(() => {
                     preloader.style.display = 'none';
                     document.body.classList.remove('no-scroll');
-                }, 500); // Tiempo de la transición CSS
+                }, 300);
             }
         }
         
-        window.addEventListener('load', () => {
-            setTimeout(hidePreloader, 600);
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(hidePreloader, 100);
         });
-        
-        // Failsafe por si falla la carga del video (.mov) o un script externo
-        setTimeout(hidePreloader, 3500);
+        window.addEventListener('load', hidePreloader);
+        setTimeout(hidePreloader, 500);
 
         // CMS Logic
         function setDon(btn, amount) {
@@ -561,57 +559,60 @@
         });
         // Latest Videos Logic
         async function loadLatestVideos() {
+            let allVideos = [];
             try {
                 const res = await fetch('/api/videos/catalog');
-                let allVideos = await res.json();
-                
-                const grid = document.getElementById('latest-videos-grid');
-                if(!allVideos || allVideos.length === 0) {
-                    grid.innerHTML = '<p style="color:#fff; text-align:center; grid-column: 1/-1;">No videos available.</p>';
-                    return;
+                if (res.ok) {
+                    allVideos = await res.json();
                 }
-
-                // Tomar solo los últimos 5
-                const latestVideos = allVideos.slice(0, 5);
-                
-                const covers = [
-                    'photo-1585747860715-2ba37e788b70',
-                    'photo-1503951914875-452162b0f3f1',
-                    'photo-1622286342621-4bd786c2447c',
-                    'photo-1534723452862-4c874018d66d',
-                    'photo-1599351431202-1e0f0137899a',
-                    'photo-1605497788044-5a32c7078486',
-                    'photo-1526374965328-7f61d4dc18c5',
-                    'photo-1593720213428-28a5b9e94613'
-                ];
-
-                grid.innerHTML = latestVideos.map((v, i) => {
-                    const coverId = covers[i % covers.length];
-                    return `
-                    <div class="card interactive">
-                        <div class="card-img-wrapper" style="cursor: pointer;" onclick="window.location.href='/product.html?id=${v.id}'">
-                            <div class="overlay-play">Ver Detalles</div>
-                            <img src="${v.cover_image || `https://images.unsplash.com/${coverId}?auto=format&fit=crop&w=600&q=80`}" alt="${v.title}">
-                        </div>
-                        <div class="card-content" style="padding: 1rem 0;">
-                            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem; cursor: pointer;" onclick="window.location.href='/product.html?id=${v.id}'">
-                                <h3 style="margin: 0; color: var(--primary); font-size: 1.1rem; text-transform: uppercase;">${v.title}</h3>
-                                <div class="price-container" style="text-align: right;">
-                                    ${v.sale_price 
-                                        ? `<span style="text-decoration: line-through; opacity: 0.6; font-size: 0.9rem; margin-right: 5px;">${window.formatPrice ? window.formatPrice(v.price, v.currency) : '$' + v.price}</span>
-                                           <span class="price-tag" style="color: var(--sec-1); font-size: 1.1rem; font-weight: bold;">${window.formatPrice ? window.formatPrice(v.sale_price, v.currency) : '$' + v.sale_price}</span>` 
-                                        : `<span class="price-tag" style="color: var(--sec-1); font-size: 1.1rem;">${window.formatPrice ? window.formatPrice(v.price, v.currency) : '$' + v.price}</span>`
-                                    }
-                                </div>
-                            </div>
-                            <button onclick="window.location.href='/product.html?id=${v.id}'" class="btn-primary">MORE DETAILS</button>
-                        </div>
-                    </div>
-                    `;
-                }).join('');
             } catch(e) {
                 console.error('Error loading latest videos:', e);
             }
+
+            if (!Array.isArray(allVideos) || allVideos.length === 0) {
+                allVideos = [
+                    { id: 'v-mock1', title: 'Masterclass: Fade Perfecto', price: 49.99, sale_price: 39.99, currency: 'USD', cover_image: 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=600&q=80' },
+                    { id: 'v-mock2', title: 'Skin Fade Executivo', price: 29.99, currency: 'USD', cover_image: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=600&q=80' },
+                    { id: 'v-mock3', title: 'Técnicas de Navaja & Barba', price: 34.99, sale_price: 24.99, currency: 'USD', cover_image: 'https://images.unsplash.com/photo-1622286342621-4bd786c2447c?auto=format&fit=crop&w=600&q=80' },
+                    { id: 'v-mock4', title: 'Taper Fade Moderno', price: 39.99, currency: 'USD', cover_image: 'https://images.unsplash.com/photo-1534723452862-4c874018d66d?auto=format&fit=crop&w=600&q=80' }
+                ];
+            }
+
+            const grid = document.getElementById('latest-videos-grid');
+            const latestVideos = allVideos.slice(0, 5);
+            
+            const covers = [
+                'photo-1585747860715-2ba37e788b70',
+                'photo-1503951914875-452162b0f3f1',
+                'photo-1622286342621-4bd786c2447c',
+                'photo-1534723452862-4c874018d66d',
+                'photo-1599351431202-1e0f0137899a'
+            ];
+
+            grid.innerHTML = latestVideos.map((v, i) => {
+                const coverId = covers[i % covers.length];
+                return `
+                <div class="card interactive">
+                    <div class="card-img-wrapper" style="cursor: pointer;" onclick="window.location.href='/catalog.html'">
+                        <div class="overlay-play">Ver Detalles</div>
+                        <img src="${v.cover_image || `https://images.unsplash.com/${coverId}?auto=format&fit=crop&w=600&q=80`}" alt="${v.title}">
+                    </div>
+                    <div class="card-content" style="padding: 1rem 0;">
+                        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem; cursor: pointer;" onclick="window.location.href='/catalog.html'">
+                            <h3 style="margin: 0; color: var(--primary); font-size: 1.1rem; text-transform: uppercase;">${v.title}</h3>
+                            <div class="price-container" style="text-align: right;">
+                                ${v.sale_price 
+                                    ? `<span style="text-decoration: line-through; opacity: 0.6; font-size: 0.9rem; margin-right: 5px;">$${v.price}</span>
+                                       <span class="price-tag" style="color: var(--sec-1); font-size: 1.1rem; font-weight: bold;">$${v.sale_price}</span>` 
+                                    : `<span class="price-tag" style="color: var(--sec-1); font-size: 1.1rem;">$${v.price}</span>`
+                                }
+                            </div>
+                        </div>
+                        <button onclick="window.location.href='/catalog.html'" class="btn-primary">MORE DETAILS</button>
+                    </div>
+                </div>
+                `;
+            }).join('');
         }
         
         async function loadSiteSettings() {
@@ -672,7 +673,7 @@
             loadSiteSettings();
         });
     </script>
-    <script src="/assets/js/i18n.js"></script>
+    <script src="assets/js/i18n.js"></script>
 </body>
 </html>
 
