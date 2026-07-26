@@ -1,21 +1,26 @@
 const { Pool } = require('pg');
 
+const isRemoteDb = process.env.DATABASE_URL && 
+    !process.env.DATABASE_URL.includes('localhost') && 
+    !process.env.DATABASE_URL.includes('127.0.0.1');
+
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: process.env.DATABASE_URL && process.env.DATABASE_URL.includes('neon.tech') 
-        ? { rejectUnauthorized: false } 
-        : false
+    ssl: isRemoteDb ? { rejectUnauthorized: false } : false
 });
 
 pool.on('error', (err, client) => {
     console.error('Unexpected error on idle client', err);
 });
 
+let dbInitialized = false;
+
 async function initializeDatabase() {
     if (!process.env.DATABASE_URL) {
         console.warn('⚠️ WARNING: No DATABASE_URL provided. Database initialization skipped.');
         return;
     }
+    if (dbInitialized) return;
 
     try {
         await pool.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`);
@@ -245,8 +250,10 @@ async function initializeDatabase() {
     }
 }
 
-// Inicializar la base de datos de manera asíncrona al arrancar el servidor
-initializeDatabase();
+// Inicializar la base de datos de manera asíncrona al arrancar el servidor (sin bloquear ni tumbar la función serverless)
+initializeDatabase().catch(err => {
+    console.error('⚠️ Error en initializeDatabase:', err.message);
+});
 
 // Exportar un wrapper de query para que los controladores no tengan que cambiar su sintaxis
 module.exports = {

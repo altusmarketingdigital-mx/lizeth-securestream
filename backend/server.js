@@ -7,6 +7,9 @@ require('dotenv').config();
 
 const app = express();
 
+// Confiar en el proxy para Vercel / Cloudflare (requerido para express-rate-limit)
+app.set('trust proxy', 1);
+
 // Geo-blocking Middleware (India & Indonesia)
 app.use((req, res, next) => {
     const country = req.headers['x-vercel-ip-country'];
@@ -103,6 +106,12 @@ app.get('/api/health', async (req, res) => {
     } catch (e) {
         res.json({ status: 'error', message: e.message });
     }
+});
+
+// Middleware de Manejo de Errores Global para Vercel Serverless Functions
+app.use((err, req, res, next) => {
+    console.error('❌ Error no capturado en servidor:', err);
+    res.status(500).json({ error: 'Error interno del servidor', message: err.message });
 });
 
 // Iniciar servidor (Solo en local, Vercel usa el módulo exportado)
