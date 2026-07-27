@@ -1,8 +1,10 @@
 const { Pool } = require('pg');
 
+const connectionString = process.env.DATABASE_URL || 'postgresql://neondb_owner:npg_lCR4X7beoNKi@ep-royal-paper-at3n6bai-pooler.c-9.us-east-1.aws.neon.tech/neondb?sslmode=require';
+
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: process.env.DATABASE_URL && process.env.DATABASE_URL.includes('neon.tech') 
+    connectionString,
+    ssl: connectionString.includes('neon.tech') 
         ? { rejectUnauthorized: false } 
         : false,
     connectionTimeoutMillis: 5000
@@ -15,6 +17,18 @@ pool.on('error', (err, client) => {
 async function initializeDatabase() {
     if (!process.env.DATABASE_URL) {
         console.warn('⚠️ WARNING: No DATABASE_URL provided. Database initialization skipped.');
+        return;
+    }
+
+    try {
+        // Verificar conexión primero con timeout rápido (2 segundos)
+        const checkConn = Promise.race([
+            pool.query('SELECT 1'),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('DB Timeout')), 2000))
+        ]);
+        await checkConn;
+    } catch (e) {
+        console.warn('⚠️ Base de datos no disponible localmente o tiempo de espera agotado. Servidor continuará sin DB:', e.message);
         return;
     }
 

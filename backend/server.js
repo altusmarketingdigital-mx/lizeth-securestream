@@ -110,6 +110,12 @@ app.get('/api/health', async (req, res) => {
     }
 });
 
+// Manejador global de errores
+app.use((err, req, res, next) => {
+    console.error('⚠️ Error no capturado:', err);
+    res.status(500).json({ error: 'Internal Server Error', message: err.message });
+});
+
 // Iniciar servidor (Solo en local, Vercel usa el módulo exportado)
 if (require.main === module) {
     const PORT = process.env.PORT || 3000;
