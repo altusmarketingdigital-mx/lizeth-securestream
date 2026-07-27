@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureStream | Dashboard</title>
+    <link rel="icon" href="assets/img/barber-pole.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <style>
+        /* Modern Dashboard Layout */
+        body { margin: 0; display: flex; height: 100vh; overflow: hidden; background: #0a0a0a; color: #fff; font-family: 'Outfit', sans-serif; }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 280px; background: rgba(20, 20, 20, 0.95); border-right: 1px solid rgba(255,255,255,0.05);
+            display: flex; flex-direction: column; padding: 2rem 1.5rem; backdrop-filter: blur(20px); z-index: 100;
+        }
+        .sidebar-logo { display: flex; align-items: center; justify-content: center; margin-bottom: 3rem; }
+        .sidebar-logo img { height: 50px; }
+        
+        .nav-items { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+        .nav-item {
+            padding: 1rem; border-radius: 12px; cursor: pointer; transition: all 0.3s;
+            display: flex; align-items: center; gap: 15px; font-weight: 600; color: #888;
+        }
+        .nav-item:hover, .nav-item.active { background: rgba(154, 34, 171, 0.1); color: var(--primary); }
+        .nav-item svg { width: 20px; height: 20px; }
+        .nav-item.active svg { stroke: var(--primary); }
+
+        .user-profile {
+            margin-top: auto; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .user-email { font-size: 0.9rem; color: #ccc; word-break: break-all; }
+        .btn-logout { background: transparent; border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px; border-radius: 8px; cursor: pointer; transition: 0.3s; width: 100%; text-transform: uppercase; font-size: 0.8rem; font-weight: bold; }
+        .btn-logout:hover { background: rgba(255,0,0,0.1); border-color: rgba(255,0,0,0.3); color: #ff4d4d; }
+
+        /* Main Content */
+        .main-content { flex: 1; overflow-y: auto; position: relative; }
+        
+        /* Hero Banner */
+        .hero-banner {
+            position: relative; height: 350px; display: flex; flex-direction: column; justify-content: center; padding: 0 4rem;
+            background: linear-gradient(135deg, rgba(20,20,20,0.9), rgba(10,10,10,1)), url('https://images.unsplash.com/photo-1622286342621-4bd786c2447c?auto=format&fit=crop&w=1920&q=80') center/cover;
+            background-blend-mode: multiply; border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .hero-banner::before {
+            content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 150px;
+            background: linear-gradient(to top, #0a0a0a, transparent);
+        }
+        .hero-content { position: relative; z-index: 10; max-width: 800px; }
+        .hero-content h1 { font-size: 3rem; margin: 0 0 10px 0; color: #fff; }
+        .hero-content h1 span { color: var(--primary); }
+        .hero-content p { font-size: 1.2rem; color: #aaa; margin: 0; }
+        
+        /* Sections */
+        .content-section { padding: 3rem 4rem; display: none; }
+        .content-section.active { display: block; }
+        
+        /* Netflix style Grid */
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; }
+        .cinematic-card {
+            background: #141414; border-radius: 12px; overflow: hidden; position: relative; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255,255,255,0.05); cursor: pointer; aspect-ratio: 16/9;
+        }
+        .cinematic-card:hover { transform: scale(1.05) translateY(-5px); z-index: 10; box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 20px rgba(154, 34, 171, 0.3); border-color: rgba(154, 34, 171, 0.5); }
+        .cinematic-card img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s; opacity: 0.8; }
+        .cinematic-card:hover img { opacity: 0.4; }
+        
+        .card-overlay {
+            position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 1.5rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+        }
+        .card-title { margin: 0; font-size: 1.2rem; font-weight: 700; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        
+        .card-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
+        .badge { background: rgba(154,34,171,0.8); padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
+        .card-duration { font-size: 0.8rem; color: #ccc; font-weight: 600; }
+        
+        .progress-container { width: 100%; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--primary); }
+        
+        .play-btn-overlay {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.8);
+            width: 60px; height: 60px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: all 0.3s; box-shadow: 0 0 20px var(--primary);
+        }
+        .cinematic-card:hover .play-btn-overlay { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        .play-btn-overlay svg { width: 24px; height: 24px; fill: white; margin-left: 4px; }
+
+        /* Settings Form */
+        .settings-container { max-width: 600px; background: rgba(255,255,255,0.02); padding: 2.5rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 8px; color: #aaa; font-size: 0.9rem; }
+        .form-control { width: 100%; padding: 14px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-family: inherit; font-size: 1rem; transition: border-color 0.3s; box-sizing: border-box; }
+        .form-control:focus { outline: none; border-color: var(--primary); }
+        
+        /* Donations */
+        .donation-widget {
+            background: linear-gradient(135deg, rgba(229, 42, 126, 0.1), transparent); border: 1px solid rgba(229, 42, 126, 0.3);
+            border-radius: 16px; padding: 2rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; margin-top: 3rem;
+        }
+        .donation-info h3 { color: var(--accent); margin: 0 0 10px 0; font-size: 1.5rem; }
+        .donation-info p { color: #aaa; margin: 0; font-size: 0.95rem; line-height: 1.5; max-width: 400px; }
+        .donation-actions { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+        .don-btn { background: rgba(229, 42, 126, 0.1); border: 1px solid rgba(229, 42, 126, 0.3); color: var(--accent); padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .don-btn:hover, .don-btn.active { background: var(--accent); color: #fff; }
+        .custom-don { width: 100px; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: white; text-align: center; }
+        
+        @media(max-width: 900px) {
+            body { flex-direction: column; overflow: auto; }
+            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 1rem; flex-direction: row; align-items: center; justify-content: space-between; box-sizing: border-box; }
+            .sidebar-logo { margin-bottom: 0; }
+            .nav-items { flex-direction: row; gap: 10px; margin-left: 20px; }
+            .nav-item span { display: none; }
+            .user-profile { margin-top: 0; padding-top: 0; border-top: none; flex-direction: row; align-items: center; gap: 20px; }
+            .hero-banner { height: 250px; padding: 0 2rem; }
+            .hero-content h1 { font-size: 2rem; }
+            .content-section { padding: 2rem; }
+            .donation-widget { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Menú Lateral -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <a href="/"><img src="/assets/img/logo.png" alt="Lizeth The Barberette"></a>
+        </div>
+        
+        <div class="nav-items">
+            <div class="nav-item active" onclick="switchTab('library')" id="tab-library">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                <span>My Library</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('settings')" id="tab-settings">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <span>My Account</span>
+            </div>
+            <a href="/admin.html" class="nav-item" id="admin-link" style="display:none; text-decoration: none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"></path></svg>
+                <span>Backoffice</span>
+            </a>
+        </div>
+        
+        <div class="user-profile">
+            <span class="user-email" id="user-display">Cargando...</span>
+            <button id="logout-btn" class="btn-logout">Log Out</button>
+        </div>
+    </aside>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+        
+        <div class="hero-banner">
+            <div class="hero-content">
+                <h1>Hello, <span id="hero-name">Haircut Lover</span></h1>
+                <p>Here you have exclusive access to your purchased videos. Enjoy the best content in HD quality.</p>
+            </div>
+        </div>
+
+        <!-- Tab: Mi Biblioteca -->
+        <section id="section-library" class="content-section active">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+                <h2 style="margin:0; font-size: 2rem;">Your Unlocked Videos</h2>
+                <a href="/catalog.html" style="color: var(--primary); text-decoration: none; font-weight: bold; padding: 10px 20px; border: 1px solid rgba(154,34,171,0.5); border-radius: 30px; transition: 0.3s;">Explore Catalog →</a>
+            </div>
+
+            <div class="video-grid" id="my-videos-grid">
+                <!-- Skeletons o Loading -->
+                <div style="color: #888;">Loading your exclusive content...</div>
+            </div>
+
+            <!-- Widget de Donativos -->
+            <div class="donation-widget">
+                <div class="donation-info">
+                    <h3>☕ Apoya la Producción</h3>
+                    <p>Cada donativo me permite crear mejor contenido y comprar mejores equipos. ¡Gracias por tu apoyo!</p>
+                </div>
+                <div class="donation-actions">
+                    <button class="don-btn" onclick="setDon(this, 5)">$5</button>
+                    <button class="don-btn" onclick="setDon(this, 10)">$10</button>
+                    <button class="don-btn" onclick="setDon(this, 20)">$20</button>
+                    <input type="number" id="custom-don" class="custom-don" placeholder="Otro" min="1">
+                    <button onclick="processDonation()" class="btn-primary" style="background: var(--primary); color: #fff; padding: 12px 24px; box-shadow: 0 10px 20px rgba(154, 34, 171, 0.2); border-color: var(--primary);">Donar con Tarjeta</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab: Settings -->
+        <section id="section-settings" class="content-section">
+            <h2 style="margin-top:0; font-size: 2rem; margin-bottom: 2rem;">Account Settings</h2>
+            
+            <div class="settings-container" style="margin-bottom: 2rem;">
+                <h3 style="color: var(--primary); margin-top: 0;">Update Email</h3>
+                <form id="email-form" onsubmit="changeEmail(event)">
+                    <div class="form-group">
+                        <label>New Email Address</label>
+                        <input type="email" id="new-email" class="form-control" placeholder="new@email.com" required>
+                    </div>
+                    <button type="submit" id="email-submit-btn" class="btn-primary" style="width: 100%; margin-top: 1rem;">Update Email</button>
+                    <p id="email-msg" style="display:none; font-weight: bold; margin-top: 1rem; text-align: center;"></p>
+                </form>
+            </div>
+
+            <div class="settings-container">
+                <h3 style="color: var(--primary); margin-top: 0;">Security</h3>
+                <form id="password-form" onsubmit="changePassword(event)">
+                    <div class="form-group" style="position: relative;">
+                        <label>Current Password</label>
+                        <input type="password" id="current-pwd" class="form-control" placeholder="••••••••" style="padding-right: 40px; margin-bottom: 0;" required>
+                        <button type="button" class="toggle-password" data-target="current-pwd" style="position: absolute; right: 10px; bottom: 12px; background: none; border: none; color: #aaa; cursor: pointer;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                    </div>
+                    <div class="form-group" style="position: relative;">
+                        <label>New Password</label>
+                        <input type="password" id="new-pwd" class="form-control" placeholder="••••••••" style="padding-right: 40px; margin-bottom: 0;" required minlength="6">
+                        <button type="button" class="toggle-password" data-target="new-pwd" style="position: absolute; right: 10px; bottom: 12px; background: none; border: none; color: #aaa; cursor: pointer;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                    </div>
+                    <div class="form-group" style="position: relative;">
+                        <label>Confirm New Password</label>
+                        <input type="password" id="confirm-pwd" class="form-control" placeholder="••••••••" style="padding-right: 40px; margin-bottom: 0;" required minlength="6">
+                        <button type="button" class="toggle-password" data-target="confirm-pwd" style="position: absolute; right: 10px; bottom: 12px; background: none; border: none; color: #aaa; cursor: pointer;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                    </div>
+                    <button type="submit" id="pwd-submit-btn" class="btn-primary" style="width: 100%; margin-top: 1rem;">Update Password</button>
+                    <p id="pwd-msg" style="display:none; font-weight: bold; margin-top: 1rem; text-align: center;"></p>
+                </form>
+            </div>
+            
+            <div class="settings-container" style="margin-top: 2rem; border-color: rgba(255, 50, 50, 0.2);">
+                <h3 style="color: #ff4d4d; margin-top: 0;">Danger Zone</h3>
+                <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 1.5rem;">Once you delete your account, there is no going back. You will lose access to all your purchased videos.</p>
+                <button class="btn-secondary" style="border-color: #ff4d4d; color: #ff4d4d;" onclick="alert(t('Contact support to delete your account.'))">Delete Account</button>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        async function changeEmail(e) {
+            e.preventDefault();
+            const newEmail = document.getElementById('new-email').value;
+            const msgBox = document.getElementById('email-msg');
+            const btn = document.getElementById('email-submit-btn');
+
+            btn.textContent = t('Updating...');
+            btn.disabled = true;
+            msgBox.style.display = 'none';
+
+            try {
+                const res = await fetch('/api/user/change-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ newEmail })
+                });
+
+                const data = await res.json();
+                
+                msgBox.textContent = t(data.message || data.error);
+                msgBox.style.color = res.ok ? 'var(--sec-3)' : 'var(--error)';
+                msgBox.style.display = 'block';
+
+                if (res.ok) {
+                    setTimeout(() => {
+                        localStorage.clear();
+                        window.location.href = '/login.html';
+                    }, 3000);
+                }
+            } catch (err) {
+                msgBox.textContent = t('Connection error with the server.');
+                msgBox.style.color = 'var(--error)';
+                msgBox.style.display = 'block';
+            } finally {
+                btn.textContent = t('Update Email');
+                btn.disabled = false;
+            }
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById('tab-' + tabId).classList.add('active');
+            document.getElementById('section-' + tabId).classList.add('active');
+        }
+
+        function setDon(btn, amount) {
+            document.querySelectorAll('.don-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('custom-don').value = amount;
+        }
+
+        async function processDonation() {
+            const amount = document.getElementById('custom-don').value;
+            if (!amount || amount <= 0) {
+                alert(t('Please enter a valid amount.'));
+                return;
+            }
+            
+            const btn = document.querySelector('.donation-actions .btn-primary');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = t('Processing...');
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/payment/donate-stripe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount })
+                });
+                
+                const data = await res.json();
+                if (data.url) {
+                    window.location.href = data.url;
+                } else {
+                    throw new Error(data.error || 'Error al iniciar donativo');
+                }
+            } catch (err) {
+                alert(t('There was a problem connecting to the payment gateway.'));
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        async function changePassword(e) {
+            e.preventDefault();
+            const currentPassword = document.getElementById('current-pwd').value;
+            const newPassword = document.getElementById('new-pwd').value;
+            const confirmPassword = document.getElementById('confirm-pwd').value;
+            const msgBox = document.getElementById('pwd-msg');
+            const btn = document.getElementById('pwd-submit-btn');
+
+            if (newPassword !== confirmPassword) {
+                msgBox.textContent = t('The new passwords do not match.');
+                msgBox.style.color = 'var(--error)';
+                msgBox.style.display = 'block';
+                return;
+            }
+
+            btn.textContent = t('Updating...');
+            btn.disabled = true;
+            msgBox.style.display = 'none';
+
+            try {
+                const res = await fetch('/api/auth/change-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ currentPassword, newPassword })
+                });
+
+                const data = await res.json();
+                
+                msgBox.textContent = t(data.message || data.error);
+                msgBox.style.color = res.ok ? 'var(--sec-3)' : 'var(--error)';
+                msgBox.style.display = 'block';
+
+                if (res.ok) {
+                    document.getElementById('password-form').reset();
+                    setTimeout(() => {
+                        localStorage.clear();
+                        window.location.href = '/login.html';
+                    }, 3000);
+                }
+            } catch (err) {
+                msgBox.textContent = t('Connection error with the server.');
+                msgBox.style.color = 'var(--error)';
+                msgBox.style.display = 'block';
+            } finally {
+                btn.textContent = t('Update Password');
+                btn.disabled = false;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const email = localStorage.getItem('userEmail');
+            if (!email) {
+                window.location.href = '/login.html';
+                return;
+            }
+            
+            const isAdmin = localStorage.getItem('isAdmin') == '1' || localStorage.getItem('isAdmin') === 'true';
+            
+            document.getElementById('user-display').textContent = email;
+            // Usar userName si existe, sino extraer nombre del email
+            const userName = localStorage.getItem('userName');
+            let displayName = '';
+            if (userName && userName.trim() !== '') {
+                displayName = userName.charAt(0).toUpperCase() + userName.slice(1);
+            } else {
+                const namePart = email.split('@')[0];
+                displayName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
+            }
+            document.getElementById('hero-name').textContent = displayName;
+            if (isAdmin) {
+                document.getElementById('admin-link').style.display = 'flex';
+            }
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('payment') === 'success') {
+                // Notificación elegante
+                const notif = document.createElement('div');
+                notif.style.cssText = "position:fixed; top:20px; right:20px; background:var(--primary); color:white; padding:15px 25px; border-radius:8px; z-index:9999; font-weight:bold; box-shadow:0 10px 30px rgba(154,34,171,0.5);";
+                notif.textContent = "¡Pago exitoso! Disfruta tu nuevo video.";
+                document.body.appendChild(notif);
+                setTimeout(() => notif.remove(), 5000);
+                window.history.replaceState({}, document.title, "/dashboard.html");
+            }
+
+            document.getElementById('logout-btn').addEventListener('click', async () => {
+                await fetch('/api/auth/logout', { method: 'POST' });
+                localStorage.clear();
+                window.location.href = '/';
+            });
+
+            // Cargar mis videos
+            try {
+                let videos = [];
+                try {
+                    const res = await fetch('/api/videos/my-videos');
+                    if (res.ok) {
+                        videos = await res.json();
+                    }
+                } catch(e) {
+                    console.log('Backend not available, checking local purchases');
+                }
+
+                const localPurchasedIds = JSON.parse(localStorage.getItem('myPurchasedVideos')) || [];
+                if ((!videos || videos.length === 0) && localPurchasedIds.length > 0) {
+                    videos = [
+                        { id: 'v-mock1', title: 'Masterclass: Fade Perfecto', secure_slug: 'v-mock1' },
+                        { id: 'v-mock2', title: 'Skin Fade Executivo', secure_slug: 'v-mock2' },
+                        { id: 'v-mock3', title: 'Técnicas de Navaja & Barba', secure_slug: 'v-mock3' },
+                        { id: 'v-mock4', title: 'Taper Fade Moderno', secure_slug: 'v-mock4' }
+                    ].filter(item => localPurchasedIds.includes(item.id) || localPurchasedIds.length > 0);
+                }
+
+                const grid = document.getElementById('my-videos-grid');
+
+                if (!videos || videos.length === 0) {
+                    grid.innerHTML = '<div style="grid-column: 1/-1; padding: 3rem; text-align: center; background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px dashed rgba(255,255,255,0.1);"><h3 style="color:#aaa;">Aún no tienes videos en tu biblioteca</h3><a href="catalog.html" class="btn-primary" style="display:inline-block; margin-top:15px; width:auto;">IR AL CATÁLOGO</a></div>';
+                    return;
+                }
+
+                const covers = [
+                    'photo-1585747860715-2ba37e788b70',
+                    'photo-1503951914875-452162b0f3f1',
+                    'photo-1622286342621-4bd786c2447c',
+                    'photo-1534723452862-4c874018d66d',
+                    'photo-1599351431202-1e0f0137899a'
+                ];
+
+                grid.innerHTML = videos.map((v, i) => {
+                    const coverId = covers[i % covers.length];
+                    const progress = Math.floor(Math.random() * 60) + 10;
+                    return `
+                    <div class="cinematic-card" onclick="window.location.href='catalog.html'">
+                        <img src="https://images.unsplash.com/${coverId}?auto=format&fit=crop&w=600&q=80" alt="${v.title}">
+                        <div class="play-btn-overlay">
+                            <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        </div>
+                        <div class="card-overlay">
+                            <div class="card-meta">
+                                <span class="badge">VIDEO HD</span>
+                                <span class="card-duration">Acceso Completo</span>
+                            </div>
+                            <h3 class="card-title">${v.title}</h3>
+                            <div class="progress-container">
+                                <div class="progress-bar" style="width: ${progress}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `}).join('');
+            } catch (err) {
+                document.getElementById('my-videos-grid').innerHTML = '<p style="color:var(--error)">Error al cargar tu biblioteca.</p>';
+            }
+            
+            // Password toggle logic
+            document.querySelectorAll('.toggle-password').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const input = document.getElementById(targetId);
+                    const icon = this.querySelector('svg');
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+                    } else {
+                        input.type = 'password';
+                        icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+                    }
+                });
+            });
+        });
+    </script>
+    <script src="assets/js/i18n.js"></script>
+</body>
+</html>
