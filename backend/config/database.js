@@ -1,26 +1,22 @@
 const { Pool } = require('pg');
 
-const isRemoteDb = process.env.DATABASE_URL && 
-    !process.env.DATABASE_URL.includes('localhost') && 
-    !process.env.DATABASE_URL.includes('127.0.0.1');
-
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: isRemoteDb ? { rejectUnauthorized: false } : false
+    ssl: process.env.DATABASE_URL && process.env.DATABASE_URL.includes('neon.tech') 
+        ? { rejectUnauthorized: false } 
+        : false,
+    connectionTimeoutMillis: 5000
 });
 
 pool.on('error', (err, client) => {
     console.error('Unexpected error on idle client', err);
 });
 
-let dbInitialized = false;
-
 async function initializeDatabase() {
     if (!process.env.DATABASE_URL) {
         console.warn('⚠️ WARNING: No DATABASE_URL provided. Database initialization skipped.');
         return;
     }
-    if (dbInitialized) return;
 
     try {
         await pool.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`);
@@ -91,13 +87,12 @@ async function initializeDatabase() {
         await pool.query(`ALTER TABLE purchases ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'exitoso';`);
         await pool.query(`ALTER TABLE purchases ADD COLUMN IF NOT EXISTS amount NUMERIC(10, 2) DEFAULT 0.00;`);
         
-        // Retroactivamente poner un amount y status en base al precio del video para purchases antiguos
+        // Retroactivamente poner un amount en base al precio del video para purchases antiguos (opcional, pero útil)
         await pool.query(`
             UPDATE purchases 
-            SET amount = COALESCE(NULLIF(v.sale_price, 0), v.price),
-                status = 'exitoso'
+            SET amount = v.price 
             FROM videos v 
-            WHERE purchases.video_id = v.id AND (purchases.amount = 0.00 OR purchases.amount IS NULL OR purchases.status IS NULL);
+            WHERE purchases.video_id = v.id AND purchases.amount = 0.00;
         `);
 
         await pool.query(`
@@ -250,22 +245,16 @@ async function initializeDatabase() {
     }
 }
 
-// Inicializar la base de datos de manera asíncrona al arrancar el servidor (sin bloquear ni tumbar la función serverless)
-initializeDatabase().catch(err => {
-    console.error('⚠️ Error en initializeDatabase:', err.message);
-});
+// Inicializar la base de datos de manera asíncrona al arrancar el servidor
+initializeDatabase();
 
-// Exportar un wrapper de query seguro para que los controladores no tengan que cambiar su sintaxis
+// Exportar un wrapper de query para que los controladores no tengan que cambiar su sintaxis
 module.exports = {
     query: async (text, params) => {
-        if (!process.env.DATABASE_URL) {
-            console.warn('⚠️ No DATABASE_URL configured in environment variables.');
-            return { rows: [] };
-        }
         try {
             return await pool.query(text, params);
         } catch (err) {
-            console.error('❌ Database Query Error:', err.message);
+            console.error('⚠️ Error en consulta DB (usando fallback):', err.message);
             return { rows: [] };
         }
     },

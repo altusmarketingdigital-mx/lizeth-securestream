@@ -6,17 +6,14 @@ const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const emailService = require('../utils/emailService');
 
 // Configuración S3 (AWS o Cloudflare R2)
-const s3Config = { region: process.env.AWS_REGION || 'us-east-1' };
-if (process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY) {
-    s3Config.credentials = {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-    };
-}
-if (process.env.AWS_ENDPOINT) {
-    s3Config.endpoint = process.env.AWS_ENDPOINT;
-}
-const s3 = new S3Client(s3Config);
+const s3 = new S3Client({
+    region: process.env.AWS_REGION || 'us-east-1',
+    credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ''
+    },
+    endpoint: process.env.AWS_ENDPOINT // Necesario para Cloudflare R2
+});
 
 exports.getUploadUrl = async (req, res) => {
     try {
@@ -44,7 +41,7 @@ exports.getUploadUrl = async (req, res) => {
 
 exports.getDropboxToken = async (req, res) => {
     try {
-        const fetch = globalThis.fetch || fetch;
+        const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args)).catch(() => global.fetch(...args));
         const auth = Buffer.from(`${process.env.DROPBOX_APP_KEY}:${process.env.DROPBOX_APP_SECRET}`).toString('base64');
         
         const response = await fetch('https://api.dropbox.com/oauth2/token', {

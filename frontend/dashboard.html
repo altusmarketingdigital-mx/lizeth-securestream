@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SecureStream | Dashboard</title>
-    <link rel="icon" href="assets/img/barber-pole.png" type="image/png">
+    <link rel="icon" href="/assets/img/barber-pole.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/main.css">
     <style>
         /* Modern Dashboard Layout */
         body { margin: 0; display: flex; height: 100vh; overflow: hidden; background: #0a0a0a; color: #fff; font-family: 'Outfit', sans-serif; }
@@ -421,30 +421,16 @@
 
             // Cargar mis videos
             try {
-                let videos = [];
-                try {
-                    const res = await fetch('/api/videos/my-videos');
-                    if (res.ok) {
-                        videos = await res.json();
-                    }
-                } catch(e) {
-                    console.log('Backend not available, checking local purchases');
+                const res = await fetch('/api/videos/my-videos');
+                if (res.status === 401 || res.status === 403) {
+                    window.location.href = '/login.html';
+                    return;
                 }
-
-                const localPurchasedIds = JSON.parse(localStorage.getItem('myPurchasedVideos')) || [];
-                if ((!videos || videos.length === 0) && localPurchasedIds.length > 0) {
-                    videos = [
-                        { id: 'v-mock1', title: 'Masterclass: Fade Perfecto', secure_slug: 'v-mock1' },
-                        { id: 'v-mock2', title: 'Skin Fade Executivo', secure_slug: 'v-mock2' },
-                        { id: 'v-mock3', title: 'Técnicas de Navaja & Barba', secure_slug: 'v-mock3' },
-                        { id: 'v-mock4', title: 'Taper Fade Moderno', secure_slug: 'v-mock4' }
-                    ].filter(item => localPurchasedIds.includes(item.id) || localPurchasedIds.length > 0);
-                }
-
+                const videos = await res.json();
                 const grid = document.getElementById('my-videos-grid');
 
-                if (!videos || videos.length === 0) {
-                    grid.innerHTML = '<div style="grid-column: 1/-1; padding: 3rem; text-align: center; background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px dashed rgba(255,255,255,0.1);"><h3 style="color:#aaa;">Aún no tienes videos en tu biblioteca</h3><a href="catalog.html" class="btn-primary" style="display:inline-block; margin-top:15px; width:auto;">IR AL CATÁLOGO</a></div>';
+                if (videos.length === 0) {
+                    grid.innerHTML = '<div style="grid-column: 1/-1; padding: 3rem; text-align: center; background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px dashed rgba(255,255,255,0.1);"><h3 style="color:#aaa;">You don\'t have any videos in your library yet</h3><a href="/catalog.html" class="btn-primary" style="display:inline-block; margin-top:15px; width:auto;">GO TO CATALOG</a></div>';
                     return;
                 }
 
@@ -458,9 +444,9 @@
 
                 grid.innerHTML = videos.map((v, i) => {
                     const coverId = covers[i % covers.length];
-                    const progress = Math.floor(Math.random() * 60) + 10;
+                    const progress = Math.floor(Math.random() * 60) + 10; // Random progress 10-70% para demostrar UI
                     return `
-                    <div class="cinematic-card" onclick="window.location.href='catalog.html'">
+                    <div class="cinematic-card" onclick="window.location.href='/player.html?v=${v.secure_slug}'">
                         <img src="https://images.unsplash.com/${coverId}?auto=format&fit=crop&w=600&q=80" alt="${v.title}">
                         <div class="play-btn-overlay">
                             <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
@@ -498,6 +484,6 @@
             });
         });
     </script>
-    <script src="assets/js/i18n.js"></script>
+    <script src="/assets/js/i18n.js"></script>
 </body>
 </html>

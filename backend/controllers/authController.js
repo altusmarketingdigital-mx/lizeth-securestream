@@ -114,15 +114,9 @@ exports.forgotPassword = async (req, res) => {
         const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password.html?token=${resetToken}`;
         
         const emailService = require('../utils/emailService');
-        const emailSent = await emailService.sendMagicLink(email, resetUrl);
+        await emailService.sendMagicLink(email, resetUrl);
 
-        console.log(`🔑 Enlace de recuperación generado para ${email}: ${resetUrl}`);
-
-        res.json({ 
-            message: 'Si el correo existe, se enviará un enlace de recuperación.', 
-            resetUrl: resetUrl,
-            emailSent: emailSent 
-        });
+        res.json({ message: 'Si el correo existe, se enviará un enlace de recuperación.' });
     } catch (error) {
         console.error('Error en forgotPassword:', error);
         res.status(500).json({ error: 'Error procesando la solicitud' });
