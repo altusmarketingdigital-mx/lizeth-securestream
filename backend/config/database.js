@@ -255,8 +255,19 @@ initializeDatabase().catch(err => {
     console.error('⚠️ Error en initializeDatabase:', err.message);
 });
 
-// Exportar un wrapper de query para que los controladores no tengan que cambiar su sintaxis
+// Exportar un wrapper de query seguro para que los controladores no tengan que cambiar su sintaxis
 module.exports = {
-    query: (text, params) => pool.query(text, params),
+    query: async (text, params) => {
+        if (!process.env.DATABASE_URL) {
+            console.warn('⚠️ No DATABASE_URL configured in environment variables.');
+            return { rows: [] };
+        }
+        try {
+            return await pool.query(text, params);
+        } catch (err) {
+            console.error('❌ Database Query Error:', err.message);
+            return { rows: [] };
+        }
+    },
     pool
 };
