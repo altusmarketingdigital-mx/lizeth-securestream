@@ -196,7 +196,7 @@ async function initializeDatabase() {
                 'hero_card_title': "Premium Content",
                 'hero_card_badge1': "Exclusive",
                 'hero_card_badge2': "Protected",
-                'hero_card_image': "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80",
+                'hero_card_image': "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=600&q=80",
                 'footer_text': "Monetizing knowledge with extreme security.<br>No guard, no hair left... BALD!!!",
                 'donation_text': "Apoya nuestro contenido con un donativo",
                 'is_maintenance_mode': "false",

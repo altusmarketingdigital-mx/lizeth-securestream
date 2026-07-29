@@ -3,10 +3,12 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '.env') });
+require('dotenv').config();
 
 const app = express();
+
+// Confiar en el proxy para Vercel / Cloudflare (requerido para express-rate-limit)
+app.set('trust proxy', 1);
 
 // Geo-blocking Middleware (India & Indonesia)
 app.use((req, res, next) => {
@@ -72,10 +74,6 @@ app.get('/curso/:slug', async (req, res) => {
 // Archivos estáticos (Frontend)
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/index.html'));
-});
-
 // Rutas de API
 app.use('/api/auth', authLimiter, require('./routes/authRoutes'));
 app.use('/api/videos', require('./routes/videoRoutes'));
@@ -110,17 +108,17 @@ app.get('/api/health', async (req, res) => {
     }
 });
 
-// Manejador global de errores
+// Middleware de Manejo de Errores Global para Vercel Serverless Functions
 app.use((err, req, res, next) => {
-    console.error('⚠️ Error no capturado:', err);
-    res.status(500).json({ error: 'Internal Server Error', message: err.message });
+    console.error('❌ Error no capturado en servidor:', err);
+    res.status(500).json({ error: 'Error interno del servidor', message: err.message });
 });
 
 // Iniciar servidor (Solo en local, Vercel usa el módulo exportado)
 if (require.main === module) {
     const PORT = process.env.PORT || 3000;
-    app.listen(PORT, '0.0.0.0', () => {
-        console.log(`Servidor seguro corriendo en http://localhost:${PORT}`);
+    app.listen(PORT, () => {
+        console.log(`Servidor seguro corriendo en el puerto ${PORT}`);
     });
 }
 
