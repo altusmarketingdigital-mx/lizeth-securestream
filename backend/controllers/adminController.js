@@ -346,6 +346,50 @@ exports.getSales = async (req, res) => {
     }
 };
 
+exports.createManualSale = async (req, res) => {
+    try {
+        const { email, name, videoTitle, amount, orderNumber, country } = req.body;
+        
+        let userId = null;
+        if (email && email.trim() !== '') {
+            let userRes = await db.query('SELECT id FROM users WHERE LOWER(email) = LOWER($1)', [email.trim()]);
+            if (userRes.rows.length === 0) {
+                userRes = await db.query(
+                    'INSERT INTO users (id, email, name, password_hash, is_admin) VALUES ($1, $2, $3, $4, false) RETURNING id',
+                    [uuidv4(), email.trim(), name || email.split('@')[0], '$2b$10$yTN2QhVsik5IweuIiuQSb.8V9yILQm.hBgQxnWIwwVuF7xgpEe/b2']
+                );
+            }
+            userId = userRes.rows[0].id;
+        }
+
+        let videoId = null;
+        if (videoTitle && videoTitle.trim() !== '') {
+            const vidRes = await db.query('SELECT id FROM videos WHERE LOWER(title) LIKE LOWER($1) LIMIT 1', [`%${videoTitle.trim()}%`]);
+            if (vidRes.rows.length > 0) videoId = vidRes.rows[0].id;
+        }
+
+        if (!videoId) {
+            const firstVid = await db.query('SELECT id FROM videos LIMIT 1');
+            videoId = firstVid.rows[0]?.id;
+        }
+
+        const finalOrder = orderNumber || ('ORD-' + Math.floor(100000 + Math.random() * 900000));
+        const finalAmount = parseFloat(amount) || 49.99;
+        const finalCountry = country || 'MX';
+
+        await db.query(
+            "INSERT INTO purchases (id, user_id, video_id, order_number, country, status, amount, purchase_date) VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())",
+            [uuidv4(), userId, videoId, finalOrder, finalCountry, 'exitoso', finalAmount]
+        );
+
+        res.json({ success: true, message: 'Venta registrada exitosamente' });
+    } catch (error) {
+        console.error('Error al registrar venta manual:', error);
+        res.status(500).json({ error: 'Error registrando venta manual' });
+    }
+};
+
+
 
 exports.getSalesAnalytics = async (req, res) => {
     try {

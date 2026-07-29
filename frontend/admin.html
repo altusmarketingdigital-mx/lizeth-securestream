@@ -269,8 +269,43 @@
 
         <!-- VENTAS / PEDIDOS SECTION -->
         <section id="view-sales" class="admin-section" style="display:none;">
-            <h2>Historial de Ventas</h2>
+            <div class="header-action" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                <h2 style="margin: 0;">Historial de Ventas</h2>
+                <button id="btn-show-manual-sale" class="btn-primary sm-btn" style="background: #16a34a;">+ Registrar Venta Manual</button>
+            </div>
             
+            <div id="manual-sale-panel" class="glass-panel" style="display:none; padding:1.5rem; margin-bottom:1.5rem; border-radius: 12px; background: rgba(0,0,0,0.6); border: 1px solid rgba(229, 42, 126, 0.3);">
+                <h3 style="margin-top: 0; color: var(--accent);">Registrar Nueva Venta Manual</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div>
+                        <label style="display: block; font-size: 0.85rem; color: #aaa; margin-bottom: 5px;">Correo del Cliente:</label>
+                        <input type="email" id="ms-email" class="auth-input" placeholder="ejemplo@correo.com" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.5); color: white;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 0.85rem; color: #aaa; margin-bottom: 5px;">Nombre del Cliente:</label>
+                        <input type="text" id="ms-name" class="auth-input" placeholder="Nombre completo" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.5); color: white;">
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div>
+                        <label style="display: block; font-size: 0.85rem; color: #aaa; margin-bottom: 5px;">Video / Producto:</label>
+                        <input type="text" id="ms-video" class="auth-input" placeholder="Título del video" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.5); color: white;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 0.85rem; color: #aaa; margin-bottom: 5px;">Monto ($ USD/MXN):</label>
+                        <input type="number" id="ms-amount" class="auth-input" placeholder="49.99" step="0.01" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.5); color: white;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 0.85rem; color: #aaa; margin-bottom: 5px;">Folio u Orden (Opcional):</label>
+                        <input type="text" id="ms-order" class="auth-input" placeholder="ORD-123456" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.5); color: white;">
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button id="btn-save-manual-sale" class="btn-primary sm-btn" style="background: #16a34a;">Guardar Venta</button>
+                    <button id="btn-cancel-manual-sale" class="btn-secondary sm-btn" style="background: #444; border: none; color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer;">Cancelar</button>
+                </div>
+            </div>
+
             <div style="display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap;">
                 <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px;">
                     <h3 style="margin: 0 0 10px 0; color: var(--sec-1); font-size: 1.1rem;">Total Videos Vendidos</h3>
@@ -285,6 +320,7 @@
             <div style="margin-bottom: 20px;">
                 <input type="text" id="search-sales" class="form-control" placeholder="Buscar por nombre o correo..." style="max-width: 400px; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.5); color: white;">
             </div>
+
 
             <table class="data-table">
                 <thead>

@@ -415,6 +415,75 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    // --- MANUAL SALE LOGIC ---
+    const btnShowManualSale = document.getElementById('btn-show-manual-sale');
+    if (btnShowManualSale) {
+        btnShowManualSale.addEventListener('click', () => {
+            const panel = document.getElementById('manual-sale-panel');
+            if (panel) panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        });
+    }
+
+    const btnCancelManualSale = document.getElementById('btn-cancel-manual-sale');
+    if (btnCancelManualSale) {
+        btnCancelManualSale.addEventListener('click', () => {
+            const panel = document.getElementById('manual-sale-panel');
+            if (panel) panel.style.display = 'none';
+        });
+    }
+
+    const btnSaveManualSale = document.getElementById('btn-save-manual-sale');
+    if (btnSaveManualSale) {
+        btnSaveManualSale.addEventListener('click', async () => {
+            const email = document.getElementById('ms-email').value;
+            const name = document.getElementById('ms-name').value;
+            const videoTitle = document.getElementById('ms-video').value;
+            const amount = document.getElementById('ms-amount').value;
+            const orderNumber = document.getElementById('ms-order').value;
+
+            if (!email && !name && !videoTitle) {
+                alert('Ingresa al menos el correo o el nombre del producto');
+                return;
+            }
+
+            btnSaveManualSale.textContent = 'Guardando...';
+            btnSaveManualSale.disabled = true;
+
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch('/api/admin/sales', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ email, name, videoTitle, amount, orderNumber })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    alert('✅ Venta registrada exitosamente');
+                    document.getElementById('manual-sale-panel').style.display = 'none';
+                    document.getElementById('ms-email').value = '';
+                    document.getElementById('ms-name').value = '';
+                    document.getElementById('ms-video').value = '';
+                    document.getElementById('ms-amount').value = '';
+                    document.getElementById('ms-order').value = '';
+                    loadSales();
+                } else {
+                    alert(data.error || 'Error al guardar la venta');
+                }
+            } catch(e) {
+                console.error('Error saving sale:', e);
+                alert('Error de red al guardar venta');
+            } finally {
+                btnSaveManualSale.textContent = 'Guardar Venta';
+                btnSaveManualSale.disabled = false;
+            }
+        });
+    }
+
+
     async function loadVideos() {
         const data = await apiGet('/api/admin/videos');
         if (data) {
