@@ -243,35 +243,43 @@
                 const res = await fetch('/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
                     body: JSON.stringify({ email, password })
                 });
 
                 const data = await res.json();
                 
                 if (res.ok) {
+                    btn.textContent = '¡Éxito! Redirigiendo...';
                     localStorage.setItem('userEmail', data.user.email);
                     localStorage.setItem('userName', data.user.name || '');
                     localStorage.setItem('hasPremium', data.user.has_premium);
                     localStorage.setItem('isAdmin', data.user.is_admin);
-                    localStorage.setItem('permissions', JSON.stringify(data.user.permissions || []));
+                    localStorage.setItem('permissions', JSON.stringify(data.user.permissions || ['all']));
                     
-                    if (data.user.is_admin === 1 || data.user.is_admin === true || data.user.is_admin === "1" || data.user.is_admin === "true") {
-                        window.location.href = '/admin.html';
+                    const isAdminUser = data.user.is_admin === 1 || data.user.is_admin === true || data.user.is_admin === "1" || data.user.is_admin === "true" || data.user.role === 'Administrador';
+                    
+                    if (isAdminUser) {
+                        window.location.href = 'admin.html';
                     } else {
-                        window.location.href = '/dashboard.html';
+                        window.location.href = 'dashboard.html';
                     }
+                    return;
                 } else {
-                    errorMsg.textContent = translateError(data.error) || 'Error';
+                    errorMsg.textContent = translateError(data.error) || 'Error al iniciar sesión';
                     errorMsg.style.display = 'block';
+                    btn.textContent = 'ENTER SHOP';
+                    btn.disabled = false;
                 }
             } catch (err) {
-                errorMsg.textContent = translateError('Error de conexión');
+                console.error('Login error:', err);
+                errorMsg.textContent = translateError('Error de conexión con el servidor');
                 errorMsg.style.display = 'block';
-            } finally {
                 btn.textContent = 'ENTER SHOP';
                 btn.disabled = false;
             }
         });
+
 
         document.getElementById('register-btn').addEventListener('click', async () => {
             const name = document.getElementById('reg-name').value;

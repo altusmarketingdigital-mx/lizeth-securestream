@@ -1,9 +1,10 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const email = localStorage.getItem('userEmail');
     if (!email) {
-        window.location.href = '/';
+        window.location.href = 'login.html';
         return;
     }
+
     const userName = localStorage.getItem('userName');
     if (userName && userName.trim() !== '') {
         document.getElementById('admin-user-info').textContent = userName;
