@@ -21,12 +21,13 @@ async function initializeDatabase() {
     }
 
     try {
-        // Verificar conexión primero con timeout rápido (2 segundos)
+        // Verificar conexión primero con timeout adecuado (10 segundos)
         const checkConn = Promise.race([
             pool.query('SELECT 1'),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('DB Timeout')), 2000))
+            new Promise((_, reject) => setTimeout(() => reject(new Error('DB Timeout')), 10000))
         ]);
         await checkConn;
+
     } catch (e) {
         console.warn('⚠️ Base de datos no disponible localmente o tiempo de espera agotado. Servidor continuará sin DB:', e.message);
         return;

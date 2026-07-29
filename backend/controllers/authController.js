@@ -8,8 +8,12 @@ const JWT_SECRET = process.env.JWT_SECRET || 'supersecretkey';
 exports.login = async (req, res) => {
     let { email, password } = req.body;
     email = email ? email.toLowerCase().trim() : '';
+    if (email === 'admin') email = 'admin@barberette.com';
+    if (email === 'cliente') email = 'cliente@barberette.com';
+    if (email && !email.includes('@')) email = email + '@barberette.com';
     
     try {
+
         // En producción: usar bcrypt.compare. Aquí simulamos el acceso directo
         const result = await db.query('SELECT * FROM users WHERE email = $1 LIMIT 1', [email]);
         

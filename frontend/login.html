@@ -204,7 +204,14 @@
     </footer>
 
     <script>
+        function translateError(msg) {
+            if (!msg) return 'Error de autenticación';
+            if (typeof window.t === 'function') return window.t(msg);
+            return msg;
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
+
             const updateCartCount = () => {
                 const cart = JSON.parse(localStorage.getItem('videoCart')) || [];
                 const cc = document.getElementById('cart-count');
