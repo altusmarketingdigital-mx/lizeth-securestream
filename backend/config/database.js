@@ -88,13 +88,12 @@ async function initializeDatabase() {
         await pool.query(`
             CREATE TABLE IF NOT EXISTS purchases (
                 id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-                user_id UUID NOT NULL,
-                video_id UUID NOT NULL,
-                purchase_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (user_id) REFERENCES users(id),
-                FOREIGN KEY (video_id) REFERENCES videos(id)
+                user_id VARCHAR(255),
+                video_id VARCHAR(255),
+                purchase_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
             );
         `);
+
 
         // Añadir nuevas columnas si no existen
         await pool.query(`ALTER TABLE purchases ADD COLUMN IF NOT EXISTS order_number VARCHAR(100);`);
@@ -107,8 +106,9 @@ async function initializeDatabase() {
             UPDATE purchases 
             SET amount = v.price 
             FROM videos v 
-            WHERE purchases.video_id = v.id AND purchases.amount = 0.00;
+            WHERE purchases.video_id::text = v.id::text AND purchases.amount = 0.00;
         `);
+
 
         await pool.query(`
             CREATE TABLE IF NOT EXISTS coupons (
