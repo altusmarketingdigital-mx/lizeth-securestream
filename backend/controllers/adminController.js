@@ -98,11 +98,12 @@ exports.getStats = async (req, res) => {
         const videosResult = await db.query('SELECT COUNT(*) as count FROM videos WHERE is_hidden = false AND is_deleted = false AND published_at <= CURRENT_TIMESTAMP');
         
         const salesQuery = `
-            SELECT p.purchase_date, v.price as video_price
+            SELECT p.purchase_date, COALESCE(p.amount, v.price, 0) as video_price
             FROM purchases p
-            JOIN videos v ON p.video_id = v.id
+            LEFT JOIN videos v ON p.video_id = v.id
         `;
         const salesResult = await db.query(salesQuery);
+
         
         const now = new Date();
         const todayStr = now.toLocaleDateString();
@@ -328,11 +329,13 @@ exports.getSales = async (req, res) => {
     try {
         const query = `
             SELECT p.id as purchase_id, p.purchase_date, p.order_number, p.country, p.status, p.amount,
-                   u.email as user_email, u.name as user_name, 
-                   v.title as video_title, v.price as video_price
+                   COALESCE(u.email, 'cliente@barberette.com') as user_email, 
+                   COALESCE(u.name, 'Cliente Barberette') as user_name, 
+                   COALESCE(v.title, 'Acceso Video Masterclass Barberette') as video_title, 
+                   COALESCE(v.price, p.amount, 0) as video_price
             FROM purchases p
-            JOIN users u ON p.user_id = u.id
-            JOIN videos v ON p.video_id = v.id
+            LEFT JOIN users u ON p.user_id = u.id
+            LEFT JOIN videos v ON p.video_id = v.id
             ORDER BY p.purchase_date DESC
         `;
         const result = await db.query(query);
@@ -342,6 +345,7 @@ exports.getSales = async (req, res) => {
         res.status(500).json({ error: 'Error al obtener historial de ventas' });
     }
 };
+
 
 exports.getSalesAnalytics = async (req, res) => {
     try {
