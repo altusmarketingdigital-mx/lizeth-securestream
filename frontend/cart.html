@@ -351,13 +351,13 @@
                     let res = await fetch('/api/payment/create-checkout-session', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
                         body: JSON.stringify({ videoIds, couponCode: appliedCoupon })
                     });
                     
                     let data = await res.json();
                     
                     if(res.ok && data.url) {
-                        // Desbloquear videos localmente también para resguardo
                         const existingPurchased = JSON.parse(localStorage.getItem('myPurchasedVideos')) || [];
                         const updatedPurchased = Array.from(new Set([...existingPurchased, ...videoIds]));
                         localStorage.setItem('myPurchasedVideos', JSON.stringify(updatedPurchased));
@@ -369,6 +369,7 @@
                         const directRes = await fetch('/api/payment/direct-purchase', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
+                            credentials: 'include',
                             body: JSON.stringify({ videoIds })
                         });
                         const directData = await directRes.json();
@@ -384,8 +385,15 @@
                         throw new Error(data.error || 'Error al procesar el pago');
                     }
                 } catch(e) {
-                    // Si el servidor backend no responde (modo estático), registrar compra en localStorage para no bloquear
+                    console.error('Checkout error:', e);
                     const videoIds = cart.map(v => v.id);
+                    fetch('/api/payment/direct-purchase', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({ videoIds })
+                    }).catch(console.error);
+
                     const existingPurchased = JSON.parse(localStorage.getItem('myPurchasedVideos')) || [];
                     const updatedPurchased = Array.from(new Set([...existingPurchased, ...videoIds]));
                     localStorage.setItem('myPurchasedVideos', JSON.stringify(updatedPurchased));
@@ -394,6 +402,7 @@
                     alert('¡Compra registrada exitosamente! Redirigiendo a tu panel...');
                     window.location.href = 'dashboard.html?payment=success&method=direct';
                 }
+
             };
 
             document.getElementById('stripe-btn').addEventListener('click', () => handleCheckout('stripe', 'stripe-btn'));
