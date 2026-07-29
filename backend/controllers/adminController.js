@@ -100,8 +100,9 @@ exports.getStats = async (req, res) => {
         const salesQuery = `
             SELECT p.purchase_date, COALESCE(p.amount, v.price, 0) as video_price
             FROM purchases p
-            LEFT JOIN videos v ON p.video_id = v.id
+            LEFT JOIN videos v ON p.video_id::text = v.id::text
         `;
+
         const salesResult = await db.query(salesQuery);
 
         
@@ -334,9 +335,10 @@ exports.getSales = async (req, res) => {
                    COALESCE(v.title, 'Acceso Video Masterclass Barberette') as video_title, 
                    COALESCE(v.price, p.amount, 0) as video_price
             FROM purchases p
-            LEFT JOIN users u ON p.user_id = u.id
-            LEFT JOIN videos v ON p.video_id = v.id
+            LEFT JOIN users u ON p.user_id::text = u.id::text
+            LEFT JOIN videos v ON p.video_id::text = v.id::text
             ORDER BY p.purchase_date DESC
+
         `;
         const result = await db.query(query);
         res.json(result.rows);
