@@ -19,13 +19,16 @@ router.get('/purchases', requireAuth, async (req, res) => {
         const result = await db.query(`
             SELECT 
                 p.id, 
-                p.created_at, 
-                v.title, 
-                v.price 
+                p.purchase_date, 
+                p.order_number,
+                p.country,
+                p.status,
+                COALESCE(v.title, 'Video Masterclass Barberette') as title, 
+                COALESCE(p.amount, v.price, 49.99) as price 
             FROM purchases p
-            JOIN videos v ON p.video_id = v.id
-            WHERE p.user_id = $1
-            ORDER BY p.created_at DESC
+            LEFT JOIN videos v ON (p.video_id::text = v.id::text OR p.video_id::text = v.secure_slug::text)
+            WHERE (p.user_id::text = $1::text OR p.user_id = (SELECT email FROM users WHERE id::text = $1::text LIMIT 1))
+            ORDER BY p.purchase_date DESC
         `, [req.user.id]);
         
         res.json(result.rows);
@@ -34,6 +37,7 @@ router.get('/purchases', requireAuth, async (req, res) => {
         res.status(500).json({ error: 'Error al obtener historial de compras' });
     }
 });
+
 
 router.post('/change-email', requireAuth, async (req, res) => {
     const { newEmail } = req.body;

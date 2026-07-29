@@ -59,19 +59,33 @@ exports.getImages = async (req, res) => {
 
 exports.getMyVideos = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.user ? req.user.id : null;
+        if (!userId) {
+            return res.json([]);
+        }
+
         const result = await db.query(`
-            SELECT v.id, v.title, v.description, v.secure_slug 
-            FROM videos v
-            JOIN purchases p ON v.id = p.video_id
-            WHERE p.user_id = $1 AND v.is_deleted = false
-            ORDER BY p.purchase_date DESC
+            SELECT DISTINCT ON (p.id) 
+                   COALESCE(v.id::text, p.video_id) as id, 
+                   COALESCE(v.title, 'Video Masterclass Barberette') as title, 
+                   COALESCE(v.description, 'Contenido exclusivo desbloqueado para tu cuenta.') as description, 
+                   COALESCE(v.secure_slug, p.video_id) as secure_slug,
+                   COALESCE(v.price, p.amount, 49.99) as price,
+                   p.purchase_date
+            FROM purchases p
+            LEFT JOIN videos v ON (p.video_id::text = v.id::text OR p.video_id::text = v.secure_slug::text)
+            WHERE (p.user_id::text = $1::text OR p.user_id = (SELECT email FROM users WHERE id::text = $1::text LIMIT 1))
+              AND (v.is_deleted IS NULL OR v.is_deleted = false)
+            ORDER BY p.id, p.purchase_date DESC
         `, [userId]);
+
         res.json(result.rows);
     } catch (error) {
+        console.error('Error en getMyVideos:', error);
         res.status(500).json({ error: 'Error al obtener mis videos' });
     }
 };
+
 
 exports.streamVideo = async (req, res) => {
     try {

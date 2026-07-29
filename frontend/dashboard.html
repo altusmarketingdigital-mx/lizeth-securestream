@@ -423,8 +423,11 @@
             try {
                 let videos = [];
                 try {
-                    const res = await fetch('/api/videos/my-videos');
+                    const res = await fetch('/api/videos/my-videos', {
+                        credentials: 'include'
+                    });
                     if (res.ok) {
+
                         videos = await res.json();
                     }
                 } catch(e) {
