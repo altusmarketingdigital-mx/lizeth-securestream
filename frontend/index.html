@@ -16,8 +16,9 @@
             max-width: 1300px; 
             margin: 0 auto; 
             min-height: calc(100vh - 100px);
-            z-index: 2;
+            z-index: 20;
         }
+
         .hero-text {
             flex: 1;
             max-width: 650px;
@@ -323,11 +324,12 @@
             <p id="dyn-hero_subtitle" class="subtitle">and I'd love to shave your head.. no guard, no hair left... BALD!!!</p>
             <p id="dyn-hero_body" class="body-text">So, be prepared, sweetie, I'll be with you in a minute.. Please, take a sit!</p>
             
-            <div class="cta-group">
-                <a href="catalog.html" style="text-decoration: none; display: inline-block;">
-                    <button id="dyn-hero_btn_text" onclick="window.location.href='catalog.html'" class="btn-primary lg" style="width: auto; cursor: pointer;">ENTER THE SHOP</button>
+            <div class="cta-group" style="position: relative; z-index: 50;">
+                <a href="catalog.html" onclick="window.location.href='catalog.html'" style="text-decoration: none; display: inline-block; position: relative; z-index: 51;">
+                    <button id="dyn-hero_btn_text" type="button" onclick="window.location.href='catalog.html'" class="btn-primary lg" style="width: auto; cursor: pointer; position: relative; z-index: 52; pointer-events: auto;">ENTER THE SHOP</button>
                 </a>
             </div>
+
 
 
         </div>
