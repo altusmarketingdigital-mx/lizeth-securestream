@@ -324,8 +324,9 @@
             <p id="dyn-hero_body" class="body-text">So, be prepared, sweetie, I'll be with you in a minute.. Please, take a sit!</p>
             
             <div class="cta-group">
-                <button id="dyn-hero_btn_text" onclick="window.location.href='/catalog.html'" class="btn-primary lg" style="width: auto;">ENTER THE SHOP</button>
+                <button id="dyn-hero_btn_text" onclick="window.location.href='catalog.html'" class="btn-primary lg" style="width: auto; cursor: pointer;">ENTER THE SHOP</button>
             </div>
+
         </div>
 
         <div class="hero-graphics">
@@ -348,7 +349,7 @@
             <!-- Dinámico -->
             <p style="color: #fff; text-align: center; grid-column: 1 / -1;">Cargando videos...</p>
         </div>
-        <button onclick="window.location.href='/catalog.html'" class="btn-primary" style="margin-top: 3rem; padding: 12px 32px; background: transparent; border: 2px solid var(--primary); color: #fff; width: auto;">SEE ALL VIDEOS</button>
+        <button onclick="window.location.href='catalog.html'" class="btn-primary" style="margin-top: 3rem; padding: 12px 32px; background: transparent; border: 2px solid var(--primary); color: #fff; width: auto;">SEE ALL VIDEOS</button>
     </section>
     
     <div class="public-donation">
@@ -593,12 +594,12 @@
                 const coverId = covers[i % covers.length];
                 return `
                 <div class="card interactive">
-                    <div class="card-img-wrapper" style="cursor: pointer;" onclick="window.location.href='/catalog.html'">
+                    <div class="card-img-wrapper" style="cursor: pointer;" onclick="window.location.href='catalog.html'">
                         <div class="overlay-play">Ver Detalles</div>
                         <img src="${v.cover_image || `https://images.unsplash.com/${coverId}?auto=format&fit=crop&w=600&q=80`}" alt="${v.title}">
                     </div>
                     <div class="card-content" style="padding: 1rem 0;">
-                        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem; cursor: pointer;" onclick="window.location.href='/catalog.html'">
+                        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem; cursor: pointer;" onclick="window.location.href='catalog.html'">
                             <h3 style="margin: 0; color: var(--primary); font-size: 1.1rem; text-transform: uppercase;">${v.title}</h3>
                             <div class="price-container" style="text-align: right;">
                                 ${v.sale_price 
@@ -608,7 +609,7 @@
                                 }
                             </div>
                         </div>
-                        <button onclick="window.location.href='/catalog.html'" class="btn-primary">MORE DETAILS</button>
+                        <button onclick="window.location.href='catalog.html'" class="btn-primary">MORE DETAILS</button>
                     </div>
                 </div>
                 `;
