@@ -404,15 +404,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                     renderSales(filtered);
                 });
             }
-
-            const countEl = document.getElementById('sales-count');
-            const revEl = document.getElementById('sales-revenue');
-            if(countEl) countEl.textContent = totalCount;
-            if(revEl) revEl.textContent = '$' + totalRevenue.toFixed(2);
-
         } catch (err) {
             console.error('Error cargando ventas:', err);
         }
+
     }
 
     // --- MANUAL SALE LOGIC ---
