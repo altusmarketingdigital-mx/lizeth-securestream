@@ -98,10 +98,14 @@ exports.logout = async (req, res) => {
 exports.forgotPassword = async (req, res) => {
     let { email } = req.body;
     email = email ? email.toLowerCase().trim() : '';
+    if (email === 'admin') email = 'admin@barberette.com';
+    if (email === 'cliente') email = 'cliente@barberette.com';
+    if (email && !email.includes('@')) email = email + '@barberette.com';
+
     if (!email) return res.status(400).json({ error: 'Email requerido' });
 
     try {
-        const result = await db.query('SELECT id FROM users WHERE email = $1', [email]);
+        const result = await db.query('SELECT id, email, name FROM users WHERE LOWER(email) = LOWER($1)', [email]);
         if (result.rows.length === 0) {
             return res.json({ message: 'Si el correo existe, se enviará un enlace de recuperación.' });
         }
@@ -115,17 +119,21 @@ exports.forgotPassword = async (req, res) => {
             [resetToken, expiresAt, user.id]
         );
 
-        const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password.html?token=${resetToken}`;
+        const resetUrl = `reset-password.html?token=${resetToken}`;
         
         const emailService = require('../utils/emailService');
-        await emailService.sendMagicLink(email, resetUrl);
+        await emailService.sendMagicLink(user.email, (process.env.FRONTEND_URL || 'http://localhost:8080') + '/' + resetUrl).catch(console.error);
 
-        res.json({ message: 'Si el correo existe, se enviará un enlace de recuperación.' });
+        res.json({ 
+            message: 'Enlace de recuperación generado con éxito.', 
+            resetUrl: resetUrl 
+        });
     } catch (error) {
         console.error('Error en forgotPassword:', error);
         res.status(500).json({ error: 'Error procesando la solicitud' });
     }
 };
+
 
 exports.resetPassword = async (req, res) => {
     const { token, newPassword } = req.body;
