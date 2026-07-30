@@ -348,11 +348,12 @@
 
                 try {
                     const videoIds = cart.map(v => v.id);
+                    const userEmail = localStorage.getItem('userEmail');
                     let res = await fetch('/api/payment/create-checkout-session', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         credentials: 'include',
-                        body: JSON.stringify({ videoIds, couponCode: appliedCoupon })
+                        body: JSON.stringify({ videoIds, couponCode: appliedCoupon, userEmail })
                     });
                     
                     let data = await res.json();
@@ -370,7 +371,7 @@
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             credentials: 'include',
-                            body: JSON.stringify({ videoIds })
+                            body: JSON.stringify({ videoIds, couponCode: appliedCoupon, userEmail })
                         });
                         const directData = await directRes.json();
                         if (directRes.ok && directData.url) {
@@ -387,11 +388,12 @@
                 } catch(e) {
                     console.error('Checkout error:', e);
                     const videoIds = cart.map(v => v.id);
+                    const userEmail = localStorage.getItem('userEmail');
                     fetch('/api/payment/direct-purchase', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         credentials: 'include',
-                        body: JSON.stringify({ videoIds })
+                        body: JSON.stringify({ videoIds, couponCode: appliedCoupon, userEmail })
                     }).catch(console.error);
 
                     const existingPurchased = JSON.parse(localStorage.getItem('myPurchasedVideos')) || [];
@@ -407,9 +409,10 @@
 
             document.getElementById('stripe-btn').addEventListener('click', () => handleCheckout('stripe', 'stripe-btn'));
 
-            // PayPal - Redirect flow (no popup, no SDK)
+            // PayPal - Redirect flow
             document.getElementById('paypal-btn').addEventListener('click', async () => {
-                if(!localStorage.getItem('userEmail')) {
+                const userEmail = localStorage.getItem('userEmail');
+                if(!userEmail) {
                     alert('Debes iniciar sesion para comprar.');
                     window.location.href = '/login.html';
                     return;
@@ -420,19 +423,18 @@
                 
                 try {
                     const videoIds = cart.map(v => v.id);
-                    // Save cart info for when user returns from PayPal
                     localStorage.setItem('paypal_videoIds', JSON.stringify(videoIds));
+                    localStorage.setItem('paypal_couponCode', appliedCoupon || '');
                     
                     const res = await fetch('/api/payment/create-paypal-order', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ videoIds, couponCode: appliedCoupon })
+                        credentials: 'include',
+                        body: JSON.stringify({ videoIds, couponCode: appliedCoupon, userEmail })
                     });
                     const data = await res.json();
                     if (data.approvalUrl) {
-                        // Save orderID for capture on return
                         localStorage.setItem('paypal_orderID', data.orderID);
-                        // Redirect to PayPal (full page, no popup)
                         window.location.href = data.approvalUrl;
                     } else {
                         alert(data.error || 'Error al conectar con PayPal');
@@ -451,16 +453,20 @@
             if (urlParams.get('paypal') === 'success') {
                 const orderID = localStorage.getItem('paypal_orderID');
                 const videoIds = JSON.parse(localStorage.getItem('paypal_videoIds') || '[]');
+                const couponCode = localStorage.getItem('paypal_couponCode') || '';
+                const userEmail = localStorage.getItem('userEmail');
                 if (orderID && videoIds.length > 0) {
                     fetch('/api/payment/capture-paypal-order', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ orderID, videoIds })
+                        credentials: 'include',
+                        body: JSON.stringify({ orderID, videoIds, couponCode, userEmail })
                     })
                     .then(r => r.json())
                     .then(captureData => {
                         localStorage.removeItem('paypal_orderID');
                         localStorage.removeItem('paypal_videoIds');
+                        localStorage.removeItem('paypal_couponCode');
                         if (captureData.success) {
                             localStorage.removeItem('videoCart');
                             window.location.href = captureData.url;

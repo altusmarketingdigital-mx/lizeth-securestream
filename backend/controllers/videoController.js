@@ -96,8 +96,9 @@ exports.streamVideo = async (req, res) => {
         if (req.user.is_admin !== 1 && req.user.is_admin !== true && req.user.is_admin !== "1" && req.user.is_admin !== "true") {
             const purchaseCheck = await db.query(`
                 SELECT p.id FROM purchases p 
-                JOIN videos v ON p.video_id = v.id 
-                WHERE p.user_id = $1 AND v.secure_slug = $2
+                JOIN videos v ON (p.video_id::text = v.id::text OR p.video_id::text = v.secure_slug::text)
+                WHERE (p.user_id::text = $1::text OR p.user_id = (SELECT email FROM users WHERE id::text = $1::text LIMIT 1)) 
+                  AND v.secure_slug = $2
             `, [userId, slug]);
             
             if (purchaseCheck.rows.length === 0) {
@@ -112,9 +113,16 @@ exports.streamVideo = async (req, res) => {
 
         const videoPath = videoResult.rows[0].internal_storage_path;
         
-        // Si el video es una URL externa (Drive, Vimeo, S3 manual, etc)
+        // Si el video es una URL externa (Drive, Vimeo, Dropbox, S3 manual, etc)
         if (videoPath.startsWith('http://') || videoPath.startsWith('https://')) {
-            return res.redirect(videoPath);
+            let finalUrl = videoPath;
+            if (finalUrl.includes('dropbox.com')) {
+                finalUrl = finalUrl.replace('dl=0?raw=1', 'raw=1').replace('dl=0', 'raw=1');
+                if (!finalUrl.includes('raw=1')) {
+                    finalUrl += (finalUrl.includes('?') ? '&raw=1' : '?raw=1');
+                }
+            }
+            return res.redirect(finalUrl);
         }
 
         // Si el video fue subido a S3, la ruta será algo como "videos/uuid.mp4"

@@ -404,7 +404,12 @@
             
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('payment') === 'success') {
-                // Notificación elegante
+                const sessionId = urlParams.get('session_id');
+                if (sessionId) {
+                    fetch(`/api/payment/confirm-stripe-session?session_id=${encodeURIComponent(sessionId)}`, {
+                        credentials: 'include'
+                    }).catch(console.error);
+                }
                 const notif = document.createElement('div');
                 notif.style.cssText = "position:fixed; top:20px; right:20px; background:var(--primary); color:white; padding:15px 25px; border-radius:8px; z-index:9999; font-weight:bold; box-shadow:0 10px 30px rgba(154,34,171,0.5);";
                 notif.textContent = "¡Pago exitoso! Disfruta tu nuevo video.";
@@ -463,7 +468,7 @@
                     const coverId = covers[i % covers.length];
                     const progress = Math.floor(Math.random() * 60) + 10;
                     return `
-                    <div class="cinematic-card" onclick="window.location.href='catalog.html'">
+                    <div class="cinematic-card" style="cursor: pointer;" onclick="window.location.href='player.html?v=${encodeURIComponent(v.secure_slug || v.id)}'">
                         <img src="https://images.unsplash.com/${coverId}?auto=format&fit=crop&w=600&q=80" alt="${v.title}">
                         <div class="play-btn-overlay">
                             <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
