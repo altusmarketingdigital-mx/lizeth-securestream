@@ -1,18 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config/database');
-
-const requireAuth = (req, res, next) => {
-    const token = req.cookies?.sessionToken;
-    if (!token) return res.status(401).json({ error: "No autorizado" });
-    const jwt = require('jsonwebtoken');
-    try {
-        req.user = jwt.verify(token, process.env.JWT_SECRET || 'supersecretkey');
-        next();
-    } catch (err) {
-        res.status(401).json({ error: "Token inválido" });
-    }
-};
+const { requireAuth } = require('../middlewares/authMiddleware');
 
 router.get('/purchases', requireAuth, async (req, res) => {
     try {
@@ -38,7 +27,6 @@ router.get('/purchases', requireAuth, async (req, res) => {
     }
 });
 
-
 router.post('/change-email', requireAuth, async (req, res) => {
     const { newEmail } = req.body;
     const email = newEmail ? newEmail.toLowerCase().trim() : '';
@@ -48,14 +36,11 @@ router.post('/change-email', requireAuth, async (req, res) => {
     }
 
     try {
-        // Verificar si el correo ya está en uso por otro usuario
         const exists = await db.query('SELECT id FROM users WHERE email = $1', [email]);
         if (exists.rows.length > 0) {
             return res.status(400).json({ error: 'El correo ya está en uso' });
         }
 
-        // Para esta iteración (Fase 2), permitiremos el cambio directo, 
-        // pero obligamos a reloguear como medida de seguridad
         await db.query('UPDATE users SET email = $1, current_session_token = NULL WHERE id = $2', [email, req.user.id]);
         
         res.json({ message: 'Correo actualizado exitosamente. Por favor, inicia sesión nuevamente.' });

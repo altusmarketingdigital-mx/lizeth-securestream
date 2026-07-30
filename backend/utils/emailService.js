@@ -1,4 +1,4 @@
-﻿const { Resend } = require('resend');
+const { Resend } = require('resend');
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 const FROM_EMAIL = process.env.EMAIL_FROM || 'Lizeth The Barberette <no-reply@lizeththebarberette.com>';
@@ -90,21 +90,31 @@ exports.sendMagicLink = async (email, resetUrl) => {
     return sendEmail({ to: email, subject: 'Restablece tu contraseña - Lizeth The Barberette', html });
 };
 
-exports.sendPurchaseReceipt = async (email, title, amount, currency, videoUrl) => {
+exports.sendPurchaseReceipt = async (email, title, amount, currency = 'USD', videoUrl = '', orderNumber = '') => {
+    const formattedDate = new Date().toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' });
     const html = getBaseTemplate(`
-        <h2>¡Gracias por tu compra!</h2>
-        <p>Tu pago se ha procesado exitosamente y tu curso ya está disponible en tu biblioteca.</p>
-        <div style="background: #222; padding: 20px; border-radius: 10px; margin: 20px 0;">
-            <h3 style="margin-top:0; color:#9a22ab;">Resumen de Compra</h3>
-            <p><strong>Curso:</strong> ${title}</p>
-            <p><strong>Total pagado:</strong> $${amount} ${currency}</p>
+        <div style="text-align: center; margin-bottom: 20px;">
+            <span style="background: rgba(154, 34, 171, 0.15); color: #c850e0; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: bold; text-transform: uppercase;">Confirmación de Pedido</span>
         </div>
-        <p>Puedes acceder al curso inmediatamente:</p>
-        <div style="text-align: center;">
-            <a href="${videoUrl}" class="btn">Ver Curso Ahora</a>
+        <h2 style="text-align: center; font-size: 24px; margin-bottom: 10px;">¡Gracias por tu compra!</h2>
+        <p style="text-align: center; color: #aaa; margin-top: 0;">Tu pago ha sido procesado exitosamente y el contenido ha sido desbloqueado en tu cuenta.</p>
+        
+        <div style="background: #222; border: 1px solid #333; padding: 25px; border-radius: 12px; margin: 25px 0;">
+            <h3 style="margin-top:0; color:#9a22ab; font-size: 18px; border-bottom: 1px solid #333; padding-bottom: 10px;">Detalles de la Transacción</h3>
+            <table style="width: 100%; border-collapse: collapse; font-size: 15px;">
+                ${orderNumber ? `<tr><td style="padding: 8px 0; color: #888;">Número de Orden:</td><td style="padding: 8px 0; text-align: right; font-weight: bold; font-family: monospace; color: #fff;">${orderNumber}</td></tr>` : ''}
+                <tr><td style="padding: 8px 0; color: #888;">Fecha:</td><td style="padding: 8px 0; text-align: right; color: #fff;">${formattedDate}</td></tr>
+                <tr><td style="padding: 8px 0; color: #888;">Producto / Video:</td><td style="padding: 8px 0; text-align: right; font-weight: bold; color: #fff;">${title}</td></tr>
+                <tr><td style="padding: 8px 0; color: #888;">Monto Pagado:</td><td style="padding: 8px 0; text-align: right; font-weight: bold; color: #2ecc71; font-size: 18px;">$${amount} ${currency.toUpperCase()}</td></tr>
+            </table>
+        </div>
+        
+        <p style="text-align: center;">Puedes acceder y reproducir tu video inmediatamente desde tu panel:</p>
+        <div style="text-align: center; margin-top: 25px;">
+            <a href="${videoUrl || ((process.env.FRONTEND_URL || 'http://localhost:3000') + '/dashboard.html')}" class="btn" style="padding: 16px 36px; font-size: 16px;">Ver Video Ahora</a>
         </div>
     `);
-    return sendEmail({ to: email, subject: `Recibo de Compra: ${title}`, html });
+    return sendEmail({ to: email, subject: `Confirmación de Compra: ${title}`, html });
 };
 
 exports.sendContactMessage = async (name, userEmail, reason, message) => {

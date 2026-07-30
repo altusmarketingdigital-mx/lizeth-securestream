@@ -12,54 +12,7 @@ const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID || 'test';
 const PAYPAL_SECRET = process.env.PAYPAL_SECRET || 'test';
 const PAYPAL_API = process.env.PAYPAL_API_URL || 'https://api-m.paypal.com';
 
-// Helper robusto para resolver usuario por cookie JWT, Bearer token o email enviado
-async function resolveUser(req) {
-    if (req.user && req.user.id) return req.user;
-    
-    const token = req.cookies?.sessionToken;
-    if (token) {
-        try {
-            const jwt = require('jsonwebtoken');
-            const decoded = jwt.verify(token, process.env.JWT_SECRET || 'supersecretkey');
-            if (decoded && decoded.id) {
-                return decoded;
-            }
-        } catch(e) {}
-    }
-
-    const authHeader = req.headers['authorization'];
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-        const bearerToken = authHeader.substring(7);
-        try {
-            const jwt = require('jsonwebtoken');
-            const decoded = jwt.verify(bearerToken, process.env.JWT_SECRET || 'supersecretkey');
-            if (decoded && decoded.id) {
-                return decoded;
-            }
-        } catch(e) {}
-    }
-    
-    const userEmail = req.body?.userEmail || req.body?.email;
-    if (userEmail) {
-        const uRes = await db.query('SELECT id, email, is_admin FROM users WHERE LOWER(email) = LOWER($1) LIMIT 1', [userEmail.trim()]);
-        if (uRes.rows.length > 0) {
-            return uRes.rows[0];
-        }
-    }
-    
-    return null;
-}
-
-const requireAuth = async (req, res, next) => {
-    try {
-        const user = await resolveUser(req);
-        if (!user) return res.status(401).json({ error: "No autorizado. Inicia sesión para continuar." });
-        req.user = user;
-        next();
-    } catch (err) {
-        res.status(401).json({ error: "Sesión inválida o expirada." });
-    }
-};
+const { requireAuth } = require('../middlewares/authMiddleware');
 
 router.get('/paypal-client-id', (req, res) => {
     res.json({ clientId: process.env.PAYPAL_CLIENT_ID || 'test' });
@@ -176,7 +129,7 @@ async function recordPurchases({ userId, videoIds, couponCode, orderNumber, coun
         
         if (userEmail && video) {
             const videoUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/player.html?v=${video.secure_slug}`;
-            emailService.sendPurchaseReceipt(userEmail, video.title, finalItemAmount.toFixed(2), 'USD', videoUrl).catch(console.error);
+            emailService.sendPurchaseReceipt(userEmail, video.title, finalItemAmount.toFixed(2), 'USD', videoUrl, orderNumber).catch(console.error);
         }
     }
     
@@ -490,14 +443,10 @@ router.post('/capture-paypal-order', requireAuth, async (req, res) => {
 });
 
 // DIRECT PURCHASE / FALLBACK CHECKOUT (Garantiza registro directo en DB)
-router.post('/direct-purchase', async (req, res) => {
+router.post('/direct-purchase', requireAuth, async (req, res) => {
     try {
         const { videoIds, couponCode } = req.body;
-        
-        const user = await resolveUser(req);
-        if (!user) {
-            return res.status(401).json({ error: 'Usuario no autenticado. Inicia sesión.' });
-        }
+        const user = req.user;
 
         if (!videoIds || !Array.isArray(videoIds) || videoIds.length === 0) {
             return res.status(400).json({ error: 'Lista de videos requerida' });
