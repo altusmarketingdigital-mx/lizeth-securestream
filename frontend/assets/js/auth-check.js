@@ -12,10 +12,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Interceptor global de peticiones para detectar la expiración de sesión por inicio en otro dispositivo
+// Interceptor global de peticiones para garantizar envío de credenciales/tokens y detección de cierre de sesión
 const originalFetch = window.fetch;
-window.fetch = async function(...args) {
-    const response = await originalFetch.apply(this, args);
+window.fetch = async function(url, options = {}) {
+    options = options || {};
+    options.credentials = options.credentials || 'include';
+    
+    const token = localStorage.getItem('sessionToken');
+    if (token) {
+        if (!options.headers) {
+            options.headers = { 'Authorization': 'Bearer ' + token };
+        } else if (options.headers instanceof Headers) {
+            if (!options.headers.has('Authorization')) {
+                options.headers.append('Authorization', 'Bearer ' + token);
+            }
+        } else if (typeof options.headers === 'object') {
+            if (!options.headers['Authorization'] && !options.headers['authorization']) {
+                options.headers['Authorization'] = 'Bearer ' + token;
+            }
+        }
+    }
+    
+    const response = await originalFetch.apply(this, [url, options]);
     
     if (response.status === 401) {
         try {

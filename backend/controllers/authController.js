@@ -32,11 +32,11 @@ exports.login = async (req, res) => {
             return res.status(401).json({ error: 'Credenciales inválidas' });
         }
 
-        // 1. Generar nuevo Session Token (puede ser UUID puro o JWT)
+        // 1. Generar nuevo Session Token (JWT con vigencia de 30 días)
         const sessionToken = jwt.sign(
             { id: user.id, email: user.email, is_admin: user.is_admin }, 
             JWT_SECRET, 
-            { expiresIn: '8h' }
+            { expiresIn: '30d' }
         );
 
         // 2. Actualizar la base de datos con el nuevo token, invalidando automáticamente el anterior
@@ -45,12 +45,13 @@ exports.login = async (req, res) => {
             sessionToken, ipAddress, user.id
         ]);
 
-        // 3. Enviar Cookie y respuesta
+        // 3. Enviar Cookie y respuesta con navegación fluida (SameSite Lax, Path /)
         res.cookie('sessionToken', sessionToken, { 
             httpOnly: true, 
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            maxAge: 8 * 60 * 60 * 1000 // 8 horas
+            sameSite: 'lax',
+            path: '/',
+            maxAge: 30 * 24 * 60 * 60 * 1000 // 30 días
         });
 
         res.json({
