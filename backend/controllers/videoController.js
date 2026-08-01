@@ -71,7 +71,9 @@ exports.getMyVideos = async (req, res) => {
                    COALESCE(v.description, 'Contenido exclusivo desbloqueado para tu cuenta.') as description, 
                    COALESCE(v.secure_slug, p.video_id) as secure_slug,
                    COALESCE(v.price, p.amount, 49.99) as price,
-                   p.purchase_date
+                   p.purchase_date,
+                   v.thumbnail_url,
+                   (SELECT image_data FROM video_images vi WHERE vi.video_id = v.id ORDER BY created_at ASC LIMIT 1) as cover_image
             FROM purchases p
             LEFT JOIN videos v ON (p.video_id::text = v.id::text OR p.video_id::text = v.secure_slug::text)
             WHERE (p.user_id::text = $1::text OR p.user_id = (SELECT email FROM users WHERE id::text = $1::text LIMIT 1))

@@ -267,6 +267,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <td>${u.has_premium ? '<span style="color:#16a34a;">Sí</span>' : 'No'}</td>
                     <td>${new Date(u.created_at).toLocaleDateString()}</td>
                     <td>
+                        <button class="btn-primary sm-btn grant-access-btn" data-id="${u.id}" data-email="${u.email}" data-name="${u.name || ''}" style="background: #9a22ab; padding: 4px 8px; font-size: 0.8rem; margin-right: 5px;" title="Otorgar acceso a video sin proceso de compra">
+                            🔑 Dar Acceso
+                        </button>
                         <button class="btn-primary sm-btn block-btn" data-id="${u.id}" style="background: ${u.is_blocked ? '#16a34a' : '#dc2626'}; padding: 4px 8px; font-size: 0.8rem; margin-right: 5px;">
                             ${u.is_blocked ? 'Desbloquear' : 'Bloquear'}
                         </button>
@@ -276,6 +279,47 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </td>
                 </tr>
             `).join('');
+
+            document.querySelectorAll('.grant-access-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const email = e.target.getAttribute('data-email');
+                    const name = e.target.getAttribute('data-name');
+                    
+                    const videoTitle = prompt(`OTORGAR ACCESO EXTRAORDINARIO A:\n${email}\n\nIngresa el título o palabra clave del video que deseas desbloquear para este cliente (ejemplo: The Toxic, General Lizeth, El Juego de la Oca):`);
+                    
+                    if (videoTitle && videoTitle.trim() !== '') {
+                        try {
+                            const token = localStorage.getItem('token');
+                            const res = await fetch('/api/admin/sales', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': 'Bearer ' + token
+                                },
+                                body: JSON.stringify({ 
+                                    email, 
+                                    name, 
+                                    videoTitle: videoTitle.trim(), 
+                                    amount: 0, 
+                                    orderNumber: 'EXTRA-' + Math.floor(100000 + Math.random() * 900000) 
+                                })
+                            });
+                            
+                            const data = await res.json();
+                            if (res.ok) {
+                                alert(`✅ Acceso extraordinario otorgado exitosamente a ${email}`);
+                                if (typeof loadUsers === 'function') loadUsers();
+                                if (typeof loadSales === 'function') loadSales();
+                            } else {
+                                alert(data.error || 'Error al otorgar acceso');
+                            }
+                        } catch(err) {
+                            console.error(err);
+                            alert('Error de red al otorgar acceso');
+                        }
+                    }
+                });
+            });
 
             document.querySelectorAll('.edit-name-btn').forEach(btn => {
                 btn.addEventListener('click', async (e) => {

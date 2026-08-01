@@ -97,48 +97,27 @@ exports.getStats = async (req, res) => {
         const usersResult = await db.query('SELECT COUNT(*) as count FROM users');
         const videosResult = await db.query('SELECT COUNT(*) as count FROM videos WHERE is_hidden = false AND is_deleted = false AND published_at <= CURRENT_TIMESTAMP');
         
-        const salesQuery = `
-            SELECT p.purchase_date, COALESCE(p.amount, v.price, 0) as video_price
+        const statsResult = await db.query(`
+            SELECT 
+                COALESCE(SUM(CASE WHEN (p.purchase_date AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City')::date = (CURRENT_TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City')::date THEN COALESCE(p.amount, v.sale_price, v.price, 0) ELSE 0 END), 0) as rev_today,
+                COALESCE(SUM(CASE WHEN EXTRACT(MONTH FROM p.purchase_date AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City') = EXTRACT(MONTH FROM CURRENT_TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City') AND EXTRACT(YEAR FROM p.purchase_date AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City') = EXTRACT(YEAR FROM CURRENT_TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City') THEN COALESCE(p.amount, v.sale_price, v.price, 0) ELSE 0 END), 0) as rev_month,
+                COALESCE(SUM(CASE WHEN EXTRACT(YEAR FROM p.purchase_date AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City') = EXTRACT(YEAR FROM CURRENT_TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City') THEN COALESCE(p.amount, v.sale_price, v.price, 0) ELSE 0 END), 0) as rev_year
             FROM purchases p
-            LEFT JOIN videos v ON p.video_id::text = v.id::text
-        `;
+            LEFT JOIN videos v ON (p.video_id::text = v.id::text OR p.video_id::text = v.secure_slug::text)
+            WHERE p.status = 'exitoso' OR p.status IS NULL
+        `);
 
-        const salesResult = await db.query(salesQuery);
-
-        
-        const now = new Date();
-        const todayStr = now.toLocaleDateString();
-        const currentMonth = now.getMonth();
-        const currentYear = now.getFullYear();
-
-        let revToday = 0;
-        let revMonth = 0;
-        let revYear = 0;
-
-        salesResult.rows.forEach(s => {
-            const date = new Date(s.purchase_date);
-            const price = parseFloat(s.video_price) || 0;
-            
-            if (date.toLocaleDateString() === todayStr) {
-                revToday += price;
-            }
-            if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
-                revMonth += price;
-            }
-            if (date.getFullYear() === currentYear) {
-                revYear += price;
-            }
-        });
+        const statsRow = statsResult.rows[0] || {};
 
         res.json({
-            totalUsers: usersResult.rows[0].count,
-            totalVideos: videosResult.rows[0].count,
-            revToday,
-            revMonth,
-            revYear
+            totalUsers: parseInt(usersResult.rows[0].count || 0),
+            totalVideos: parseInt(videosResult.rows[0].count || 0),
+            revToday: parseFloat(statsRow.rev_today || 0),
+            revMonth: parseFloat(statsRow.rev_month || 0),
+            revYear: parseFloat(statsRow.rev_year || 0)
         });
     } catch (error) {
-        console.error(error);
+        console.error('Error al obtener estadísticas de admin:', error);
         res.status(500).json({ error: 'Error al obtener estadísticas' });
     }
 };

@@ -110,14 +110,17 @@
         
         @media(max-width: 900px) {
             body { flex-direction: column; overflow: auto; }
-            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 1rem; flex-direction: row; align-items: center; justify-content: space-between; box-sizing: border-box; }
+            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 0.8rem 1rem; flex-direction: row; align-items: center; justify-content: space-between; box-sizing: border-box; flex-wrap: wrap; gap: 10px; }
             .sidebar-logo { margin-bottom: 0; }
-            .nav-items { flex-direction: row; gap: 10px; margin-left: 20px; }
-            .nav-item span { display: none; }
-            .user-profile { margin-top: 0; padding-top: 0; border-top: none; flex-direction: row; align-items: center; gap: 20px; }
-            .hero-banner { height: 250px; padding: 0 2rem; }
-            .hero-content h1 { font-size: 2rem; }
-            .content-section { padding: 2rem; }
+            .sidebar-logo img { height: 40px; }
+            .nav-items { flex-direction: row; gap: 8px; margin-left: 0; }
+            .nav-item { padding: 8px 12px; }
+            .user-profile { margin-top: 0; padding-top: 0; border-top: none; flex-direction: row; align-items: center; gap: 8px; }
+            .user-email { display: none; }
+            .btn-logout { width: auto; padding: 8px 14px; font-size: 0.75rem; background: rgba(229, 42, 126, 0.2); border: 1px solid rgba(229, 42, 126, 0.5); color: #ff4d4d; border-radius: 20px; font-weight: bold; white-space: nowrap; }
+            .hero-banner { height: 220px; padding: 0 1.5rem; }
+            .hero-content h1 { font-size: 1.8rem; }
+            .content-section { padding: 1.5rem; }
             .donation-widget { flex-direction: column; text-align: center; }
         }
     </style>
@@ -210,23 +213,23 @@
                 <form id="password-form" onsubmit="changePassword(event)">
                     <div class="form-group" style="position: relative;">
                         <label>Current Password</label>
-                        <input type="password" id="current-pwd" class="form-control" placeholder="••••••••" style="padding-right: 40px; margin-bottom: 0;" required>
-                        <button type="button" class="toggle-password" data-target="current-pwd" style="position: absolute; right: 10px; bottom: 12px; background: none; border: none; color: #aaa; cursor: pointer;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        <input type="password" id="current-pwd" class="form-control" placeholder="••••••••" style="padding-right: 45px; margin-bottom: 0;" required>
+                        <button type="button" class="toggle-password" data-target="current-pwd" onclick="togglePasswordVisibility('current-pwd', this)" aria-label="Toggle password visibility" style="position: absolute; right: 12px; bottom: 12px; background: none; border: none; color: #aaa; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; z-index: 10;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
                         </button>
                     </div>
                     <div class="form-group" style="position: relative;">
                         <label>New Password</label>
-                        <input type="password" id="new-pwd" class="form-control" placeholder="••••••••" style="padding-right: 40px; margin-bottom: 0;" required minlength="6">
-                        <button type="button" class="toggle-password" data-target="new-pwd" style="position: absolute; right: 10px; bottom: 12px; background: none; border: none; color: #aaa; cursor: pointer;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        <input type="password" id="new-pwd" class="form-control" placeholder="••••••••" style="padding-right: 45px; margin-bottom: 0;" required minlength="6">
+                        <button type="button" class="toggle-password" data-target="new-pwd" onclick="togglePasswordVisibility('new-pwd', this)" aria-label="Toggle password visibility" style="position: absolute; right: 12px; bottom: 12px; background: none; border: none; color: #aaa; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; z-index: 10;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
                         </button>
                     </div>
                     <div class="form-group" style="position: relative;">
                         <label>Confirm New Password</label>
-                        <input type="password" id="confirm-pwd" class="form-control" placeholder="••••••••" style="padding-right: 40px; margin-bottom: 0;" required minlength="6">
-                        <button type="button" class="toggle-password" data-target="confirm-pwd" style="position: absolute; right: 10px; bottom: 12px; background: none; border: none; color: #aaa; cursor: pointer;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        <input type="password" id="confirm-pwd" class="form-control" placeholder="••••••••" style="padding-right: 45px; margin-bottom: 0;" required minlength="6">
+                        <button type="button" class="toggle-password" data-target="confirm-pwd" onclick="togglePasswordVisibility('confirm-pwd', this)" aria-label="Toggle password visibility" style="position: absolute; right: 12px; bottom: 12px; background: none; border: none; color: #aaa; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; z-index: 10;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
                         </button>
                     </div>
                     <button type="submit" id="pwd-submit-btn" class="btn-primary" style="width: 100%; margin-top: 1rem;">Update Password</button>
@@ -465,11 +468,12 @@
                 ];
 
                 grid.innerHTML = videos.map((v, i) => {
-                    const coverId = covers[i % covers.length];
+                    const fallbackCover = `https://images.unsplash.com/${covers[i % covers.length]}?auto=format&fit=crop&w=600&q=80`;
+                    const realCover = v.cover_image || v.thumbnail_url || (v.id ? `/api/videos/${v.id}/images` : null) || fallbackCover;
                     const progress = Math.floor(Math.random() * 60) + 10;
                     return `
                     <div class="cinematic-card" style="cursor: pointer;" onclick="window.location.href='player.html?v=${encodeURIComponent(v.secure_slug || v.id)}'">
-                        <img src="https://images.unsplash.com/${coverId}?auto=format&fit=crop&w=600&q=80" alt="${v.title}">
+                        <img src="${realCover}" alt="${v.title}" onerror="this.onerror=null; this.src='${fallbackCover}';">
                         <div class="play-btn-overlay">
                             <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                         </div>
