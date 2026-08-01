@@ -1,0 +1,1335 @@
+=== OBTENIENDO TODOS LOS USUARIOS Y SUS COMPRAS ===
+Total usuarios en BD: 331
+
+User: Alex (feta_kuscheln.6n@icloud.com) [ID: 0c32392b-8e62-44ae-b94d-188d5abca94d]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Sammy (sammymckinney98@gmail.com) [ID: 676aefdf-9ea9-46da-8483-3f29e6b62dd8]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: aw (xmstxxxrdxm@gmail.com) [ID: bbe113bc-1164-4b42-8b91-a7e3b9330378]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Aubrey Dillon (dillon.aubrey1@icloud.com) [ID: c63deb53-d660-481e-b01b-666ad29b3370]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Emil (emil.golemia@gmail.com) [ID: 5d8552d2-cb04-46de-85ec-75f9e88a9d05]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Noé (noe08ve@gmail.com) [ID: 64724ed4-9a09-4faf-9187-1657124c47a6]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: JP Gutierrez (jpalmanzag@gmail.com) [ID: 81fb19a8-3a64-4414-a8b8-73517bb20541]
+  - Consulta Antigua: 4 videos returned
+  - Consulta Nueva:   4 videos returned
+    * The Toxic 2: The Barberette who never forgives (Order: ORD-TX2-940251, purchase_user_id: 81fb19a8-3a64-4414-a8b8-73517bb20541)
+    * El Juego de la Oca Pt 2 (Order: ORD-OCA-551092, purchase_user_id: 81fb19a8-3a64-4414-a8b8-73517bb20541)
+    * The Toxic (Order: ORD-TXC-800201, purchase_user_id: 81fb19a8-3a64-4414-a8b8-73517bb20541)
+    * General Lizeth 5 Pt 2: Insubordinate (Order: ORD-GEN-EEB6A01D, purchase_user_id: 81fb19a8-3a64-4414-a8b8-73517bb20541)
+
+User: Cody (codytchase12@gmail.com) [ID: c0eb96f9-8795-41d6-a9d4-1daa868c18c4]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Lizeth (lizeth.barberette@gmail.com) [ID: 2b50632b-7612-4211-b104-84490c77e692]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: None (cliente@barberette.com) [ID: 16b44f07-a81d-4220-b6f0-1f0297f0a255]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Kamen Yanev (kamenyanev12@gmail.com) [ID: 0c2cbf1c-44c2-4d48-b4f2-0a1e604713f4]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Th̩o Bommelaer (theobommelaer@gmail.com) [ID: a937d39f-4e34-4a40-8f17-0211a1bf5a59]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Eli Brunner (evamemeslol@gmail.com) [ID: 15a1ee80-ebc9-4c1d-969b-87f8b3f3a772]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Carsten Manshusen (carsten@manshusen.de) [ID: 72376603-e9a2-4bff-8f39-d0b31adee80c]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Luca Bommer (luca.bommer@gmail.com) [ID: 79469089-30fa-4944-a70b-df4f992b020e]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Iv��n G�?mez Vi̱a (misjuegosdepcaviles@gmail.com) [ID: aab21864-c1c0-4b48-991d-8bf589cde80e]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Alex Warmerdam (bertuss0251@gmail.com) [ID: fa18ed30-f2f9-4a72-b1c3-3557e5247b14]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Jeff Beaubrun (beaubrunjeff1@gmail.com) [ID: 018488dd-99cf-4e27-9f75-c43dd6811728]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Steven Wilson (gwilson35@hotmail.co.uk) [ID: 47fb0ddf-0a66-4d9f-8ba8-b4792a12fdd8]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Zachary Jeschke (zajeschke@gmail.com) [ID: 14b7f4e0-b019-4a9a-b0ba-74012f53ad7f]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Larry Scott (vick.patel1@gmail.com) [ID: b697c497-15bb-4323-be47-562b6b3b5ae6]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Hector Valdez (dynamo.ss@hotmail.com) [ID: 9a531f02-7b9a-4f1d-af76-45ab38b8825f]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Aidan Baehr (lilbaehr14@gmail.com) [ID: 4d9b6d0e-70a8-4f02-8725-043ff8f8de27]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Lucca Faust (luccajf@proton.me) [ID: b51e6f59-c4e1-464a-bf56-71dd95cdc7b4]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Pietro Santagata (pietro.santagata09@gmail.com) [ID: 2471bd3a-45dc-4447-9358-45af33d4bb37]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Renass Khoschnau (rena_94_8@hotmail.com) [ID: bfe0557a-5d42-4f20-90e4-588d5a272f74]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Tommaso Rigoni (tommasorigoni.tr@gmail.com) [ID: 9ace4792-2bdb-4652-96c1-9d8f46935a2d]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Jeffrey McElroy (brownesque2@yahoo.com) [ID: d29d5fea-42c1-4afe-9273-60fdb616e643]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Beauty Lover (beautylover417@gmail.com) [ID: 96b498fd-bf26-4cdf-b2d3-131c93abe2d8]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: James Smith (jamesreginaldsmith@gmail.com) [ID: cb744713-9db5-460a-929a-004d2b48248b]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: S S (hsfantasy09@gmail.com) [ID: 084a3523-c9db-41f1-8561-82998dd8e844]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Mahaz Khan (mahazkhanriyan@gmail.com) [ID: 75ee92b2-451e-4935-92b0-b536390576d1]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Noah Fisher (noahfisher20@icloud.com) [ID: 30489fb7-d77a-4548-9908-7996cb02d272]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: David Gude (dlgu@aol.com) [ID: a40bc596-4d7e-40ec-8d5f-484c5b770d82]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Fabian Klein-Ridder (wirsinge-huerde0c@icloud.com) [ID: 830bce78-96aa-45fa-b660-f38e15c0114b]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Lukas Wei��schuh (lukas.weissschuh@web.de) [ID: dc1c9846-a903-421b-a2d7-13b5a894ea06]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Kofi Jackson (anth_56@yahoo.com) [ID: 928ae6eb-c790-4204-8a8a-0a46164175a2]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Livio Forrer (livio.forrer@bluewin.ch) [ID: 61c9c8c1-877c-4688-995b-78a159cd8f1f]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: yoshihiro kaneko (mark_24446@yahoo.co.jp) [ID: 6a6f4022-1e1c-4bc4-a7d4-c1d4097d777d]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Ariel Amsalem (arielamsalem1@icloud.com) [ID: 2a6561d0-c698-4b7a-a61f-917b615619ca]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Dave Barry (gefell.taper@gmail.com) [ID: ce7e395b-ca43-4cc5-ab61-1b84213a6939]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Angel Salvador Diaz Hernandez (angelhernandes262@gmail.com) [ID: f10db155-4227-4039-8606-7a99bcd4cb8d]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: ́ngel Gonz��lez Enrique (angonen@outlook.com) [ID: 24487482-33e5-4844-b8e4-a5c6c0ddc483]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Altamash Khan (altamashkhan07@gmail.com) [ID: 5651ccac-8589-4810-90fd-82eb10d49fb2]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Amine Fizazi (afizazi96@gmail.com) [ID: b809ffe8-dc66-48c2-91e4-23bb31fa1f35]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Adam Cros (adn1234c@gmail.com) [ID: e8b4d2a9-4524-4fae-bcd0-ec8068435332]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Manpreet Singh (manpreet.singh3541@icloud.com) [ID: 59c85611-a864-4fbc-a1f8-beec8fa3dee2]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Matthew Rambhogh (matthewrambhogh@gmail.com) [ID: 54773203-8071-45f3-aaed-6f71e09d8ebf]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Rob van der Winkel (ra.vdwinkel@freedom.nl) [ID: 5c815f5b-6525-4669-b2ec-2e8600d1af6f]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Bradley Klimowicz (bklimowicz77@yahoo.com) [ID: 7f970d07-0070-4e90-8111-4f0904123ede]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Carlos Quintanar (ce.quintanar@gmail.com) [ID: 0236c54e-6214-4663-b5dd-8b7ea5b03612]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Louis Phung (louisphungjy@gmail.com) [ID: 3a53cae4-275c-44f9-a2d0-9d4adb33a003]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Pranjal Mevada (pranjalmevada7@gmail.com) [ID: 690353d0-257a-4e64-a89c-38d743527668]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Bruce Piekarsky (njcnstble@aol.com) [ID: 1a4a392e-9c72-4cba-8fa9-9477da34b423]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: John Hargteaves (jahargreaves@lineone.net) [ID: 86a0c202-ee26-4ba3-8eef-70379da81a01]
+  - Consulta Antigua: 1 videos returned
+  - Consulta Nueva:   1 videos returned
+    * The Toxic (Order: ORD-TXC-90180E2, purchase_user_id: 86a0c202-ee26-4ba3-8eef-70379da81a01)
+
+User: Omar Alnabahin (omaralnabahin6@gmail.com) [ID: 48c9fcda-67ba-440c-9da6-560fd9a50e0d]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Stephan Wetzel (h4iraff4ir@googlemail.com) [ID: 33cbde56-e5e1-4796-96e5-010d134a524b]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Florian Villadier (galaactiik@gmail.com) [ID: df16dd40-8d54-4483-adb2-35bda21e2aac]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Preetkumar Patel (preetpatel260898@gmail.com) [ID: b1aa67b3-bc1b-4e09-96cc-b6b4fe892b01]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Ahmed Khan (abdulh.k604@gmail.com) [ID: 4ca2b96e-e080-48f7-a73e-af46ad0f501f]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: T K (slimshady7000@yahoo.com) [ID: 55e01538-8e30-4a3e-8313-af43b99b84c0]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Neil Wainstein (nwainstein@gmail.com) [ID: b2207166-ec01-4cc2-ba36-b5e88d3d9b49]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Ben Keane (benkeane1234@gmail.com) [ID: c6acae2c-f06d-4c10-9b53-cf26bb61ec40]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Alberto Godoalfredo (gutifarra11@gmail.com) [ID: e0ab0a62-8bb2-45ce-b91d-3e727bb77962]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Andy Cline (andycline2001@icloud.com) [ID: 3f05893a-5203-4540-864b-20acd713c9a8]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Zach C (coxzack81@gmail.com) [ID: 1c1fff28-1c5a-4c61-91fd-08dc2468e2e3]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Josiah Baker (josiah.phillip.baker@gmail.com) [ID: 5a15278c-0ed7-41bd-8be2-8d7adac312ae]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Saqib Ali (ssaqib0909@gmail.com) [ID: 30515b43-37d4-4aba-8afd-ff83390c1c7e]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Jay Clayton (jay6clayton@gmail.com) [ID: 26dae9d2-4c3c-40cb-bbe5-5d722a798ea1]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Aamir Syed (aamirsyed231@gmail.com) [ID: d78a2b4c-cab7-41d5-90e4-52ab0abbd684]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Jeremy Cohen (mrjeremyc@gmail.com) [ID: 5c430e55-f6e6-4513-ae6c-ee29e95786eb]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Antoine Poirier (antoinepoirier76@gmail.com) [ID: 546a33ae-4239-4f04-bb7b-22f07b209a3e]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Ralph Sanchez (ralphsanchez1790@gmail.com) [ID: 38f34b4c-eb8e-4234-9a98-1d9bf3ae871b]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Ralph Sanchez (hunter.miller1378@gmail.com) [ID: 07dbdf0f-3ec3-4bfb-bd66-faf9157cd44f]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Carlos Vi (carlosvi1234@icloud.com) [ID: 5069dbb0-b277-4ce1-ba2b-7741401cd41a]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Chris Ryan (chris.ryan.nj@gmail.com) [ID: 38184455-e6af-4849-b8f7-0f0480aa8f03]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Joseph Grant (greyjoy28@gmail.com) [ID: 9a3a1bb1-b898-4e2d-b0ec-0b3d04771b95]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Texas Mc Givern (texasniallmcgivern@gmail.com) [ID: 68d73624-d1cc-4b8b-bbeb-844563e7ef47]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Comrade FCA (comradefca@gmail.com) [ID: 6b23a2a7-527a-4d42-80f7-8678bbfe7485]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Hamza Darsot (judahbudahh@icloud.com) [ID: a46abdc8-c7a1-4549-95a5-9c6f0d485bf6]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Daniele Verardo (verardodan@gmail.com) [ID: 35eeabb3-671e-48f0-9900-5b5eb0ed079b]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Abdulelah Jafri (abodyjafri@gmail.com) [ID: 5ca88e8c-1b91-4dca-9f04-3874d4149068]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Zachary Kennedy (zacharykennedy8@gmail.com) [ID: 489f80ca-3334-4b5b-8c37-e56761555fda]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Brian Garner (clockworktigers@gmail.com) [ID: 1dbd5730-bd38-4268-b45b-ee14d59af481]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: B J (mattvaughn98@yahoo.com) [ID: 280fe803-de5e-4f12-b214-4fdcda3df46a]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: diego mueller (diego-2607@gmx.ch) [ID: 068d22bd-54e0-421d-9df3-3909811a2b68]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Adrian Walde (adi.w98@web.de) [ID: d02d6d86-cc48-4647-b8f3-ad7f6b2d0364]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Kevin Cassel (cassel.k@icloud.com) [ID: 8ed60182-5af1-4f47-a78f-a1d275f32237]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Jeremy Elliott (raffle.upswing.4m@icloud.com) [ID: 39c8a5c6-177a-4e89-a489-29589725d636]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Jeremy Elliott (jeremyelliott2001@gmail.com) [ID: db681454-20e6-45d6-acbc-75f35b794c5f]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Caelan Willson (caelanwillson@gmail.com) [ID: 3100f933-96c4-44a4-ab9a-fe4be241874b]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Chalse Cowin (drown_1_iconic@icloud.com) [ID: 8da1350a-c40d-4943-afb0-7c35a4747781]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Jesus Portillo Campos (jssportillo85@gmail.com) [ID: 72c73221-ce8d-48cf-be8d-186fab4d5122]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Mario Mario (crookbrooke999@gmail.com) [ID: 3e3205ad-4e43-4d18-883b-525e878ac0ca]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Belal Abouchi Hkou (belalabouchi27@gmail.com) [ID: 6f0a38b0-40e3-4b2a-8581-2d7bfd31115f]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: ???�?�?� ?�?�?�?�?� (maorsa1112@gmail.com) [ID: 60322d0f-7346-46ba-9a19-2aa3b1eb7bb5]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Haneen khajah (haneenkhajah@gmail.com) [ID: 98114755-9c40-4106-97fc-99162dba33ff]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Daniele Beltrami (danielebeltrami948@gmail.com) [ID: a414fb4a-80e1-4df7-b3f3-239e29f0d55b]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Joshua Greenbaum (jgreenbaum121@gmail.com) [ID: e9c8e57f-015b-4519-8699-edf571ddad9a]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Daniel Haynes (theultimatefirefly8879@gmail.com) [ID: 1cb2d7c4-7d51-48ec-9b69-5a675194e97d]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: SHUNSUKE EDA (az56513@icloud.com) [ID: f260b9a8-4560-4256-9eff-317aa947fa68]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Daniel Faust (faust.financial@gmail.com) [ID: 28f080e0-749e-4093-bf2e-843cdf21d8a5]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Aleksa Bojanic (aleksabojanic77@icloud.com) [ID: abf76a00-1fd1-4d3b-93e4-d8909cf063b6]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Raze Yoru (banderaloraier@gmail.com) [ID: 26c65257-a969-4c88-b27f-df66f177e01a]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Sam Ivanov (sezen_2000@abv.bg) [ID: 232830ff-84c0-4c38-a51d-3a0249db682a]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Wyatt Speeth (ws30cr7@gmail.com) [ID: f9f7dc72-41ff-452a-bdd0-d44eab748b4b]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Peter Knetsch (p.a.knetsch@gmail.com) [ID: 134393ad-9957-4aa3-b02b-fbe6167dd7c2]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: John Sullivan (jsullivan@chglawyers.com) [ID: 063065ef-a611-4c62-b5be-9d7d9f2a7478]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Rene van Henten (rvhenten7410@gmail.com) [ID: 4f8d678d-30da-4fc9-8487-a4792c42606b]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Dakota Egts Egts (dakotaegts@gmail.com) [ID: f9c80e5c-fdd5-4b3d-ac23-a0ba8118952d]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: CARl DA SILVA (carl.r.dasilva@gmail.com) [ID: 03c0ed3c-954b-4af1-9e7a-845a7706b625]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Roger Winters (williambalalt@gmail.com) [ID: 3ae0cfd9-2848-4011-8385-bb5dfc079d5d]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Edward Thomas Burke (edward316uk@gmail.com) [ID: 998b2e31-2a78-486f-bb6a-0fb71c52799e]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Fer Rosales (rosalesfer90@gmail.com) [ID: 6fc16475-f412-404c-b36f-eb66fa7eeaf7]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Dylan Soileau (dsoile8@gmail.com) [ID: 395e96e9-c7d5-4f09-bca3-7731ce7ac0c0]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Mattia Lambruschi (mattia.lambruschi2307@gmail.com) [ID: 480c0778-d797-436f-9799-f1823fb24245]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: MARC WARBIS (holeymoleymarc@gmail.com) [ID: 2ce5e9d1-f82c-45dc-ad2c-5bec825b39c0]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Max Wenders (max.wenders@gmail.com) [ID: e09c3fe8-46cc-4e1c-bff4-60a77aebb1db]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Michael Papaleo (cpdmikemonster@aol.com) [ID: 4a3032c6-19d9-4b7d-9c70-b1f3d9f22b51]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Alfie Fisher (alfiefisher2@gmail.com) [ID: ecf2ea5c-83da-4bee-8f23-576301b6ff2b]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Bob Smith (golfboyr11@gmail.com) [ID: 293de0c2-9268-4b06-9bff-9c3fa28d5ed3]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: David Vilchis Ram�?rez (jigsaw-97@hotmail.com) [ID: a91cd5c2-4546-4f29-b243-59ae721a5ec2]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Peter Hughes (peterhughes343@yahoo.co.uk) [ID: 4c83d66b-1920-4271-a4db-96f5b845ec38]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Tahsin Arifa��ao��lu (dayayogun.hadron_7y@icloud.com) [ID: 157c5bc6-3bcf-4355-a262-adf74f6e2135]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Gustavo Adolfo Gomez Baumgarten (evil.tygrus0@gmail.com) [ID: b50f206c-3146-4b86-b4cc-7db24dbecabe]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: ���?�ɯ� �������?�?�? (an.mr.ahmad@gmail.com) [ID: e855a74e-7801-447f-b9f9-3d0e99a7ebd7]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Johannes Grotel�?schen (grote.johannes@web.de) [ID: ece09cbf-8356-4cda-b1a5-624da1b421af]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Geert Vosters (gvostersreuselcity@gmail.com) [ID: a6d98bbd-b7ed-4bc2-b95d-86b3d37db9bb]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Yedidya Baruchi (yedidyabaruchi@gmail.com) [ID: 8d114d06-5f2b-4a64-8a25-167eaecd63f1]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Hans Anders (testten174@gmail.com) [ID: dd55423c-c089-42ba-962d-9127e3272d66]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Nathan Benson (nbenson99@hotmail.co.uk) [ID: c79b78ec-861b-49f4-8d18-2b0616ec8db2]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: J̩r̩mie PISTRE (jeremie.pistre@gmail.com) [ID: ff817e7b-9cd1-4ec8-b1ef-1068d1992404]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: David Vilchis Garc�?a (deivid.blanca@gmail.com) [ID: 6c41e1df-bf5c-4111-bca4-8113bedfb52c]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: D J (jimmy.delhoume66000@gmail.com) [ID: 45a5e1be-687d-46b0-96c2-70444b1d00ec]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Enrique Hernandez (76.jolt-regards@icloud.com) [ID: e434c00a-5996-43f6-8f45-bd30b5ffdb3c]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Tim Droge (t.droge@zonnet.nl) [ID: 5b57849b-11af-4e1d-9e8f-9fb7b8c26fb2]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: ?�?�?�?� ?�?�?�?� ?�?�?�?�?�?� (ydwsknzy8@gmail.com) [ID: cd5255f6-30e2-4989-addd-0be3c585f9b4]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Eli Shiloach (eshiloach1@gmail.com) [ID: 5ea9c504-8705-4f0f-9cba-58ed5af24977]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Adam Weedon (adamweedon4@gmail.com) [ID: 1f688ebb-91a6-4d61-a79c-880be2959bb3]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Zach C (coxzack82@gmail.com) [ID: 735263cd-48d7-4e65-aabf-c571d34bdda7]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Priya Das (hakema3793@mucate.com) [ID: 15aabddc-4d9d-468b-a9b6-a984d795eb07]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Edgardo Velez Torres (edgarvt23@gmail.com) [ID: 2b896b1e-26b9-4634-b870-dee3b99f120f]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Steve Elmer (7665steve@protonmail.com) [ID: 844ae83e-fb23-4293-ae1c-3b059fb5d5cc]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Kieran Orourke (kieran2016orourke@gmail.com) [ID: 83c6ca0a-f780-4896-9b3d-07abf24720fc]
+  - Consulta Antigua: 2 videos returned
+  - Consulta Nueva:   2 videos returned
+    * General Lizeth 5 Pt 1: Deserter (Order: ORD-KRN-771092, purchase_user_id: 83c6ca0a-f780-4896-9b3d-07abf24720fc)
+    * General Lizeth 5 Pt 1: Deserter (Order: ORD-KRN-771091, purchase_user_id: 83c6ca0a-f780-4896-9b3d-07abf24720fc)
+
+User: SIVA GANESH SUNDARESAN (sundaresansivaganeshjp@gmail.com) [ID: fb4d2de5-e5c2-4234-9117-74db31cb0cbd]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: test235453 test235453 (test235453@gmail.com) [ID: 841d92b8-0e09-4e5f-91f9-fd08cc9e8cdb]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Matteo Vischi (fifties-pylon-6c@icloud.com) [ID: ab6ee46a-0018-4701-91a7-51ca625f6b03]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Kelsey Star (keatonmax12@gmail.com) [ID: b8bfb1d1-1f61-4ed5-aba2-27aa0f967553]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Jacopo Scorsone (scorsonejac@gmail.com) [ID: 1e583d45-02e5-4f05-b006-4edbe63291bf]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Steve Cass (stevec1963@aol.com) [ID: e1a59699-b017-4c9a-91c2-8b75eb5097b7]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: JONATHAN WILMONT (johnnyw77v@gmail.com) [ID: 48a1af52-c2c2-41fb-abe5-f598cbbe9dc8]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Boa Lee (leeboaseng@gmail.com) [ID: 5ed4ac01-0ce5-4cd4-870a-99ebea01af40]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Ahmad Albrak (ahmed.a.alrashidi96@gmail.com) [ID: 090a0c0d-c955-4555-8d4f-4751ddd97e65]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Thomas Gerner (thomas-rs@t-online.de) [ID: 608dfefa-fd10-49bf-a7f8-7953787dfd7f]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Manuel Garita Rojas (mgarita209@gmail.com) [ID: bc52b0ea-8114-4b11-a70b-03518d665203]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Eduardo Lopez (eduardolopez@bakcreative.com) [ID: 145386af-3801-4cb5-8550-c870d4c53cc1]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Ra̼l Calvo Se̱or��n (ralca20001@gmail.com) [ID: 5f9c290e-1df2-4cdd-9d08-ea03e55590b3]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Killian T�?TEDOIE (killian.t0707@gmail.com) [ID: b97b42e7-93bd-4639-892f-1989417df94f]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Neau Guillaume (neauguill@gmail.com) [ID: 30bcb59f-836b-4ed9-99f7-d431c49ad5b4]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Bryan Hout (bth2443@gmail.com) [ID: 0c891ad7-0fbf-4b3b-abec-6c61ab9b89a0]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Aditya Sathyan (asathyan316@gmail.com) [ID: ac037b18-1ff4-42c3-a21b-1027b4c93c93]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Tucker Atwood 8922 NE 116th Terrace (tuck.atwood@gmail.com) [ID: b0c12d7f-f765-49e2-8484-35fb3d93a0f8]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Ee Mm (darren.mcf@icloud.com) [ID: 5d28e4a3-0f36-4189-aa7e-401b0af50cb4]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Zachary Natelson (thezanman42@gmail.com) [ID: e1ac844b-a731-4b90-9a7e-0017149b7953]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Antoine POIRIER (antoine.poirier@live.fr) [ID: f49366aa-fd2b-4723-8ecd-7084cfc25f0d]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: M Tedde (mtedde899@gmail.com) [ID: 091b9ef1-f1a8-421c-a0d8-1adec3b7e17d]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: J̩r̩my BOGI (jeremybogilnd@gmail.com) [ID: 60b3e98a-99df-4047-980c-908e88a38b27]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Miche sapelimo (rakafes901@wacold.com) [ID: 44963cfb-7d2d-4a6c-afb7-6b0ab74331e4]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: F��bos Zsolt (mrzsozso75@gmail.com) [ID: fb47f438-ea38-4eb5-848c-26cc07554296]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Diego Mota (pina22799@gmail.com) [ID: 34091888-4344-4fd7-a38e-09adeeeed44c]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Francisco Javier Batista Ramirez (franciscojavierfran03@gmail.com) [ID: 90515486-5cf4-4430-82a1-b4ca41d718d7]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Michal Brettfeld (brettfeld.m@gmail.com) [ID: baeb61c8-07b1-44f7-9c57-687eb2068e26]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Nadeem Chaus (nchaus12345@gmail.com) [ID: 9707db56-bf0e-4da2-8398-9115ffa5952b]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Adrien Sauvanet (adritime23@live.fr) [ID: 8d751eb0-47c5-46b1-b2cb-7826a86dc3ac]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Ryan Haynes (haynesryan00@gmail.com) [ID: 1f2be7c4-63b9-4826-a1ed-327869d788e0]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Daniel Faust (dventura15@yahoo.com) [ID: 4a66b674-1178-46f0-be2e-039e142df552]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Juan Rios (juandriosj@icloud.com) [ID: 23bcd2a0-cba3-4296-a489-2b35fe848362]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Lucas Becker (lucasdbecker@gmail.com) [ID: ef8aa83c-625e-4dc6-a03a-4ac9a89041d5]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: sean reid (seanreid1914@live.com) [ID: b84b60b5-9e4a-466c-8df0-59c11e1faf9b]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: caluigi car (caluigi221@gmail.com) [ID: 96fb14f3-8b26-4719-b849-338e7ce815c5]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Alex Melville Mr. (melvilaw20@gmail.com) [ID: 19fa50c0-ff46-4f9c-b1a7-a287b80bccfe]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Sebastian Cacho (cachosebastian@gmail.com) [ID: 5d8d70a4-877f-4895-a60b-fe4f466447eb]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: YULUN CHENG (yulun861229@gmail.com) [ID: 29af559c-69e9-434b-a14d-23304ead2ba9]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Abhinav Burju (abhinav.burju@gmail.com) [ID: 8fa9fb5a-e225-436a-b89e-0fc1dbc9bee0]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Yasushi Kurita (yatube1213@gmail.com) [ID: dab33e66-b9ca-4e34-a3e1-4c6e9bb61539]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: ger an (gerasimoupoli@gmail.com) [ID: e2bbfa98-cb88-4bf4-997e-c81388cd10e8]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Matis Pangaud (ep.av213@gmail.com) [ID: 5290852f-537a-49e3-8cf4-ead305f3ecf3]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Diego Blay (diegoblay18@gmail.com) [ID: 70c49cee-4fdd-483f-9b70-d58ed9eab42b]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Mohamad Bahsoun (bahsunh900@gmail.com) [ID: 100b4d06-5240-4220-a961-e46aa7d1f225]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Borja Mendizabal (borjam475@gmail.com) [ID: c418fbe4-dc49-4b31-8f4b-935e2da6fc32]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Sarvesh R (toxotogladiator@gmail.com) [ID: ed91a03c-c612-422b-8c73-031651f88dbd]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: John Sullivan (jlsullivan84@gmail.com) [ID: 8b63f3ab-58a9-45a5-9e50-11bdcd7352e4]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Borja Mendizabal (astronautaantonio1@gmail.com) [ID: c151f7c8-aba7-4bdc-8bac-e227752a9fe5]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Hopkins Tusko (hopkinstusi@gmail.com) [ID: d6526cd5-153a-4d9e-b9ee-661ba7344eea]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Nick Z (zemkonicholas@yahoo.com) [ID: 244afd69-0ff5-4dd1-b0d7-10f17fe0c9e2]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Sandro Obwegeser (sandro_obwegeser@hotmail.com) [ID: 6f5b037f-2b80-424d-b348-a8343b8dbc22]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: ���?� ��? (tony45835@gmail.com) [ID: 1df8398e-bbcb-4f2d-a7aa-8c56a7f5c20f]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Nikolas Owen (owen.nik@gmail.com) [ID: d2ad318e-ef12-4c24-99d5-10386300ec10]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Dominic Kimbler (sharnicanobody@gmail.com) [ID: fede655a-13ce-4311-a9b3-9d8c78ead081]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: D'Squarius Green (dsquariusgreenjr5@yahoo.com) [ID: 8bfe1f55-6d0b-4670-9d33-2faa9e69a0a3]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Ahm Mhd (a38757690@gmail.com) [ID: 3e710604-4527-451f-b81c-ab8ddcea38cd]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Adolfo Enrique Hernandez (adolfo.bh98@gmail.com) [ID: 3805f637-9eb5-4df3-984c-8d044527d0f7]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Dominic Barranco (kgwtf43@gmail.com) [ID: 5a1fb270-b402-4cb8-b25a-4ccd7d4b272c]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Jonathan Tingey (fightinghistorian@gmail.com) [ID: 30ecea4f-9e96-457c-bf49-2b16d8ad5d19]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Ross McNally (sirspooksalot70@gmail.com) [ID: 5794eaf1-573f-4fde-9998-21e7e15d5818]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Hhbb Bhhjnbb (vvbh23000@gmail.com) [ID: cf1b5b4d-0dd6-4a54-8c03-b396f2ad6bfa]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Cristian massiel Saldivar rios (cristiansaldivar62@gmail.com) [ID: fec83f5a-4e8e-48e7-b16c-9daecfa0421c]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: M Uk (maxuk1984@gmail.com) [ID: a5de8393-221a-43fd-88fd-0120f7c180c3]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Oto Marin (oto.marin@hotmail.com) [ID: 351e98c4-baae-4977-9088-9bdb42f21319]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Matthew Watson (mangaaddict365@gmail.com) [ID: 78c1e378-5779-4f40-9238-473f0c62459a]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Daniel Macleod (danielm.m@hotmail.com) [ID: bf827efd-1fb7-46c2-b33c-7a5b371d94bc]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: HN Schuttert (nikarevolt532bm@gmail.com) [ID: fd61075d-ee37-441d-8b1b-5d3ee665f2c3]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Steve Roberts (stevebhr91@gmail.com) [ID: 9832cc9d-54df-40fe-bb9d-a57e037fa4fc]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Oliver Dawes (oliver7258@gmail.com) [ID: 68b14bb4-8637-47a9-bbfd-74b586487761]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Bruno Lopez (bruno.lopez@gmail.com) [ID: 9c1efd66-c99d-47a9-a8af-c6730af1c00f]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Oliver Archer (11amazing111@gmail.com) [ID: c4e1bc8d-4036-4186-a963-0d3ec16e6f70]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Bobby Gopo (bobbygopo207@gmail.com) [ID: 856f3059-5853-429f-af8c-32e2cb013719]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Paulo Ot��vio Pezzi Bernart (paulobernart3@gmail.com) [ID: 329d440d-51f3-4547-b7ff-b564e2aac651]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Lucas Becker (silverbox970@gmail.com) [ID: 52962651-7660-4987-8f85-03618cb57a59]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Jack Moreton (jmoreton.jam@gmail.com) [ID: b3a3e364-e393-4fe0-8161-ce7ee9e1ae01]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: JOS BALENDONCK (crash-ronald@hotmail.com) [ID: 9554863e-9c82-4112-8e3d-5b4647327218]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Mi Mu (aboody7799@icloud.com) [ID: 3926bce0-c182-4676-a338-3e0b46b7ad3c]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: MINSU SONG (thdalstn8888@gmail.com) [ID: 59990e4a-14bb-4a61-8f33-6f95093381e7]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Lutzi Hudgon (chrisanthanasamy@gmail.com) [ID: 2f29a182-7c7b-4044-9276-6db381bd0831]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: jihad Eid (jihadeid2022@gmail.com) [ID: cfb65911-5df8-461e-8b87-dc1f9dc97b93]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Hugh Kelly (hugh2kelly@googlemail.com) [ID: f9c5f038-9521-481c-b62f-95367f786e6a]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: ����?�������� ��������?��������?��?��� (sakisgg98@gmail.com) [ID: 2b298522-1ea9-42a0-80c0-224c2f0a2505]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Simeon - (simeonov78@yahoo.com) [ID: d66030e9-b272-4f53-8ef5-b55fc5ec2e4e]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Will Ruch (will.1812@yahoo.com) [ID: cab93774-340d-4038-ac93-e1f67598702c]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Carlos Rosenberg (civan511@gmail.com) [ID: c59f5711-042e-498a-ada6-d750cea39ce6]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Amine Figuigui (afiguigui96@gmail.com) [ID: 392207ed-bfc9-4c44-889b-78568eda6a6a]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Paulo S��nchez (paulosanmon4611496045@gmail.com) [ID: 9d0799d4-746d-4eb9-ac9b-ff8cec087b49]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Bryant Melgar (bryantismaelmelgar@gmail.com) [ID: 7f30a360-a0be-4c20-a529-95e49f808101]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: andre scott (junkemail57@yahoo.com) [ID: 7131ccf9-42ac-4281-ae92-d71ddda03664]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: * * (firebird814@gmail.com) [ID: fab49cb5-e885-425c-8b19-747bd7c6a15e]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: DAMIEN SAUVANT (damien.sauvant@hotmail.fr) [ID: 59e8ed53-c05b-4ee8-a20f-53b49b658074]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Julian Groene (groenejulian@web.de) [ID: 092abf4a-3971-4d8d-856a-5586cce8c999]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Antoine Picard (antoine.pro27@gmail.com) [ID: fbac7a22-3452-46c4-8a1d-f722b437b4c0]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Barry David 2 clark rd (zebulonhike@gmail.com) [ID: 1fcca756-a02f-4870-b140-67c4b3f3c915]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Gerardo Bautista Olivares (mgbautista1@outlook.com) [ID: c08145ce-ae25-42fc-91da-fc29c8e46e70]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Oisin Boyd (oisin.boyd92@gmail.com) [ID: 54441920-78ee-4206-a89f-a754fc5d862e]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Justin 3 Goodparla Street (justinstanic@gmail.com) [ID: 9f2ad2f2-f1ff-41d4-b267-0b4c996e00c5]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Parker Metheny (pmetheny344@gmail.com) [ID: 480e1c7c-1463-4ee4-94f1-39c46cd16a9c]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Kevin B�?eler (kevin.bueeler@bluewin.ch) [ID: f8215731-c4ed-4342-89d9-262ba75bcae9]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Jorj DelGuidice (jorjadewey@icloud.com) [ID: 11187096-7a2f-456c-b802-b88001ceaa77]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Emma Yoshida (yoshida.emma21@gmail.com) [ID: 725b0ea5-5904-449f-83e3-6a75074b0ae9]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Michael Hartsig (mlh82183.mh@gmail.com) [ID: fa21081b-361b-485c-b396-2053767588cb]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Basel Jaber (basel.jaber@gmail.com) [ID: 5cfb1b09-d0ef-460b-97ac-6da080f646a9]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Gabriel Mochetti Gab (mochettigf@gmail.com) [ID: dce3fa94-56c1-4d88-8000-be3e166f887d]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Caelan Willson (caelan.willson@cogeco.ca) [ID: c0bfb59c-abfb-4227-8cba-d9e4cb539d09]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: beat Schmid (abcenuruguay@web.de) [ID: 60c8951c-f36e-44ae-b489-cf547435f2f1]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Carlos Stevens (carlos.stevens1008@hotmail.com) [ID: de3ecc00-0819-4274-8212-d348ab8a707e]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Diego Gutierrez (august4202000@gmail.com) [ID: 41a7afd1-bbef-4717-8ba3-1bcd6bf08fb9]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Tim Beadling (beadz2682@gmail.com) [ID: 0eb79a13-2c48-4e57-b5ad-23db9faa7c91]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Tim Beadling (beadz26@yahoo.com) [ID: 99b1fbd8-fecc-4899-9017-7b071c88ec8d]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Daniel Whaley (team_geek@yahoo.com) [ID: b9e528b6-9fbf-4f70-a964-cdc8dd13f8a6]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Ren Modem (renuldepemodem@gmail.com) [ID: 6f901ec7-a5d0-467e-b8ef-ecec43edbe7f]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: marcel marcel (ronosax655@hosintoy.com) [ID: 5eb1ff94-e1a4-42d9-b652-82824e3bf410]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: J Jacob Jacob (jsjfamilylaw18@gmail.com) [ID: 10d93a33-4521-4259-8f8c-a6a049a5b94b]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Mayur Hendge (mayur.haircut@gmail.com) [ID: 62d703d9-bfaf-49fe-bb26-607371e8ab12]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: ́ngel Glez (angonen@gmail.com) [ID: 95bcfb6a-bbec-447f-9bd6-6dcb337802a1]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Rafa Fern��ndez (rafafc.es@gmail.com) [ID: 2095f98c-839a-4be4-9a33-bcebd9fb5a18]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Amit Gold (amitg@amitcom.co.il) [ID: fd48d291-e54f-45ce-9332-5865361891e5]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Justin Langelier (justinlangelier20@hotmail.com) [ID: 2acfd888-48c5-4418-bdfd-54b159df8a15]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Eszes-Istenes Viktor (eszesviktor@gmail.com) [ID: d1b5de60-4aee-409c-b712-6bdef1bc2a78]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Adrian Moy (adrianpmoy@gmail.com) [ID: 8b2828b2-78a4-47d4-847c-813735a7ad6f]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: CARLOS MOJICA (universoandroid3@gmail.com) [ID: 1dc9ea13-9b91-47f9-81f2-451b12d41fc4]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Jan Medina (metalhead2123@outlook.com) [ID: 6ba3de10-66a1-4aea-8d4c-4350f7de4a1d]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: LOCAS d'851 (lucasvilachadesa@gmail.com) [ID: b06c3d1d-7660-4eeb-8511-af0e21b6d134]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Tracy Bennet (wichovoca7@gmail.com) [ID: 53457efc-8501-41a9-ad94-b2f09c16207d]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Alay Gandhi (alistothedj017@gmail.com) [ID: 18ab8c10-5ef1-4a72-a6d3-2f61cdf77cee]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Michael Papaleo (idontusethisemaill9@gmail.com) [ID: d3c9f117-7b19-444c-884f-0ae28d28dab8]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Taylor Sheehan (tdsheenan16@icloud.com) [ID: 6661a6bc-5279-49ea-9483-9a8c313b15e2]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Oswaldo Israel Quiroz flores (quirozoswaldo20@gmail.com) [ID: bf86e005-3153-42b0-a786-bf12c1a201a7]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Emin Ege Kara (eminegekara02@outlook.com) [ID: 35ee1a8f-3ad1-4183-9fcf-f52c0e900320]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Jacob Hoxie (3jacobhoxie@gmail.com) [ID: f5de726c-91d1-4311-9130-0da6e8fe4986]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: rahman an (itsaftx@gmail.com) [ID: 839fdd1a-2a27-431c-a7a3-e8893f7a41b3]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Dom Clark (bobafettish@hotmail.co.uk) [ID: 600f361f-b06d-488d-8520-d85ae8663520]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: timo van Hout (timov.hout@hetnet.nl) [ID: 29937a7b-0c35-4235-9ac5-5efac7603791]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Sander Van essen (sander-teuge@hotmail.com) [ID: 4a8d7991-9751-4cf3-8401-ce32543703e3]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Lef Fio (lefiots@gmail.com) [ID: daee3522-3214-40e9-bc53-4a1ba6761f9f]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Kevin Miller (kamiller@talk21.com) [ID: 3f5cb224-a995-4018-9d0f-aa7eea29853f]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Bertrand Chauvin (bebertau44@aol.com) [ID: 3d059286-1313-4925-ad7a-8da53b6716b3]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Thomas Pqlmeri (thomaspalmeri92@yahoo.com) [ID: 579e2408-48bb-45e6-929a-ad15aa546cde]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Nestor Rosales (nestorefrenrosales@gmail.com) [ID: f69920ef-7b80-4c68-bbaa-d27b6b2cec18]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Jes̼s Salvador Ruiz Caballero (jesusi_19@hotmail.es) [ID: 924fee9e-1a84-4b41-aa15-4c72ddc436f5]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Damian M�?ller (damian.mueller02@icloud.com) [ID: e7f4180c-4b70-4629-a34f-94ec6c49940f]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Yasushi Kurita (marontec1213@yahoo.co.cp) [ID: e8491600-a861-49c4-8157-ecb9db0b2073]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Gimmy Sax (givif50129@kuandika.com) [ID: 07e3d6c1-3d9b-43c1-9e39-e61597babbbd]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: EDUARDO SOUZA (betojose043@gmail.com) [ID: 040611b4-2a3d-4533-8265-5b90ff15e414]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Tom Kautzsch (kautzschtom@gmail.com) [ID: db06bd42-ca69-46e0-bee0-8a6f4c722843]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Arnaud Bernard (guillaumein@laposte.net) [ID: 453bd8e0-3428-41fa-b42f-9718019e8b18]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: tauric parish (parishtauric@gmail.com) [ID: f29d2193-2c7e-4da8-8e37-5d9edcc33d98]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Cameron Moorhead (camstillworksout@gmail.com) [ID: c3b1e21c-28d7-4e5e-ae88-761fc8dafcf5]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Eli Shiloach (eshiloach1@icloud.com) [ID: 4c73d5c6-4d6a-4ac6-9e05-696d6f9c78d4]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Tyler Duso (tyler.duso0522@gmail.com) [ID: e4fae78e-1eff-49bc-8bf5-562c0afc576b]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Aaron Caama̱o (andresrdz150692@gmail.com) [ID: 3e2cbf7c-764a-4cca-8421-ae62bf17128e]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Jacopo Scorsone (scorsone@gmail.com) [ID: b0a7f2b4-c317-4f2d-94a8-42ee408c0f31]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Bradley Klimowicz Brad (bjklimowicz@yahoo.com) [ID: a534b868-3db9-48f5-8dd3-20591183e784]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Fabian Alvarado (alvaradofabian301@gmail.com) [ID: 505c62aa-bbfb-4030-adbc-3af34a9c227c]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Matt Milanovich (matthewemilanovich@gmail.com) [ID: d2eb9e51-916f-41fb-8378-fb14e24becfc]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: David Vilchis Ram�?rez (frank_castle97@hotmail.com) [ID: b461b3d5-6e90-4dea-8037-cdd872f0eeac]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Charles Koshar (kosharcharles@gmail.com) [ID: 157ff408-a5e5-44c9-8e14-6436c548a8c0]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: esteban echeverry (juanes2010-10@hotmail.com) [ID: a25645e5-54c6-4b3c-b490-dec32c83a1d4]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Ewoud Vis (ewoud.vis@ziggo.nl) [ID: c2f2fdb9-b25b-4be2-8f31-8dd1a77c585f]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Amey Inamdar (ameyinamdar2007@gmail.com) [ID: 91f060d2-44b3-452c-8e02-4e178d6a6e32]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Billy Rowell (big100dollarbill@gmail.com) [ID: ce9994cc-9856-48e5-95a3-5e25b3aa4349]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Tyler Duso (tyler.duso0521@gmail.com) [ID: 5bed0a0f-5770-41a6-9972-605afbe967e9]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Aaron Ciantar (aaronciantar28@gmail.com) [ID: 913052c4-e834-4c6c-811a-b00bc13464a7]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: A A (althaniali986@gmail.com) [ID: b966860a-4500-4feb-84da-5c3e66263f72]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Bryan Lamontagne Mr (barberetteseeker@yahoo.com) [ID: f3cf787e-72e5-41a8-8797-c8b0b3d2617e]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Zachary Greiss (greisszach18@gmail.com) [ID: cf9bfd0b-0364-40ec-8dc8-198b7d8cab41]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: David ramos (gleekteen@gmail.com) [ID: 5e2f8d62-3a32-4c45-a8f8-e87b1e327360]
+  - Consulta Antigua: 2 videos returned
+  - Consulta Nueva:   2 videos returned
+    * The Toxic (Order: ORD-340918, purchase_user_id: 5e2f8d62-3a32-4c45-a8f8-e87b1e327360)
+    * The Toxic (Order: ORD-982412, purchase_user_id: 5e2f8d62-3a32-4c45-a8f8-e87b1e327360)
+
+User: Jay N (juliannoschka@icloud.com) [ID: 84dff52b-df5f-46a7-b169-c06d68e03c96]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Irvin Chen (1002152749@qq.com) [ID: 528a4cef-1a38-4247-ae99-48cf6363a425]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: alex rodriguez (alexx2300@gmail.com) [ID: a8f2b4b4-94ca-4a51-9fce-20f1c3e8d9a3]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Morten ��berg (mail@mortenoeberg.dk) [ID: b6bfa54b-cbbe-4103-aba1-b95aed084404]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Cooper Ellumber (aquinlan13@outlook.com) [ID: a6799bc8-3d38-401c-bf93-9a96845ef1d3]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Antonio Salas Castillo (antoniosalas570@gmail.com) [ID: 1b542f03-b9ec-4cbc-9988-0d9f98ca28d0]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Mack Gable (mackeryg@gmail.com) [ID: 0242044c-ec53-4ecd-a9ec-f486e1d9f43d]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: liu yu (17626534268@163.com) [ID: ed451aed-50ad-41ed-9dba-ff397c5f7c53]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Alejandro Aguirre Cortes (alguirrcort89@gmail.com) [ID: de9311dc-50cc-4971-9434-cd5bfb1a0ee0]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Amine Figuigui (figuigui43@gmail.com) [ID: 40c98096-a3cb-4d2d-9ccf-bde22efadbbb]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Z M (zacmartavic@gmail.com) [ID: 0710aac5-8779-424f-8de8-3eb7db639209]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Memphis Forever (memphisforever786@proton.me) [ID: d8768f05-bfbb-4c35-ada8-89e5ea1d2184]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Andreas Neubauer (katzenneubauer@web.de) [ID: d7c1451b-cf42-4659-92a6-13ca2a02d642]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Daniel Harvey 159 colyer road Northfleet (danielfaharvey@gmail.com) [ID: 4692bb6d-bf78-479b-9395-780c3941a837]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Alex Brent (alexbrent824@gmail.com) [ID: 73d00bb3-a882-466b-8279-88569a02d2de]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Armen McOmber (ramcomber@aol.com) [ID: 45342bd1-d1e6-4d3f-8f0f-4eaa23335ac8]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: rooslizet andres reyes (dosdigitalmkt@gmail.com) [ID: 95b0cf25-7e28-465f-845d-be37ed47bcf7]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
+
+User: Lizeth 1 (admin@barberette.com) [ID: a3bc6fa8-f346-4d79-bafc-ffe02eba7058]
+  - Consulta Antigua: 0 videos returned
+  - Consulta Nueva:   0 videos returned
