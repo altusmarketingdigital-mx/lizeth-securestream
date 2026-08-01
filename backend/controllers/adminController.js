@@ -345,12 +345,12 @@ exports.createManualSale = async (req, res) => {
 
         let videoId = null;
         if (videoTitle && videoTitle.trim() !== '') {
-            const vidRes = await db.query('SELECT id FROM videos WHERE LOWER(title) LIKE LOWER($1) LIMIT 1', [`%${videoTitle.trim()}%`]);
+            const vidRes = await db.query('SELECT id FROM videos WHERE LOWER(title) LIKE LOWER($1) AND (is_deleted = false OR is_deleted IS NULL) ORDER BY created_at DESC LIMIT 1', [`%${videoTitle.trim()}%`]);
             if (vidRes.rows.length > 0) videoId = vidRes.rows[0].id;
         }
 
         if (!videoId) {
-            const firstVid = await db.query('SELECT id FROM videos LIMIT 1');
+            const firstVid = await db.query('SELECT id FROM videos WHERE (is_deleted = false OR is_deleted IS NULL) ORDER BY created_at DESC LIMIT 1');
             videoId = firstVid.rows[0]?.id;
         }
 
