@@ -8,7 +8,7 @@ window.togglePasswordVisibility = function(targetId, btnElement) {
     if (input.type === 'password') {
         input.type = 'text';
         if (btn) {
-            btn.style.color = '#9a22ab';
+            btn.style.color = '#c850e0';
             btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
         }
     } else {
@@ -19,16 +19,6 @@ window.togglePasswordVisibility = function(targetId, btnElement) {
         }
     }
 };
-
-document.addEventListener('click', (e) => {
-    const toggleBtn = e.target.closest('.toggle-password');
-    if (toggleBtn) {
-        const targetId = toggleBtn.getAttribute('data-target');
-        if (targetId) {
-            window.togglePasswordVisibility(targetId, toggleBtn);
-        }
-    }
-});
 
 document.addEventListener('DOMContentLoaded', () => {
     const userEmail = localStorage.getItem('userEmail');

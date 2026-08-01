@@ -1397,23 +1397,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Lógica para mostrar/ocultar contraseñas
-    document.querySelectorAll('.toggle-password').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const targetId = e.currentTarget.getAttribute('data-target');
-            const input = document.getElementById(targetId);
-            if (input) {
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    e.currentTarget.style.color = '#fff';
-                } else {
-                    input.type = 'password';
-                    e.currentTarget.style.color = '#aaa';
-                }
-            }
-        });
-    });
-
     // --- USER CRUD LOGIC ---
     const btnAddUser = document.getElementById('btn-add-user');
     if (btnAddUser) {
