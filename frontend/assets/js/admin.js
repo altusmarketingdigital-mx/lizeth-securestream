@@ -151,9 +151,25 @@ document.addEventListener('DOMContentLoaded', async () => {
             const monthEl = document.getElementById('stat-rev-month');
             const yearEl = document.getElementById('stat-rev-year');
             
-            if (todayEl) todayEl.textContent = '$' + (data.revToday || 0).toFixed(2);
-            if (monthEl) monthEl.textContent = '$' + (data.revMonth || 0).toFixed(2);
-            if (yearEl) yearEl.textContent = '$' + (data.revYear || 0).toFixed(2);
+            if (data.revenues && Array.isArray(data.revenues)) {
+                let todayHtml = '';
+                let monthHtml = '';
+                let yearHtml = '';
+                
+                data.revenues.forEach(r => {
+                    todayHtml += `<div style="font-size: 1.2rem; margin-bottom: 4px;">${r.currency}: $${r.revToday.toFixed(2)}</div>`;
+                    monthHtml += `<div style="font-size: 1.2rem; margin-bottom: 4px;">${r.currency}: $${r.revMonth.toFixed(2)}</div>`;
+                    yearHtml += `<div style="font-size: 1.2rem; margin-bottom: 4px;">${r.currency}: $${r.revYear.toFixed(2)}</div>`;
+                });
+                
+                if (todayEl) todayEl.innerHTML = todayHtml || '$0.00';
+                if (monthEl) monthEl.innerHTML = monthHtml || '$0.00';
+                if (yearEl) yearEl.innerHTML = yearHtml || '$0.00';
+            } else {
+                if (todayEl) todayEl.textContent = '$' + (data.revToday || 0).toFixed(2);
+                if (monthEl) monthEl.textContent = '$' + (data.revMonth || 0).toFixed(2);
+                if (yearEl) yearEl.textContent = '$' + (data.revYear || 0).toFixed(2);
+            }
         }
     }
 

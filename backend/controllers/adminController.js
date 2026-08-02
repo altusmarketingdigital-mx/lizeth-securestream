@@ -99,22 +99,25 @@ exports.getStats = async (req, res) => {
         
         const statsResult = await db.query(`
             SELECT 
+                COALESCE(p.currency, 'MXN') as currency,
                 COALESCE(SUM(CASE WHEN (p.purchase_date AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City')::date = (CURRENT_TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City')::date THEN COALESCE(p.amount, v.sale_price, v.price, 0) ELSE 0 END), 0) as rev_today,
                 COALESCE(SUM(CASE WHEN EXTRACT(MONTH FROM p.purchase_date AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City') = EXTRACT(MONTH FROM CURRENT_TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City') AND EXTRACT(YEAR FROM p.purchase_date AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City') = EXTRACT(YEAR FROM CURRENT_TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City') THEN COALESCE(p.amount, v.sale_price, v.price, 0) ELSE 0 END), 0) as rev_month,
                 COALESCE(SUM(CASE WHEN EXTRACT(YEAR FROM p.purchase_date AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City') = EXTRACT(YEAR FROM CURRENT_TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City') THEN COALESCE(p.amount, v.sale_price, v.price, 0) ELSE 0 END), 0) as rev_year
             FROM purchases p
             LEFT JOIN videos v ON (p.video_id::text = v.id::text OR p.video_id::text = v.secure_slug::text)
             WHERE p.status = 'exitoso' OR p.status IS NULL
+            GROUP BY COALESCE(p.currency, 'MXN')
         `);
-
-        const statsRow = statsResult.rows[0] || {};
 
         res.json({
             totalUsers: parseInt(usersResult.rows[0].count || 0),
             totalVideos: parseInt(videosResult.rows[0].count || 0),
-            revToday: parseFloat(statsRow.rev_today || 0),
-            revMonth: parseFloat(statsRow.rev_month || 0),
-            revYear: parseFloat(statsRow.rev_year || 0)
+            revenues: statsResult.rows.map(row => ({
+                currency: row.currency,
+                revToday: parseFloat(row.rev_today || 0),
+                revMonth: parseFloat(row.rev_month || 0),
+                revYear: parseFloat(row.rev_year || 0)
+            }))
         });
     } catch (error) {
         console.error('Error al obtener estadísticas de admin:', error);
@@ -359,8 +362,8 @@ exports.createManualSale = async (req, res) => {
         const finalCountry = country || 'MX';
 
         await db.query(
-            "INSERT INTO purchases (id, user_id, video_id, order_number, country, status, amount, purchase_date) VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())",
-            [uuidv4(), userId, videoId, finalOrder, finalCountry, 'exitoso', finalAmount]
+            "INSERT INTO purchases (id, user_id, video_id, order_number, country, status, amount, purchase_date, currency) VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), $8)",
+            [uuidv4(), userId, videoId, finalOrder, finalCountry, 'exitoso', finalAmount, 'MXN']
         );
 
         res.json({ success: true, message: 'Venta registrada exitosamente' });

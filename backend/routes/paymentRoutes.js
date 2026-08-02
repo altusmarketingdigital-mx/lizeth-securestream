@@ -89,9 +89,11 @@ async function recordPurchases({ userId, videoIds, couponCode, orderNumber, coun
     if (!userId || !videoIds || videoIds.length === 0) return [];
     
     let total = 0;
+    let cartCurrency = 'MXN';
     try {
         const cartData = await calculateCart(videoIds, couponCode);
         total = cartData.total;
+        cartCurrency = cartData.currency || 'MXN';
     } catch (e) {
         total = 0;
     }
@@ -121,8 +123,8 @@ async function recordPurchases({ userId, videoIds, couponCode, orderNumber, coun
         
         const newPurchaseId = uuidv4();
         await db.query(
-            "INSERT INTO purchases (id, user_id, video_id, order_number, country, status, amount, purchase_date) VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())",
-            [newPurchaseId, String(userId), String(actualVidId), orderNumber, country, status, finalItemAmount.toFixed(2)]
+            "INSERT INTO purchases (id, user_id, video_id, order_number, country, status, amount, purchase_date, currency) VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), $8)",
+            [newPurchaseId, String(userId), String(actualVidId), orderNumber, country, status, finalItemAmount.toFixed(2), cartCurrency.toUpperCase()]
         );
         
         inserted.push({ id: newPurchaseId, userId, videoId: actualVidId, orderNumber });
