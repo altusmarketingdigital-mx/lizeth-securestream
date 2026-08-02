@@ -92,10 +92,11 @@ exports.fixCors = async (req, res) => {
     }
 };
 
-exports.getStats = async (req, res) => {
+    exports.getStats = async (req, res) => {
     try {
         const usersResult = await db.query('SELECT COUNT(*) as count FROM users');
         const videosResult = await db.query('SELECT COUNT(*) as count FROM videos WHERE is_hidden = false AND is_deleted = false AND published_at <= CURRENT_TIMESTAMP');
+        const salesResult = await db.query("SELECT COUNT(*) as count FROM purchases WHERE status = 'exitoso' OR status IS NULL");
         
         const statsResult = await db.query(`
             SELECT 
@@ -112,6 +113,7 @@ exports.getStats = async (req, res) => {
         res.json({
             totalUsers: parseInt(usersResult.rows[0].count || 0),
             totalVideos: parseInt(videosResult.rows[0].count || 0),
+            totalSales: parseInt(salesResult.rows[0].count || 0),
             revenues: statsResult.rows.map(row => ({
                 currency: row.currency,
                 revToday: parseFloat(row.rev_today || 0),

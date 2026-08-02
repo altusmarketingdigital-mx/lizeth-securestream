@@ -146,6 +146,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = await apiGet('/api/admin/stats');
         if (data) {
             document.getElementById('stat-videos').textContent = data.totalVideos;
+            if (document.getElementById('stat-sales')) {
+                document.getElementById('stat-sales').textContent = data.totalSales || 0;
+            }
             
             const todayEl = document.getElementById('stat-rev-today');
             const monthEl = document.getElementById('stat-rev-month');
