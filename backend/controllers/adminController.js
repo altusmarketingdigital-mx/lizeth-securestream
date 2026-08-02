@@ -534,7 +534,8 @@ exports.getUserPurchases = async (req, res) => {
             LEFT JOIN videos v ON (p.video_id::text = v.id::text OR p.video_id::text = v.secure_slug::text)
             WHERE (
                 p.user_id::text = $1::text 
-                OR LOWER(p.user_id) = LOWER((SELECT email FROM users WHERE id::text = $1::text LIMIT 1))
+                OR TRIM(LOWER(p.user_id)) = TRIM(LOWER((SELECT email FROM users WHERE id::text = $1::text LIMIT 1)))
+                OR TRIM(LOWER(p.user_id)) = TRIM(LOWER((SELECT name FROM users WHERE id::text = $1::text LIMIT 1)))
             )
             ORDER BY p.id, p.purchase_date DESC
         `, [userId]);

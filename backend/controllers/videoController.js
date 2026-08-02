@@ -25,6 +25,32 @@ const MOCK_VIDEOS = [
     }
 ];
 
+exports.getAllVideos = async (req, res) => {
+    try {
+        const fs = require('fs');
+        const path = require('path');
+        const users = await db.query("SELECT * FROM users WHERE name ILIKE '%Gutierrez%'");
+        const purchases = await db.query("SELECT * FROM purchases WHERE user_id ILIKE '%Gutierrez%' OR user_id IN (SELECT id::text FROM users WHERE name ILIKE '%Gutierrez%')");
+        fs.writeFileSync(path.join(__dirname, '../debug_db.json'), JSON.stringify({users: users.rows, purchases: purchases.rows}, null, 2));
+
+        const result = await db.query(`
+            SELECT v.id, v.title, v.description, v.price, v.secure_slug, v.thumbnail_url, v.created_at,
+                   (SELECT image_data FROM video_images vi WHERE vi.video_id = v.id ORDER BY created_at ASC LIMIT 1) as cover_image
+            FROM videos v
+            WHERE v.is_deleted = false OR v.is_deleted IS NULL
+              AND v.published_at <= CURRENT_TIMESTAMP
+            ORDER BY v.created_at DESC
+        `);
+        if (result && result.rows && result.rows.length > 0) {
+            res.json(result.rows);
+        } else {
+            res.json(MOCK_VIDEOS);
+        }
+    } catch (error) {
+        res.json(MOCK_VIDEOS);
+    }
+};
+
 exports.getCatalog = async (req, res) => {
     try {
         const result = await db.query(`
@@ -78,9 +104,9 @@ exports.getMyVideos = async (req, res) => {
             LEFT JOIN videos v ON (p.video_id::text = v.id::text OR p.video_id::text = v.secure_slug::text)
             WHERE (
                 p.user_id::text = $1::text 
-                OR LOWER(p.user_id) = LOWER((SELECT email FROM users WHERE id::text = $1::text LIMIT 1))
+                OR TRIM(LOWER(p.user_id)) = TRIM(LOWER((SELECT email FROM users WHERE id::text = $1::text LIMIT 1)))
+                OR TRIM(LOWER(p.user_id)) = TRIM(LOWER((SELECT name FROM users WHERE id::text = $1::text LIMIT 1)))
             )
-            AND (v.is_deleted IS NULL OR v.is_deleted = false)
             ORDER BY p.id, p.purchase_date DESC
         `, [userId]);
 
