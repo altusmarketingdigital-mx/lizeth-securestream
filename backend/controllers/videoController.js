@@ -27,17 +27,11 @@ const MOCK_VIDEOS = [
 
 exports.getAllVideos = async (req, res) => {
     try {
-        const fs = require('fs');
-        const path = require('path');
-        const users = await db.query("SELECT * FROM users WHERE name ILIKE '%Gutierrez%'");
-        const purchases = await db.query("SELECT * FROM purchases WHERE user_id ILIKE '%Gutierrez%' OR user_id IN (SELECT id::text FROM users WHERE name ILIKE '%Gutierrez%')");
-        fs.writeFileSync(path.join(__dirname, '../debug_db.json'), JSON.stringify({users: users.rows, purchases: purchases.rows}, null, 2));
-
         const result = await db.query(`
             SELECT v.id, v.title, v.description, v.price, v.secure_slug, v.thumbnail_url, v.created_at,
                    (SELECT image_data FROM video_images vi WHERE vi.video_id = v.id ORDER BY created_at ASC LIMIT 1) as cover_image
             FROM videos v
-            WHERE v.is_deleted = false OR v.is_deleted IS NULL
+            WHERE (v.is_deleted = false OR v.is_deleted IS NULL)
               AND v.published_at <= CURRENT_TIMESTAMP
             ORDER BY v.created_at DESC
         `);
@@ -91,7 +85,7 @@ exports.getMyVideos = async (req, res) => {
         }
 
         const result = await db.query(`
-            SELECT DISTINCT ON (p.id) 
+            SELECT DISTINCT ON (COALESCE(v.id::text, p.video_id)) 
                    COALESCE(v.id::text, p.video_id) as id, 
                    COALESCE(v.title, 'Video Masterclass Barberette') as title, 
                    COALESCE(v.description, 'Contenido exclusivo desbloqueado para tu cuenta.') as description, 
@@ -107,8 +101,8 @@ exports.getMyVideos = async (req, res) => {
                 OR TRIM(LOWER(p.user_id)) = TRIM(LOWER((SELECT email FROM users WHERE id::text = $1::text LIMIT 1)))
                 OR TRIM(LOWER(p.user_id)) = TRIM(LOWER((SELECT name FROM users WHERE id::text = $1::text LIMIT 1)))
             )
-            ORDER BY p.id, p.purchase_date DESC
-        `, [userId]);
+            ORDER BY COALESCE(v.id::text, p.video_id), p.purchase_date DESC
+        \`, [userId]);
 
         res.json(result.rows);
     } catch (error) {

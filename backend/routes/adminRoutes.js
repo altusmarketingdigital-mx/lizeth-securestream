@@ -11,6 +11,7 @@ router.get('/stats', adminController.getStats);
 router.get('/users', adminController.getUsers);
 router.get('/sales', adminController.getSales);
 router.post('/sales', adminController.createManualSale);
+router.delete('/sales/:id', adminController.deleteSale);
 router.get('/sales/analytics', adminController.getSalesAnalytics);
 
 router.get('/videos', adminController.getVideos);

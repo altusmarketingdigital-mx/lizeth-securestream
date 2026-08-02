@@ -312,40 +312,19 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const email = e.target.getAttribute('data-email');
                     const name = e.target.getAttribute('data-name');
                     
-                    const videoTitle = prompt(`OTORGAR ACCESO EXTRAORDINARIO A:\n${email}\n\nIngresa el título o palabra clave del video que deseas desbloquear para este cliente (ejemplo: The Toxic, General Lizeth, El Juego de la Oca):`);
+                    // Mostrar la pestaña de ventas
+                    document.querySelectorAll('.admin-section').forEach(sec => sec.style.display = 'none');
+                    document.getElementById('view-sales').style.display = 'block';
                     
-                    if (videoTitle && videoTitle.trim() !== '') {
-                        try {
-                            const token = localStorage.getItem('token');
-                            const res = await fetch('/api/admin/sales', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': 'Bearer ' + token
-                                },
-                                body: JSON.stringify({ 
-                                    email, 
-                                    name, 
-                                    videoTitle: videoTitle.trim(), 
-                                    amount: 0, 
-                                    orderNumber: 'EXTRA-' + Math.floor(100000 + Math.random() * 900000) 
-                                })
-                            });
-                            
-                            const data = await res.json();
-                            if (res.ok) {
-                                alert(`✅ Acceso extraordinario otorgado exitosamente a ${email}`);
-                                if (typeof loadUsers === 'function') loadUsers();
-                                if (typeof loadSales === 'function') loadSales();
-                            } else {
-                                alert(data.error || 'Error al otorgar acceso');
-                            }
-                        } catch(err) {
-                            console.error(err);
-                            alert('Error de red al otorgar acceso');
-                        }
-                    }
-                });
+                    // Rellenar formulario de Venta Manual
+                    document.getElementById('manual-sale-panel').style.display = 'block';
+                    document.getElementById('ms-email').value = email || '';
+                    document.getElementById('ms-name').value = name || '';
+                    document.getElementById('ms-amount').value = '0';
+                    document.getElementById('ms-order').value = 'ACCESO-MANUAL';
+                    document.getElementById('ms-video').value = '';
+                    
+                    document.getElementById('manual-sale-panel').scrollIntoView({ behavior: 'smooth' });
                 });
             });
 
@@ -376,9 +355,37 @@ document.addEventListener('DOMContentLoaded', async () => {
                                             <td style="padding: 10px;">${formattedDate}</td>
                                             <td style="padding: 10px; font-weight:bold;">${p.title}</td>
                                             <td style="padding: 10px; color:#16a34a;">$${parseFloat(p.amount || 0).toFixed(2)} ${p.currency || 'USD'}</td>
+                                            <td style="padding: 10px;">
+                                                <button class="btn-primary sm-btn revoke-access-btn" data-id="${p.purchase_id}" style="background: #dc2626; padding: 2px 8px; font-size: 0.75rem;">Revocar</button>
+                                            </td>
                                         </tr>
                                     `;
                                 }).join('');
+
+                                document.querySelectorAll('.revoke-access-btn').forEach(btn => {
+                                    btn.addEventListener('click', async (e) => {
+                                        if (!confirm('¿Estás seguro de que deseas revocar este acceso/compra? Esta acción no se puede deshacer.')) return;
+                                        const purchaseId = e.target.getAttribute('data-id');
+                                        try {
+                                            const token = localStorage.getItem('token');
+                                            const delRes = await fetch(`/api/admin/sales/${purchaseId}`, {
+                                                method: 'DELETE',
+                                                headers: { 'Authorization': 'Bearer ' + token }
+                                            });
+                                            if (delRes.ok) {
+                                                alert('Acceso revocado exitosamente.');
+                                                // Trigger modal reload
+                                                document.getElementById('cp-tbody').innerHTML = '<tr><td colspan="4" style="text-align: center; color: #888;">Actualizando...</td></tr>';
+                                                document.querySelector(`.view-purchases-btn[data-id="${id}"]`).click();
+                                            } else {
+                                                const d = await delRes.json();
+                                                alert(d.error || 'Error al revocar acceso');
+                                            }
+                                        } catch (err) {
+                                            alert('Error de red al revocar');
+                                        }
+                                    });
+                                });
                             }
                         } else {
                             document.getElementById('cp-tbody').innerHTML = `<tr><td colspan="3" style="text-align: center; color: #dc2626;">${data.error || 'Error'}</td></tr>`;
@@ -784,8 +791,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = await apiGet('/api/admin/videos');
         if (data) {
             const select = document.getElementById('c-video');
-            select.innerHTML = '<option value="">Válido para cualquier video (Global)</option>' + 
-                data.map(v => `<option value="${v.id}">${v.title}</option>`).join('');
+            if (select) {
+                select.innerHTML = '<option value="">Válido para cualquier video (Global)</option>' + 
+                    data.map(v => `<option value="${v.id}">${v.title}</option>`).join('');
+            }
+            
+            const msSelect = document.getElementById('ms-video');
+            if (msSelect) {
+                msSelect.innerHTML = '<option value="">-- Seleccionar Video --</option>' + 
+                    data.map(v => `<option value="${v.title}">${v.title}</option>`).join('');
+            }
         }
     }
 

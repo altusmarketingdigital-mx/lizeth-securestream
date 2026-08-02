@@ -301,10 +301,11 @@
                             <th>Fecha</th>
                             <th>Video / Producto</th>
                             <th>Monto</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="cp-tbody">
-                        <tr><td colspan="3" style="text-align: center; color: #888;">Cargando compras...</td></tr>
+                        <tr><td colspan="4" style="text-align: center; color: #888;">Cargando compras...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -351,7 +352,9 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px;">
                     <div>
                         <label style="display: block; font-size: 0.85rem; color: #aaa; margin-bottom: 5px;">Video / Producto:</label>
-                        <input type="text" id="ms-video" class="auth-input" placeholder="Título del video" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.5); color: white;">
+                        <select id="ms-video" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.5); color: white;">
+                            <option value="">-- Seleccionar Video --</option>
+                        </select>
                     </div>
                     <div>
                         <label style="display: block; font-size: 0.85rem; color: #aaa; margin-bottom: 5px;">Monto ($ USD/MXN):</label>

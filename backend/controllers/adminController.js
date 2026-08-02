@@ -351,18 +351,30 @@ exports.createManualSale = async (req, res) => {
         }
 
         let videoId = null;
+        let finalVideoTitle = 'Acceso Premium';
+        let secureSlug = '';
+
         if (videoTitle && videoTitle.trim() !== '') {
-            const vidRes = await db.query('SELECT id FROM videos WHERE LOWER(title) LIKE LOWER($1) AND (is_deleted = false OR is_deleted IS NULL) ORDER BY created_at DESC LIMIT 1', [`%${videoTitle.trim()}%`]);
-            if (vidRes.rows.length > 0) videoId = vidRes.rows[0].id;
+            const vidRes = await db.query('SELECT id, title, secure_slug FROM videos WHERE LOWER(title) LIKE LOWER($1) AND (is_deleted = false OR is_deleted IS NULL) ORDER BY created_at DESC LIMIT 1', [`%${videoTitle.trim()}%`]);
+            if (vidRes.rows.length > 0) {
+                videoId = vidRes.rows[0].id;
+                finalVideoTitle = vidRes.rows[0].title;
+                secureSlug = vidRes.rows[0].secure_slug;
+            }
         }
 
         if (!videoId) {
-            const firstVid = await db.query('SELECT id FROM videos WHERE (is_deleted = false OR is_deleted IS NULL) ORDER BY created_at DESC LIMIT 1');
-            videoId = firstVid.rows[0]?.id;
+            const firstVid = await db.query('SELECT id, title, secure_slug FROM videos WHERE (is_deleted = false OR is_deleted IS NULL) ORDER BY created_at DESC LIMIT 1');
+            if (firstVid.rows.length > 0) {
+                videoId = firstVid.rows[0].id;
+                finalVideoTitle = firstVid.rows[0].title;
+                secureSlug = firstVid.rows[0].secure_slug;
+            }
         }
 
         const finalOrder = orderNumber || ('ORD-' + Math.floor(100000 + Math.random() * 900000));
-        const finalAmount = parseFloat(amount) || 49.99;
+        const parsedAmount = parseFloat(amount);
+        const finalAmount = !isNaN(parsedAmount) ? parsedAmount : 49.99;
         const finalCountry = country || 'MX';
 
         await db.query(
@@ -370,10 +382,29 @@ exports.createManualSale = async (req, res) => {
             [uuidv4(), userId, videoId, finalOrder, finalCountry, 'exitoso', finalAmount, 'MXN']
         );
 
+        if (email && email.trim() !== '') {
+            const videoUrl = secureSlug ? `${process.env.FRONTEND_URL || 'http://localhost:3000'}/player.html?v=${secureSlug}` : '';
+            emailService.sendPurchaseReceipt(email.trim(), finalVideoTitle, finalAmount.toFixed(2), 'MXN', videoUrl, finalOrder).catch(console.error);
+        }
+
         res.json({ success: true, message: 'Venta registrada exitosamente' });
     } catch (error) {
         console.error('Error al registrar venta manual:', error);
         res.status(500).json({ error: 'Error registrando venta manual' });
+    }
+};
+
+exports.deleteSale = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await db.query('DELETE FROM purchases WHERE id = $1 RETURNING id', [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Venta/Acceso no encontrado' });
+        }
+        res.json({ success: true, message: 'Venta/Acceso revocado exitosamente' });
+    } catch (error) {
+        console.error('Error al eliminar venta:', error);
+        res.status(500).json({ error: 'Error al revocar acceso' });
     }
 };
 

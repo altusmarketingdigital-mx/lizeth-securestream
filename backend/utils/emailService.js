@@ -1,8 +1,8 @@
 const { Resend } = require('resend');
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
-const FROM_EMAIL = process.env.EMAIL_FROM || 'Lizeth The Barberette <no-reply@lizeththebarberette.com>';
-const SUPPORT_EMAIL = process.env.EMAIL_SUPPORT || 'soporte@lizeththebarberette.com';
+const FROM_EMAIL = process.env.EMAIL_FROM || 'Lizeth The Barberette <no-reply@lizethbarberette.com>';
+const SUPPORT_EMAIL = process.env.EMAIL_SUPPORT || 'soporte@lizethbarberette.com';
 
 const sendEmail = async ({ to, subject, html }) => {
     if (!resend) {
