@@ -100,9 +100,9 @@ exports.getStats = async (req, res) => {
         const statsResult = await db.query(`
             SELECT 
                 COALESCE(p.currency, 'MXN') as currency,
-                COALESCE(SUM(CASE WHEN (p.purchase_date AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City')::date = (CURRENT_TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City')::date THEN COALESCE(p.amount, v.sale_price, v.price, 0) ELSE 0 END), 0) as rev_today,
-                COALESCE(SUM(CASE WHEN EXTRACT(MONTH FROM p.purchase_date AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City') = EXTRACT(MONTH FROM CURRENT_TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City') AND EXTRACT(YEAR FROM p.purchase_date AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City') = EXTRACT(YEAR FROM CURRENT_TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City') THEN COALESCE(p.amount, v.sale_price, v.price, 0) ELSE 0 END), 0) as rev_month,
-                COALESCE(SUM(CASE WHEN EXTRACT(YEAR FROM p.purchase_date AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City') = EXTRACT(YEAR FROM CURRENT_TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City') THEN COALESCE(p.amount, v.sale_price, v.price, 0) ELSE 0 END), 0) as rev_year
+                COALESCE(SUM(CASE WHEN (p.purchase_date AT TIME ZONE 'America/Mexico_City')::date = (CURRENT_TIMESTAMP AT TIME ZONE 'America/Mexico_City')::date THEN COALESCE(p.amount, v.sale_price, v.price, 0) ELSE 0 END), 0) as rev_today,
+                COALESCE(SUM(CASE WHEN EXTRACT(MONTH FROM p.purchase_date AT TIME ZONE 'America/Mexico_City') = EXTRACT(MONTH FROM CURRENT_TIMESTAMP AT TIME ZONE 'America/Mexico_City') AND EXTRACT(YEAR FROM p.purchase_date AT TIME ZONE 'America/Mexico_City') = EXTRACT(YEAR FROM CURRENT_TIMESTAMP AT TIME ZONE 'America/Mexico_City') THEN COALESCE(p.amount, v.sale_price, v.price, 0) ELSE 0 END), 0) as rev_month,
+                COALESCE(SUM(CASE WHEN EXTRACT(YEAR FROM p.purchase_date AT TIME ZONE 'America/Mexico_City') = EXTRACT(YEAR FROM CURRENT_TIMESTAMP AT TIME ZONE 'America/Mexico_City') THEN COALESCE(p.amount, v.sale_price, v.price, 0) ELSE 0 END), 0) as rev_year
             FROM purchases p
             LEFT JOIN videos v ON (p.video_id::text = v.id::text OR p.video_id::text = v.secure_slug::text)
             WHERE p.status = 'exitoso' OR p.status IS NULL
