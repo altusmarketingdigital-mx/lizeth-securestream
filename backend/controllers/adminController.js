@@ -373,8 +373,7 @@ exports.createManualSale = async (req, res) => {
         }
 
         const finalOrder = orderNumber || ('ORD-' + Math.floor(100000 + Math.random() * 900000));
-        const parsedAmount = parseFloat(amount);
-        const finalAmount = !isNaN(parsedAmount) ? parsedAmount : 49.99;
+        const finalAmount = parseFloat(amount) || 49.99;
         const finalCountry = country || 'MX';
 
         await db.query(
@@ -391,20 +390,6 @@ exports.createManualSale = async (req, res) => {
     } catch (error) {
         console.error('Error al registrar venta manual:', error);
         res.status(500).json({ error: 'Error registrando venta manual' });
-    }
-};
-
-exports.deleteSale = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const result = await db.query('DELETE FROM purchases WHERE id = $1 RETURNING id', [id]);
-        if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'Venta/Acceso no encontrado' });
-        }
-        res.json({ success: true, message: 'Venta/Acceso revocado exitosamente' });
-    } catch (error) {
-        console.error('Error al eliminar venta:', error);
-        res.status(500).json({ error: 'Error al revocar acceso' });
     }
 };
 
