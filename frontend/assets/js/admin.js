@@ -153,25 +153,30 @@ document.addEventListener('DOMContentLoaded', async () => {
             const todayEl = document.getElementById('stat-rev-today');
             const monthEl = document.getElementById('stat-rev-month');
             const yearEl = document.getElementById('stat-rev-year');
+            const totalEl = document.getElementById('stat-rev-total');
             
             if (data.revenues && Array.isArray(data.revenues)) {
                 let todayHtml = '';
                 let monthHtml = '';
                 let yearHtml = '';
+                let totalHtml = '';
                 
                 data.revenues.forEach(r => {
                     todayHtml += `<div style="font-size: 1.2rem; margin-bottom: 4px;">${r.currency}: $${r.revToday.toFixed(2)}</div>`;
                     monthHtml += `<div style="font-size: 1.2rem; margin-bottom: 4px;">${r.currency}: $${r.revMonth.toFixed(2)}</div>`;
                     yearHtml += `<div style="font-size: 1.2rem; margin-bottom: 4px;">${r.currency}: $${r.revYear.toFixed(2)}</div>`;
+                    totalHtml += `<div style="font-size: 1.2rem; margin-bottom: 4px;">${r.currency}: $${(r.revTotal || 0).toFixed(2)}</div>`;
                 });
                 
                 if (todayEl) todayEl.innerHTML = todayHtml || '$0.00';
                 if (monthEl) monthEl.innerHTML = monthHtml || '$0.00';
                 if (yearEl) yearEl.innerHTML = yearHtml || '$0.00';
+                if (totalEl) totalEl.innerHTML = totalHtml || '$0.00';
             } else {
                 if (todayEl) todayEl.textContent = '$' + (data.revToday || 0).toFixed(2);
                 if (monthEl) monthEl.textContent = '$' + (data.revMonth || 0).toFixed(2);
                 if (yearEl) yearEl.textContent = '$' + (data.revYear || 0).toFixed(2);
+                if (totalEl) totalEl.textContent = '$' + (data.revTotal || 0).toFixed(2);
             }
         }
     }
@@ -286,6 +291,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <td>${u.has_premium ? '<span style="color:#16a34a;">Sí</span>' : 'No'}</td>
                     <td>${new Date(u.created_at).toLocaleDateString()}</td>
                     <td>
+                        <button class="btn-primary sm-btn view-purchases-btn" data-id="${u.id}" data-name="${u.name || ''}" style="background: #2563eb; padding: 4px 8px; font-size: 0.8rem; margin-right: 5px;" title="Ver historial de compras">
+                            👁️ Ver Compras
+                        </button>
                         <button class="btn-primary sm-btn grant-access-btn" data-id="${u.id}" data-email="${u.email}" data-name="${u.name || ''}" style="background: #9a22ab; padding: 4px 8px; font-size: 0.8rem; margin-right: 5px;" title="Otorgar acceso a video sin proceso de compra">
                             🔑 Dar Acceso
                         </button>
@@ -338,7 +346,55 @@ document.addEventListener('DOMContentLoaded', async () => {
                         }
                     }
                 });
+                });
             });
+
+            document.querySelectorAll('.view-purchases-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    const name = e.target.getAttribute('data-name');
+                    document.getElementById('cp-user-name').textContent = name || 'Sin Nombre';
+                    document.getElementById('client-purchases-panel').style.display = 'block';
+                    document.getElementById('cp-tbody').innerHTML = '<tr><td colspan="3" style="text-align: center; color: #888;">Cargando compras...</td></tr>';
+                    
+                    try {
+                        const token = localStorage.getItem('token');
+                        const res = await fetch(`/api/admin/users/${id}/purchases`, {
+                            headers: { 'Authorization': 'Bearer ' + token }
+                        });
+                        const data = await res.json();
+                        
+                        if (res.ok) {
+                            if (data.length === 0) {
+                                document.getElementById('cp-tbody').innerHTML = '<tr><td colspan="3" style="text-align: center; color: #888;">No hay compras registradas.</td></tr>';
+                            } else {
+                                document.getElementById('cp-tbody').innerHTML = data.map(p => {
+                                    const dateObj = new Date(p.purchase_date);
+                                    const formattedDate = dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                                    return `
+                                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                            <td style="padding: 10px;">${formattedDate}</td>
+                                            <td style="padding: 10px; font-weight:bold;">${p.title}</td>
+                                            <td style="padding: 10px; color:#16a34a;">$${parseFloat(p.amount || 0).toFixed(2)} ${p.currency || 'USD'}</td>
+                                        </tr>
+                                    `;
+                                }).join('');
+                            }
+                        } else {
+                            document.getElementById('cp-tbody').innerHTML = `<tr><td colspan="3" style="text-align: center; color: #dc2626;">${data.error || 'Error'}</td></tr>`;
+                        }
+                    } catch(err) {
+                        document.getElementById('cp-tbody').innerHTML = '<tr><td colspan="3" style="text-align: center; color: #dc2626;">Error de red</td></tr>';
+                    }
+                });
+            });
+
+            if (document.getElementById('btn-close-purchases') && !document.getElementById('btn-close-purchases').hasAttribute('data-listener')) {
+                document.getElementById('btn-close-purchases').setAttribute('data-listener', 'true');
+                document.getElementById('btn-close-purchases').addEventListener('click', () => {
+                    document.getElementById('client-purchases-panel').style.display = 'none';
+                });
+            }
 
             document.querySelectorAll('.edit-name-btn').forEach(btn => {
                 btn.addEventListener('click', async (e) => {

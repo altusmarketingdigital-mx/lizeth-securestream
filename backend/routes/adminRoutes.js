@@ -22,6 +22,7 @@ router.get('/dropbox-token', adminController.getDropboxToken);
 router.post('/users', adminController.createUser);
 router.post('/fix-cors', adminController.fixCors);
 router.put('/users/:id', adminController.updateUser);
+router.get('/users/:id/purchases', adminController.getUserPurchases);
 router.delete('/users/:id', adminController.deleteUser);
 router.put('/users/:id/toggle-block', adminController.toggleUserBlock);
 router.put('/users/:id/reset-password', adminController.regenerateUserPassword);

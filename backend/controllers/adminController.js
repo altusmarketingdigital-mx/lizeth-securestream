@@ -103,7 +103,8 @@ exports.fixCors = async (req, res) => {
                 COALESCE(p.currency, 'MXN') as currency,
                 COALESCE(SUM(CASE WHEN (p.purchase_date AT TIME ZONE 'America/Mexico_City')::date = (CURRENT_TIMESTAMP AT TIME ZONE 'America/Mexico_City')::date THEN COALESCE(p.amount, v.sale_price, v.price, 0) ELSE 0 END), 0) as rev_today,
                 COALESCE(SUM(CASE WHEN EXTRACT(MONTH FROM p.purchase_date AT TIME ZONE 'America/Mexico_City') = EXTRACT(MONTH FROM CURRENT_TIMESTAMP AT TIME ZONE 'America/Mexico_City') AND EXTRACT(YEAR FROM p.purchase_date AT TIME ZONE 'America/Mexico_City') = EXTRACT(YEAR FROM CURRENT_TIMESTAMP AT TIME ZONE 'America/Mexico_City') THEN COALESCE(p.amount, v.sale_price, v.price, 0) ELSE 0 END), 0) as rev_month,
-                COALESCE(SUM(CASE WHEN EXTRACT(YEAR FROM p.purchase_date AT TIME ZONE 'America/Mexico_City') = EXTRACT(YEAR FROM CURRENT_TIMESTAMP AT TIME ZONE 'America/Mexico_City') THEN COALESCE(p.amount, v.sale_price, v.price, 0) ELSE 0 END), 0) as rev_year
+                COALESCE(SUM(CASE WHEN EXTRACT(YEAR FROM p.purchase_date AT TIME ZONE 'America/Mexico_City') = EXTRACT(YEAR FROM CURRENT_TIMESTAMP AT TIME ZONE 'America/Mexico_City') THEN COALESCE(p.amount, v.sale_price, v.price, 0) ELSE 0 END), 0) as rev_year,
+                COALESCE(SUM(COALESCE(p.amount, v.sale_price, v.price, 0)), 0) as rev_total
             FROM purchases p
             LEFT JOIN videos v ON (p.video_id::text = v.id::text OR p.video_id::text = v.secure_slug::text)
             WHERE p.status = 'exitoso' OR p.status IS NULL
@@ -118,7 +119,8 @@ exports.fixCors = async (req, res) => {
                 currency: row.currency,
                 revToday: parseFloat(row.rev_today || 0),
                 revMonth: parseFloat(row.rev_month || 0),
-                revYear: parseFloat(row.rev_year || 0)
+                revYear: parseFloat(row.rev_year || 0),
+                revTotal: parseFloat(row.rev_total || 0)
             }))
         });
     } catch (error) {
@@ -510,5 +512,36 @@ exports.importUsers = async (req, res) => {
     } catch (error) {
         console.error('Error importando usuarios:', error);
         res.status(500).json({ error: 'Error al importar usuarios' });
+    }
+};
+
+exports.getUserPurchases = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        if (!userId) {
+            return res.status(400).json({ error: 'User ID is required' });
+        }
+
+        const result = await db.query(`
+            SELECT DISTINCT ON (p.id) 
+                   p.id as purchase_id,
+                   COALESCE(v.id::text, p.video_id) as video_id, 
+                   COALESCE(v.title, 'Video Masterclass Barberette') as title, 
+                   COALESCE(v.price, p.amount, 49.99) as amount,
+                   p.currency,
+                   p.purchase_date
+            FROM purchases p
+            LEFT JOIN videos v ON (p.video_id::text = v.id::text OR p.video_id::text = v.secure_slug::text)
+            WHERE (
+                p.user_id::text = $1::text 
+                OR LOWER(p.user_id) = LOWER((SELECT email FROM users WHERE id::text = $1::text LIMIT 1))
+            )
+            ORDER BY p.id, p.purchase_date DESC
+        `, [userId]);
+
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error in getUserPurchases:', error);
+        res.status(500).json({ error: 'Error al obtener compras del usuario' });
     }
 };

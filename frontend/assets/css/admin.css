@@ -31,13 +31,19 @@
     text-decoration: none;
     padding: 12px 1rem;
     border-radius: 8px;
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-left: 3px solid transparent;
 }
 
 .nav-menu a:hover, .nav-menu a.active {
-    background: rgba(99, 102, 241, 0.15);
-    color: var(--primary);
+    background: linear-gradient(90deg, rgba(154, 34, 171, 0.2), transparent);
+    color: white;
+    border-left: 3px solid var(--primary);
+    transform: translateX(4px);
 }
 
 .admin-content {
@@ -63,20 +69,55 @@
 
 .stat-card {
     padding: 1.5rem;
-    text-align: center;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px -10px rgba(154, 34, 171, 0.4);
+    border-color: rgba(154, 34, 171, 0.5);
+}
+
+.stat-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.stat-card:hover::after {
+    opacity: 1;
 }
 
 .stat-card h3 {
     margin: 0 0 10px 0;
     color: var(--text-muted);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 1;
 }
 
 .stat-value {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     font-weight: 700;
     color: white;
+    z-index: 1;
 }
 
 .header-action {
@@ -101,11 +142,17 @@
 }
 
 .data-table th {
-    background: rgba(0,0,0,0.3);
-    color: var(--text-muted);
+    background: rgba(154, 34, 171, 0.1);
+    color: white;
     font-size: 0.85rem;
     text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 2px solid rgba(154, 34, 171, 0.3);
+}
+
+.data-table tr {
+    transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .data-table tr:last-child td { border-bottom: none; }
-.data-table tr:hover { background: rgba(255,255,255,0.02); }
+.data-table tr:hover { background: rgba(255,255,255,0.05); }
