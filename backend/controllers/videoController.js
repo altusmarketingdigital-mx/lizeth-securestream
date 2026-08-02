@@ -102,7 +102,7 @@ exports.getMyVideos = async (req, res) => {
                 OR TRIM(LOWER(p.user_id)) = TRIM(LOWER((SELECT name FROM users WHERE id::text = $1::text LIMIT 1)))
             )
             ORDER BY COALESCE(v.id::text, p.video_id), p.purchase_date DESC
-        \`, [userId]);
+        `, [userId]);
 
         res.json(result.rows);
     } catch (error) {
