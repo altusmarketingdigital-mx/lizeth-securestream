@@ -130,7 +130,7 @@ async function recordPurchases({ userId, videoIds, couponCode, orderNumber, coun
         inserted.push({ id: newPurchaseId, userId, videoId: actualVidId, orderNumber });
         
         if (userEmail && video) {
-            const videoUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/player.html?v=${video.secure_slug}`;
+            const videoUrl = `${process.env.FRONTEND_URL || 'https://lizeth-securestream.vercel.app'}/player.html?v=${video.secure_slug}`;
             emailService.sendPurchaseReceipt(userEmail, video.title, finalItemAmount.toFixed(2), 'USD', videoUrl, orderNumber).catch(console.error);
         }
     }
@@ -212,8 +212,8 @@ router.post('/create-checkout-session', requireAuth, async (req, res) => {
             payment_method_types: ['card'],
             line_items: lineItems,
             mode: 'payment',
-            success_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard.html?payment=success&method=stripe&session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/cart.html`,
+            success_url: `${process.env.FRONTEND_URL || 'https://lizeth-securestream.vercel.app'}/dashboard.html?payment=success&method=stripe&session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.FRONTEND_URL || 'https://lizeth-securestream.vercel.app'}/cart.html`,
             metadata: {
                 userId: req.user.id,
                 userEmail: req.user.email,
@@ -255,8 +255,8 @@ router.post('/create-donation', async (req, res) => {
                 quantity: 1,
             }],
             mode: 'payment',
-            success_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/?donation=success`,
-            cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/`,
+            success_url: `${process.env.FRONTEND_URL || 'https://lizeth-securestream.vercel.app'}/?donation=success`,
+            cancel_url: `${process.env.FRONTEND_URL || 'https://lizeth-securestream.vercel.app'}/`,
             metadata: {
                 type: 'donation',
                 name: name || 'Anónimo',
@@ -343,7 +343,7 @@ router.post('/create-paypal-order', requireAuth, async (req, res) => {
         if (total <= 0) return res.status(400).json({ error: 'Total invalido' });
 
         const accessToken = await getPayPalAccessToken();
-        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+        const frontendUrl = process.env.FRONTEND_URL || 'https://lizeth-securestream.vercel.app';
 
         const orderData = {
             intent: 'CAPTURE',

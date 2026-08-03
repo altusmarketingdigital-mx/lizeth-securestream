@@ -383,7 +383,7 @@ exports.createManualSale = async (req, res) => {
         );
 
         if (email && email.trim() !== '') {
-            const videoUrl = secureSlug ? `${process.env.FRONTEND_URL || 'http://localhost:3000'}/player.html?v=${secureSlug}` : '';
+            const videoUrl = secureSlug ? `${process.env.FRONTEND_URL || 'https://lizeth-securestream.vercel.app'}/player.html?v=${secureSlug}` : '';
             emailService.sendPurchaseReceipt(email.trim(), finalVideoTitle, finalAmount.toFixed(2), 'MXN', videoUrl, finalOrder).catch(console.error);
         }
 

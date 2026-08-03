@@ -70,8 +70,8 @@ exports.sendWelcomeEmail = async (email, name) => {
         <h2>¡Bienvenido/a al club, ${name}!</h2>
         <p>Gracias por unirte a Lizeth The Barberette. Aquí tendrás acceso exclusivo a las mejores masterclasses de barbería y contenido premium.</p>
         <p>Prepárate para llevar tus habilidades al siguiente nivel.</p>
-        <div style="text-align: center;">
-            <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/catalog.html" class="btn">Explorar Cursos</a>
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="${process.env.FRONTEND_URL || 'https://lizeth-securestream.vercel.app'}/catalog.html" class="btn">Explorar Cursos</a>
         </div>
     `);
     return sendEmail({ to: email, subject: '¡Bienvenido a Lizeth The Barberette!', html });
@@ -110,8 +110,8 @@ exports.sendPurchaseReceipt = async (email, title, amount, currency = 'USD', vid
         </div>
         
         <p style="text-align: center;">Puedes acceder y reproducir tu video inmediatamente desde tu panel:</p>
-        <div style="text-align: center; margin-top: 25px;">
-            <a href="${videoUrl || ((process.env.FRONTEND_URL || 'http://localhost:3000') + '/dashboard.html')}" class="btn" style="padding: 16px 36px; font-size: 16px;">Ver Video Ahora</a>
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="${videoUrl || ((process.env.FRONTEND_URL || 'https://lizeth-securestream.vercel.app') + '/dashboard.html')}" class="btn" style="padding: 16px 36px; font-size: 16px;">Ver Video Ahora</a>
         </div>
     `);
     return sendEmail({ to: email, subject: `Confirmación de Compra: ${title}`, html });

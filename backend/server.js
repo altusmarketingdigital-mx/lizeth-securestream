@@ -19,8 +19,14 @@ app.use((req, res, next) => {
     next();
 });
 
-// Middlewares
-app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:3000', credentials: true }));
+// Middlewares Globales
+app.use((req, res, next) => {
+    res.removeHeader('X-Powered-By');
+    next();
+});
+
+// Configuración unificada de CORS
+app.use(cors({ origin: process.env.FRONTEND_URL || 'https://lizeth-securestream.vercel.app', credentials: true }));
 // Webhook de Stripe necesita el body raw para verificar la firma
 app.use('/api/payment/stripe-webhook', express.raw({ type: 'application/json' }));
 
