@@ -26,7 +26,6 @@ const requireAuth = async (req, res, next) => {
         }
 
         if (!userId) {
-            res.clearCookie('sessionToken');
             return res.status(401).json({ error: "No autorizado. Inicia sesión para continuar." });
         }
 

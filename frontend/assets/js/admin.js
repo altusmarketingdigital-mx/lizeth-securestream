@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (btnExport) {
         btnExport.addEventListener('click', async () => {
             try {
-                const token = localStorage.getItem('token');
+                const token = localStorage.getItem('sessionToken');
                 const res = await fetch('/api/admin/users', { headers: { 'Authorization': 'Bearer ' + token } });
                 const data = await res.json();
                 const clients = data.filter(u => !u.is_admin);
@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         btnLogout.addEventListener('click', async (e) => {
             e.preventDefault();
             try {
-                const token = localStorage.getItem('token');
+                const token = localStorage.getItem('sessionToken');
                 await fetch('/api/auth/logout', { 
                     method: 'POST',
                     headers: { 'Authorization': 'Bearer ' + token }
@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     btn.addEventListener('click', async (e) => {
                         if (!confirm('¿Estás seguro de que deseas eliminar este usuario de forma permanente?')) return;
                         const id = e.target.getAttribute('data-id');
-                        const token = localStorage.getItem('token');
+                        const token = localStorage.getItem('sessionToken');
                         try {
                             const res = await fetch(`/api/admin/users/${id}`, {
                                 method: 'DELETE',
@@ -337,7 +337,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     document.getElementById('cp-tbody').innerHTML = '<tr><td colspan="3" style="text-align: center; color: #888;">Cargando compras...</td></tr>';
                     
                     try {
-                        const token = localStorage.getItem('token');
+                        const token = localStorage.getItem('sessionToken');
                         const res = await fetch(`/api/admin/users/${id}/purchases`, {
                             headers: { 'Authorization': 'Bearer ' + token }
                         });
@@ -367,7 +367,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                                         if (!confirm('¿Estás seguro de que deseas revocar este acceso/compra? Esta acción no se puede deshacer.')) return;
                                         const purchaseId = e.target.getAttribute('data-id');
                                         try {
-                                            const token = localStorage.getItem('token');
+                                            const token = localStorage.getItem('sessionToken');
                                             const delRes = await fetch(`/api/admin/sales/${purchaseId}`, {
                                                 method: 'DELETE',
                                                 headers: { 'Authorization': 'Bearer ' + token }
@@ -410,7 +410,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const newName = prompt('Ingresa el nuevo nombre para este cliente:', currentName);
                     
                     if (newName !== null && newName.trim() !== '') {
-                        const token = localStorage.getItem('token');
+                        const token = localStorage.getItem('sessionToken');
                         const res = await fetch(`/api/admin/users/${id}/name`, {
                             method: 'PUT',
                             headers: { 
@@ -434,7 +434,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 btn.addEventListener('click', async (e) => {
                     if (!confirm('¿Seguro que deseas cambiar el estado de este cliente?')) return;
                     const id = e.target.getAttribute('data-id');
-                    const token = localStorage.getItem('token');
+                    const token = localStorage.getItem('sessionToken');
                     const res = await fetch(`/api/admin/users/${id}/toggle-block`, {
                         method: 'PUT',
                         headers: { 'Authorization': 'Bearer ' + token }
@@ -453,7 +453,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 btn.addEventListener('click', async (e) => {
                     if (!confirm('¿Generar nueva contraseña para este cliente? Se cerrará su sesión actual.')) return;
                     const id = e.target.getAttribute('data-id');
-                    const token = localStorage.getItem('token');
+                    const token = localStorage.getItem('sessionToken');
                     const res = await fetch(`/api/admin/users/${id}/reset-password`, {
                         method: 'PUT',
                         headers: { 'Authorization': 'Bearer ' + token }
@@ -496,7 +496,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td>${country}</td>
                 <td>${s.video_title}</td>
                 <td><span style="background:${statusColor}; color:#fff; padding:2px 6px; border-radius:4px; font-size:0.8rem; text-transform:uppercase;">${status}</span></td>
-                <td style="color:#16a34a; font-weight:bold;">$${amount.toFixed(2)}</td>
+                <td style="color:#16a34a; font-weight:bold;">$${amount.toFixed(2)} ${s.currency || 'MXN'}</td>
             </tr>
             `;
         }).join('');
@@ -509,7 +509,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function loadSales() {
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('sessionToken');
             const res = await fetch('/api/admin/sales', {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
@@ -571,7 +571,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             btnSaveManualSale.disabled = true;
 
             try {
-                const token = localStorage.getItem('token');
+                const token = localStorage.getItem('sessionToken');
                 const res = await fetch('/api/admin/sales', {
                     method: 'POST',
                     headers: {
@@ -714,7 +714,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         }
                     }
                     
-                    const token = localStorage.getItem('token');
+                    const token = localStorage.getItem('sessionToken');
                     fetch(`/api/videos/${id}/images`, { headers: { 'Authorization': 'Bearer ' + token } })
                         .then(res => res.ok ? res.json() : [])
                         .then(images => {
@@ -737,7 +737,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 btn.addEventListener('click', async (e) => {
                     if (confirm('¿Estás seguro de que deseas eliminar este video? Nadie podrá volver a tener acceso a él (ni siquiera quienes ya lo compraron).')) {
                         const id = e.target.getAttribute('data-id');
-                        const token = localStorage.getItem('token');
+                        const token = localStorage.getItem('sessionToken');
                         const res = await fetch('/api/admin/videos/' + id, {
                             method: 'DELETE',
                             headers: { 'Authorization': 'Bearer ' + token }
@@ -876,7 +876,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         btn.disabled = true;
 
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('sessionToken');
             const res = await fetch('/api/settings', {
                 method: 'PUT',
                 headers: { 
@@ -905,7 +905,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             btnFixCors.textContent = 'Aplicando...';
             btnFixCors.disabled = true;
             try {
-                const token = localStorage.getItem('token');
+                const token = localStorage.getItem('sessionToken');
                 const res = await fetch('/api/admin/fix-cors', {
                     method: 'POST',
                     headers: { 
@@ -1076,7 +1076,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 // Obtenemos el token de acceso temporal de Dropbox
                 const resToken = await fetch(`/api/admin/dropbox-token`, {
-                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('sessionToken') }
                 });
                 const tokenData = await resToken.json();
                 
@@ -1151,7 +1151,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             // 3. Subir metadatos e imágenes a la DB
             submitBtn.textContent = 'Guardando datos...';
             const imagesBase64 = selectedImages.map(img => img.data);
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('sessionToken');
 
             const payload = { 
                 title, 
@@ -1352,7 +1352,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
             try {
-                const token = localStorage.getItem('token');
+                const token = localStorage.getItem('sessionToken');
                 const res = await fetch('/api/settings', {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
@@ -1441,7 +1441,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
             try {
-                const token = localStorage.getItem('token');
+                const token = localStorage.getItem('sessionToken');
                 const res = await fetch('/api/settings', {
                     method: 'PUT',
                     headers: { 
@@ -1466,7 +1466,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function loadDonations() {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('sessionToken');
         try {
             const res = await fetch('/api/donations', { headers: { 'Authorization': 'Bearer ' + token } });
             const data = await res.json();
@@ -1523,7 +1523,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             const permissions = Array.from(document.querySelectorAll('.u-perm:checked')).map(chk => chk.value);
             
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('sessionToken');
 
             if (!email || (!id && !password)) {
                 alert('Faltan campos obligatorios');
@@ -1636,7 +1636,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 msgEl.textContent = `Enviando ${usersToImport.length} usuarios al servidor...`;
 
                 try {
-                    const token = localStorage.getItem('token');
+                    const token = localStorage.getItem('sessionToken');
                     
                     const chunkSize = 10;
                     let totalImported = 0;

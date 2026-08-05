@@ -315,7 +315,7 @@ exports.deleteVideo = async (req, res) => {
 exports.getSales = async (req, res) => {
     try {
         const query = `
-            SELECT p.id as purchase_id, p.purchase_date, p.order_number, p.country, p.status, p.amount,
+            SELECT p.id as purchase_id, p.purchase_date, p.order_number, p.country, p.status, p.amount, p.currency,
                    COALESCE(u.email, 'cliente@barberette.com') as user_email, 
                    COALESCE(u.name, 'Cliente Barberette') as user_name, 
                    COALESCE(v.title, 'Acceso Video Masterclass Barberette') as video_title, 

@@ -131,7 +131,7 @@ async function recordPurchases({ userId, videoIds, couponCode, orderNumber, coun
         
         if (userEmail && video) {
             const videoUrl = `${process.env.FRONTEND_URL || 'https://lizeth-securestream.vercel.app'}/player.html?v=${video.secure_slug}`;
-            emailService.sendPurchaseReceipt(userEmail, video.title, finalItemAmount.toFixed(2), 'USD', videoUrl, orderNumber).catch(console.error);
+            emailService.sendPurchaseReceipt(userEmail, video.title, finalItemAmount.toFixed(2), cartCurrency.toUpperCase(), videoUrl, orderNumber).catch(console.error);
         }
     }
     

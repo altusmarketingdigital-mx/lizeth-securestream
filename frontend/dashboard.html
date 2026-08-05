@@ -476,7 +476,7 @@
             try {
                 let videos = [];
                 try {
-                    const token = localStorage.getItem('token') || '';
+                    const token = localStorage.getItem('sessionToken') || '';
                     const res = await fetch('/api/videos/my-videos', {
                         headers: {
                             'Authorization': 'Bearer ' + token
