@@ -58,19 +58,26 @@ document.addEventListener('DOMContentLoaded', () => {
 const originalFetch = window.fetch;
 window.fetch = async function(url, options = {}) {
     options = options || {};
-    options.credentials = options.credentials || 'include';
     
-    const token = localStorage.getItem('sessionToken');
-    if (token) {
-        if (!options.headers) {
-            options.headers = { 'Authorization': 'Bearer ' + token };
-        } else if (options.headers instanceof Headers) {
-            if (!options.headers.has('Authorization')) {
-                options.headers.append('Authorization', 'Bearer ' + token);
-            }
-        } else if (typeof options.headers === 'object') {
-            if (!options.headers['Authorization'] && !options.headers['authorization']) {
-                options.headers['Authorization'] = 'Bearer ' + token;
+    // Convertir el Request object a string para la comprobación, si es necesario
+    const urlString = typeof url === 'string' ? url : (url instanceof Request ? url.url : '');
+    const isInternal = urlString.startsWith('/') || urlString.startsWith(window.location.origin);
+    
+    if (isInternal) {
+        options.credentials = options.credentials || 'include';
+        
+        const token = localStorage.getItem('sessionToken');
+        if (token) {
+            if (!options.headers) {
+                options.headers = { 'Authorization': 'Bearer ' + token };
+            } else if (options.headers instanceof Headers) {
+                if (!options.headers.has('Authorization')) {
+                    options.headers.append('Authorization', 'Bearer ' + token);
+                }
+            } else if (typeof options.headers === 'object') {
+                if (!options.headers['Authorization'] && !options.headers['authorization']) {
+                    options.headers['Authorization'] = 'Bearer ' + token;
+                }
             }
         }
     }
