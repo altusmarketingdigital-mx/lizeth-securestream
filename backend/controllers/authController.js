@@ -123,7 +123,7 @@ exports.forgotPassword = async (req, res) => {
         const resetUrl = `reset-password.html?token=${resetToken}`;
         
         const emailService = require('../utils/emailService');
-        await emailService.sendMagicLink(user.email, (process.env.FRONTEND_URL || 'http://localhost:8080') + '/' + resetUrl).catch(console.error);
+        await emailService.sendMagicLink(user.email, (process.env.FRONTEND_URL || 'https://www.lizethbarberette.com') + '/' + resetUrl).catch(console.error);
 
         res.json({ 
             message: 'Enlace de recuperación generado con éxito.', 
