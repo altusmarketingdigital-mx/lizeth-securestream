@@ -85,8 +85,8 @@ async function calculateCart(videoIds, couponCode) {
 }
 
 // Helper universal para insertar compras en la base de datos de manera atómica y garantizada
-async function recordPurchases({ userId, videoIds, couponCode, orderNumber, country = 'MX', status = 'exitoso' }) {
-    if (!userId || !videoIds || videoIds.length === 0) return [];
+async function recordPurchases({ userId, userEmail, videoIds, couponCode, orderNumber, country = 'MX', status = 'exitoso' }) {
+    if ((!userId && !userEmail) || !videoIds || videoIds.length === 0) return [];
     
     let total = 0;
     let cartCurrency = 'MXN';
@@ -100,14 +100,47 @@ async function recordPurchases({ userId, videoIds, couponCode, orderNumber, coun
     
     const perItemPrice = videoIds.length > 0 ? (total / videoIds.length) : 0;
     
+    // Resolver email y userId garantizando que el usuario siempre exista en la base de datos
+    let targetEmail = (userEmail || (String(userId).includes('@') ? userId : '')).toLowerCase().trim();
+    let effectiveUserId = null;
+
+    if (userId && !String(userId).includes('@')) {
+        const uRes = await db.query('SELECT id, email FROM users WHERE id::text = $1::text LIMIT 1', [String(userId)]);
+        if (uRes.rows.length > 0) {
+            effectiveUserId = uRes.rows[0].id;
+            targetEmail = uRes.rows[0].email;
+        }
+    }
+
+    if (!effectiveUserId && targetEmail) {
+        const uRes = await db.query('SELECT id, email FROM users WHERE LOWER(TRIM(email)) = LOWER(TRIM($1)) LIMIT 1', [targetEmail]);
+        if (uRes.rows.length > 0) {
+            effectiveUserId = uRes.rows[0].id;
+            targetEmail = uRes.rows[0].email;
+        } else {
+            // Auto-crear usuario para que la cuenta quede lista inmediatamente
+            const newId = uuidv4();
+            const bcrypt = require('bcryptjs');
+            const randomPass = bcrypt.hashSync(uuidv4(), 10);
+            await db.query(
+                "INSERT INTO users (id, email, password_hash, has_premium, is_admin) VALUES ($1, $2, $3, false, false)",
+                [newId, targetEmail, randomPass]
+            );
+            effectiveUserId = newId;
+            console.log(`✅ Usuario creado automáticamente para la compra: ${targetEmail}`);
+        }
+    }
+
+    if (!effectiveUserId) {
+        effectiveUserId = String(userId);
+    }
+    
     const inserted = [];
-    const userRes = await db.query('SELECT email FROM users WHERE id::text = $1::text LIMIT 1', [String(userId)]);
-    const userEmail = userRes.rows[0]?.email;
     
     for (const vidId of videoIds) {
         const existing = await db.query(
-            'SELECT id FROM purchases WHERE (user_id::text = $1::text OR user_id = $2) AND (video_id::text = $3::text) AND order_number = $4 LIMIT 1',
-            [String(userId), userEmail || '', String(vidId), orderNumber]
+            'SELECT id FROM purchases WHERE (user_id::text = $1::text OR LOWER(TRIM(user_id)) = LOWER(TRIM($2))) AND (video_id::text = $3::text) AND order_number = $4 LIMIT 1',
+            [String(effectiveUserId), targetEmail || '', String(vidId), orderNumber]
         );
         
         if (existing.rows.length > 0) {
@@ -124,14 +157,14 @@ async function recordPurchases({ userId, videoIds, couponCode, orderNumber, coun
         const newPurchaseId = uuidv4();
         await db.query(
             "INSERT INTO purchases (id, user_id, video_id, order_number, country, status, amount, purchase_date, currency) VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), $8)",
-            [newPurchaseId, String(userId), String(actualVidId), orderNumber, country, status, finalItemAmount.toFixed(2), cartCurrency.toUpperCase()]
+            [newPurchaseId, String(effectiveUserId), String(actualVidId), orderNumber, country, status, finalItemAmount.toFixed(2), cartCurrency.toUpperCase()]
         );
         
-        inserted.push({ id: newPurchaseId, userId, videoId: actualVidId, orderNumber });
+        inserted.push({ id: newPurchaseId, userId: effectiveUserId, videoId: actualVidId, orderNumber });
         
-        if (userEmail && video) {
+        if (targetEmail && video) {
             const videoUrl = `${process.env.FRONTEND_URL || 'https://lizeth-securestream.vercel.app'}/player.html?v=${video.secure_slug}`;
-            emailService.sendPurchaseReceipt(userEmail, video.title, finalItemAmount.toFixed(2), cartCurrency.toUpperCase(), videoUrl, orderNumber).catch(console.error);
+            emailService.sendPurchaseReceipt(targetEmail, video.title, finalItemAmount.toFixed(2), cartCurrency.toUpperCase(), videoUrl, orderNumber).catch(console.error);
         }
     }
     
@@ -159,12 +192,13 @@ router.all('/confirm-stripe-session', async (req, res) => {
             
             if (!userId && userEmail) {
                 const uRes = await db.query('SELECT id FROM users WHERE LOWER(email) = LOWER($1) LIMIT 1', [userEmail]);
-                userId = uRes.rows[0]?.id;
+                userId = uRes.rows[0]?.id || userEmail;
             }
             
             if (userId && videoIds.length > 0) {
                 await recordPurchases({
                     userId,
+                    userEmail,
                     videoIds,
                     couponCode,
                     orderNumber: session.id,
@@ -306,12 +340,13 @@ router.post('/stripe-webhook', async (req, res) => {
 
             if (!userId && userEmail) {
                 const uRes = await db.query('SELECT id FROM users WHERE LOWER(email) = LOWER($1) LIMIT 1', [userEmail]);
-                userId = uRes.rows[0]?.id;
+                userId = uRes.rows[0]?.id || userEmail;
             }
 
             if (userId && videoIds.length > 0) {
                 await recordPurchases({
                     userId,
+                    userEmail,
                     videoIds,
                     couponCode,
                     orderNumber,
@@ -425,8 +460,11 @@ router.post('/capture-paypal-order', requireAuth, async (req, res) => {
             const orderNumber = captureData.id || orderID;
             const country = captureData.payer?.address?.country_code || 'N/A';
 
+            const payerEmail = captureData.payer?.email_address || req.user?.email;
+
             await recordPurchases({
                 userId,
+                userEmail: payerEmail,
                 videoIds,
                 couponCode,
                 orderNumber,

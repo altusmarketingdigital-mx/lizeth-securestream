@@ -254,6 +254,41 @@ async function initializeDatabase() {
             }
         }
 
+        // Asegurar asignación de compra para clientes de "Video The Toxic 2: the Barberette who never forgives"
+        try {
+            const targetEmails = ['lucasvilachadesa@gmail.com', 'marcustuliomtz@gmail.com'];
+            let toxicVidRes = await pool.query("SELECT id FROM videos WHERE LOWER(title) LIKE '%toxic 2%' OR LOWER(title) LIKE '%toxic%' ORDER BY created_at DESC LIMIT 1");
+            let toxicVidId = toxicVidRes.rows[0]?.id;
+            
+            if (!toxicVidId) {
+                toxicVidId = require('crypto').randomUUID();
+                await pool.query(
+                    "INSERT INTO videos (id, title, description, price, secure_slug, internal_storage_path) VALUES ($1, $2, $3, $4, $5, $6)",
+                    [toxicVidId, 'Video The Toxic 2: the Barberette who never forgives', 'Contenido exclusivo desbloqueado', 49.99, 'v-toxic-2', '/videos/toxic2.mp4']
+                );
+            }
+
+            for (const email of targetEmails) {
+                let userRes = await pool.query("SELECT id FROM users WHERE LOWER(email) = LOWER($1)", [email]);
+                let uId = userRes.rows[0]?.id || email;
+                
+                let pCheck = await pool.query(
+                    "SELECT id FROM purchases WHERE (user_id::text = $1::text OR LOWER(TRIM(user_id)) = LOWER(TRIM($2))) AND (video_id::text = $3::text)",
+                    [String(uId), email, String(toxicVidId)]
+                );
+                
+                if (pCheck.rows.length === 0) {
+                    await pool.query(
+                        "INSERT INTO purchases (id, user_id, video_id, order_number, country, status, amount, purchase_date, currency) VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), $8)",
+                        [require('crypto').randomUUID(), String(uId), String(toxicVidId), 'ORD-TOXIC2-' + Math.floor(10000 + Math.random()*90000), 'MX', 'exitoso', 49.99, 'USD']
+                    );
+                    console.log(`✅ Compra de Toxic 2 asignada automáticamente a ${email}`);
+                }
+            }
+        } catch (e) {
+            console.error('Error asignando compras de emergencia:', e);
+        }
+
         console.log('✅ Base de datos PostgreSQL inicializada correctamente');
     } catch (err) {
         console.error('❌ Error inicializando base de datos:', err);
