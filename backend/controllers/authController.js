@@ -126,8 +126,7 @@ exports.forgotPassword = async (req, res) => {
         await emailService.sendMagicLink(user.email, (process.env.FRONTEND_URL || 'https://www.lizethbarberette.com') + '/' + resetUrl).catch(console.error);
 
         res.json({ 
-            message: 'Enlace de recuperación generado con éxito.', 
-            resetUrl: resetUrl 
+            message: 'Enlace de recuperación enviado. Revisa tu correo electrónico.'
         });
     } catch (error) {
         console.error('Error en forgotPassword:', error);

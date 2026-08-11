@@ -1467,11 +1467,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function loadDonations() {
         const token = localStorage.getItem('sessionToken');
+        const msgBox = document.getElementById('donations-msg');
         try {
             const res = await fetch('/api/donations', { headers: { 'Authorization': 'Bearer ' + token } });
+            if (!res.ok) {
+                console.error('Failed to fetch donations:', res.status);
+                if (msgBox) { msgBox.textContent = 'Error al cargar donaciones.'; msgBox.style.color = 'var(--error)'; }
+                return;
+            }
             const data = await res.json();
             const tbody = document.getElementById('donations-tbody');
-            if (tbody && Array.isArray(data)) {
+            if (tbody && Array.isArray(data) && data.length) {
                 tbody.innerHTML = data.map(d => `
                     <tr>
                         <td>${new Date(d.created_at).toLocaleString()}</td>
@@ -1481,9 +1487,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <td style="color:#16a34a; font-weight:bold;">$${d.amount}</td>
                     </tr>
                 `).join('');
+                if (msgBox) msgBox.style.display = 'none';
+            } else {
+                tbody.innerHTML = '';
+                if (msgBox) { msgBox.textContent = 'No hay donativos registrados.'; msgBox.style.color = '#aaa'; msgBox.style.display = 'block'; }
             }
         } catch (err) {
             console.error('Error cargando donaciones:', err);
+            if (msgBox) { msgBox.textContent = 'Error de conexión al cargar donaciones.'; msgBox.style.color = 'var(--error)'; msgBox.style.display = 'block'; }
         }
     }
 
