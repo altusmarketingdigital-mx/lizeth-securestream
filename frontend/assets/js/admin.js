@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (tabId === 'tab-dashboard') { loadStats(); loadUsers(); }
             if (tabId === 'tab-users') loadUsers();
             if (tabId === 'tab-clients') loadUsers();
-            if (tabId === 'tab-sales') loadSales();
+            if (tabId === 'tab-sales') { loadSales(); populateCouponVideos(); }
             if (tabId === 'tab-videos') loadVideos();
             if (tabId === 'tab-coupons') { loadCoupons(); populateCouponVideos(); }
             if (tabId === 'tab-carousel') loadCarousel();
@@ -540,6 +540,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const btnShowManualSale = document.getElementById('btn-show-manual-sale');
     if (btnShowManualSale) {
         btnShowManualSale.addEventListener('click', () => {
+            populateCouponVideos();
             const panel = document.getElementById('manual-sale-panel');
             if (panel) panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
         });
@@ -789,7 +790,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function populateCouponVideos() {
         const data = await apiGet('/api/admin/videos');
-        if (data) {
+        if (data && Array.isArray(data)) {
             const select = document.getElementById('c-video');
             if (select) {
                 select.innerHTML = '<option value="">Válido para cualquier video (Global)</option>' + 
@@ -798,8 +799,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             const msSelect = document.getElementById('ms-video');
             if (msSelect) {
+                const currentVal = msSelect.value;
                 msSelect.innerHTML = '<option value="">-- Seleccionar Video --</option>' + 
                     data.map(v => `<option value="${v.title}">${v.title}</option>`).join('');
+                if (currentVal) msSelect.value = currentVal;
             }
         }
     }

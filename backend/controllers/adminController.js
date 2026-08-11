@@ -355,7 +355,11 @@ exports.createManualSale = async (req, res) => {
         let secureSlug = '';
 
         if (videoTitle && videoTitle.trim() !== '') {
-            const vidRes = await db.query('SELECT id, title, secure_slug FROM videos WHERE LOWER(title) LIKE LOWER($1) AND (is_deleted = false OR is_deleted IS NULL) ORDER BY created_at DESC LIMIT 1', [`%${videoTitle.trim()}%`]);
+            const term = videoTitle.trim();
+            const vidRes = await db.query(
+                'SELECT id, title, secure_slug FROM videos WHERE (id::text = $1::text OR secure_slug = $1 OR LOWER(title) LIKE LOWER($2)) AND (is_deleted = false OR is_deleted IS NULL) ORDER BY created_at DESC LIMIT 1',
+                [term, `%${term}%`]
+            );
             if (vidRes.rows.length > 0) {
                 videoId = vidRes.rows[0].id;
                 finalVideoTitle = vidRes.rows[0].title;
