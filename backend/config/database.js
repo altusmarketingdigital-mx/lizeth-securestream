@@ -84,6 +84,7 @@ async function initializeDatabase() {
         await pool.query(`ALTER TABLE videos ADD COLUMN IF NOT EXISTS is_deleted BOOLEAN DEFAULT false;`);
         await pool.query(`ALTER TABLE videos ADD COLUMN IF NOT EXISTS published_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;`);
         await pool.query(`ALTER TABLE videos ADD COLUMN IF NOT EXISTS sale_price NUMERIC(10, 2) DEFAULT NULL;`);
+        await pool.query(`ALTER TABLE videos ADD COLUMN IF NOT EXISTS position INT DEFAULT 0;`);
 
         await pool.query(`
             CREATE TABLE IF NOT EXISTS purchases (

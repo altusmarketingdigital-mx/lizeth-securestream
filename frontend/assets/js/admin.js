@@ -606,11 +606,50 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
 
+    let currentVideosList = [];
+
+    window.moveVideoUp = async (index) => {
+        if (index > 0 && currentVideosList.length > 1) {
+            const temp = currentVideosList[index];
+            currentVideosList[index] = currentVideosList[index - 1];
+            currentVideosList[index - 1] = temp;
+            await saveVideosOrder();
+        }
+    };
+
+    window.moveVideoDown = async (index) => {
+        if (index < currentVideosList.length - 1 && currentVideosList.length > 1) {
+            const temp = currentVideosList[index];
+            currentVideosList[index] = currentVideosList[index + 1];
+            currentVideosList[index + 1] = temp;
+            await saveVideosOrder();
+        }
+    };
+
+    async function saveVideosOrder() {
+        const videoIds = currentVideosList.map(v => v.id);
+        const token = localStorage.getItem('sessionToken');
+        try {
+            await fetch('/api/admin/videos/reorder', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({ videoIds })
+            });
+            loadVideos();
+        } catch (e) {
+            console.error('Error al reordenar videos:', e);
+        }
+    }
+
     async function loadVideos() {
         const data = await apiGet('/api/admin/videos');
-        if (data) {
+        if (data && Array.isArray(data)) {
+            currentVideosList = data;
             const tbody = document.getElementById('videos-tbody');
-            tbody.innerHTML = data.map(v => {
+            tbody.innerHTML = data.map((v, index) => {
                 const isPublished = new Date(v.published_at) <= new Date();
                 const pubStatus = isPublished ? '<span style="color:#16a34a;">Publicado</span>' : '<span style="color:#f59e0b;">Programado</span>';
                 const visStatus = v.is_hidden ? '<span style="color:#dc2626;">(Oculto)</span>' : '';
@@ -623,6 +662,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <td><strong>${v.title}</strong><br><span style="font-size:0.8rem;color:#888;">${v.secure_slug}</span></td>
                     <td>${sym}${v.price} ${v.currency} ${salePrice}</td>
                     <td>${pubStatus} ${visStatus}<br><span style="font-size:0.8rem;color:#aaa;">${pubDateStr}</span></td>
+                    <td>
+                        <div style="display: flex; gap: 4px; align-items: center;">
+                            <button type="button" onclick="moveVideoUp(${index})" ${index === 0 ? 'disabled style="opacity:0.3; cursor:default;"' : ''} class="sm-btn" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 3px 8px; border-radius: 4px; cursor: pointer;" title="Subir posición">⬆️</button>
+                            <span style="font-size:0.8rem; color:#aaa; font-weight:bold; min-width: 15px; text-align: center;">${index + 1}</span>
+                            <button type="button" onclick="moveVideoDown(${index})" ${index === data.length - 1 ? 'disabled style="opacity:0.3; cursor:default;"' : ''} class="sm-btn" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 3px 8px; border-radius: 4px; cursor: pointer;" title="Bajar posición">⬇️</button>
+                        </div>
+                    </td>
                     <td>
                         <button class="btn-primary sm-btn edit-video-btn" style="background:#2563eb;" 
                             data-id="${v.id}" 
@@ -1024,13 +1070,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         counter.textContent = `(${selectedImages.length} / 10)`;
         container.innerHTML = selectedImages.map((img, index) => `
-            <div style="position: relative; width: 100px; height: 100px; border-radius: 5px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
-                <img src="${img.data}" style="width: 100%; height: 100%; object-fit: cover;">
-                <button type="button" onclick="removeImage(${index})" style="position: absolute; top: 2px; right: 2px; background: rgba(220, 38, 38, 0.9); border: none; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10;" title="Eliminar">✕</button>
-                ${index === 0 
-                    ? `<div style="position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(16, 185, 129, 0.9); color: white; font-size: 0.65rem; text-align: center; padding: 3px 0; font-weight: bold; pointer-events: none;">PORTADA</div>`
-                    : `<button type="button" onclick="makeCover(${index})" style="position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0, 0, 0, 0.7); color: white; border: none; font-size: 0.65rem; text-align: center; padding: 3px 0; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(37, 99, 235, 0.9)'" onmouseout="this.style.background='rgba(0, 0, 0, 0.7)'">Hacer Portada</button>`
-                }
+            <div style="position: relative; width: 110px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.6); display: flex; flex-direction: column;">
+                <div style="position: relative; width: 100%; height: 80px;">
+                    <img src="${img.data}" style="width: 100%; height: 100%; object-fit: cover;">
+                    <button type="button" onclick="removeImage(${index})" style="position: absolute; top: 2px; right: 2px; background: rgba(220, 38, 38, 0.9); border: none; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10;" title="Eliminar foto">✕</button>
+                    ${index === 0 
+                        ? `<div style="position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(16, 185, 129, 0.9); color: white; font-size: 0.65rem; text-align: center; padding: 2px 0; font-weight: bold; pointer-events: none;">PORTADA</div>`
+                        : `<button type="button" onclick="makeCover(${index})" style="position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0, 0, 0, 0.7); color: white; border: none; font-size: 0.65rem; text-align: center; padding: 3px 0; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(37, 99, 235, 0.9)'" onmouseout="this.style.background='rgba(0, 0, 0, 0.7)'">Hacer Portada</button>`
+                    }
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); padding: 4px 6px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <button type="button" onclick="moveImageLeft(${index})" ${index === 0 ? 'disabled style="opacity:0.2; cursor:default; background:none; border:none; color:white;"' : 'style="background:none; border:none; color:white; cursor:pointer;"'} title="Mover a la izquierda">◀</button>
+                    <span style="font-size:0.7rem; color:#aaa; font-weight:bold;">${index + 1}</span>
+                    <button type="button" onclick="moveImageRight(${index})" ${index === selectedImages.length - 1 ? 'disabled style="opacity:0.2; cursor:default; background:none; border:none; color:white;"' : 'style="background:none; border:none; color:white; cursor:pointer;"'} title="Mover a la derecha">▶</button>
+                </div>
             </div>
         `).join('');
     }
@@ -1044,6 +1097,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (index > 0 && index < selectedImages.length) {
             const img = selectedImages.splice(index, 1)[0];
             selectedImages.unshift(img);
+            updateImagePreviews();
+        }
+    };
+
+    window.moveImageLeft = (index) => {
+        if (index > 0) {
+            const temp = selectedImages[index];
+            selectedImages[index] = selectedImages[index - 1];
+            selectedImages[index - 1] = temp;
+            updateImagePreviews();
+        }
+    };
+
+    window.moveImageRight = (index) => {
+        if (index < selectedImages.length - 1) {
+            const temp = selectedImages[index];
+            selectedImages[index] = selectedImages[index + 1];
+            selectedImages[index + 1] = temp;
             updateImagePreviews();
         }
     };

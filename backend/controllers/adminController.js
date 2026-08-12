@@ -208,10 +208,24 @@ exports.deleteUser = async (req, res) => {
 
 exports.getVideos = async (req, res) => {
     try {
-        const result = await db.query('SELECT * FROM videos WHERE is_deleted = false ORDER BY created_at DESC');
+        const result = await db.query('SELECT * FROM videos WHERE (is_deleted = false OR is_deleted IS NULL) ORDER BY COALESCE(position, 0) ASC, created_at DESC');
         res.json(result.rows);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener videos' });
+    }
+};
+
+exports.reorderVideos = async (req, res) => {
+    try {
+        const { videoIds } = req.body;
+        if (!Array.isArray(videoIds)) return res.status(400).json({ error: 'Lista de videos inválida' });
+        for (let i = 0; i < videoIds.length; i++) {
+            await db.query('UPDATE videos SET position = $1 WHERE id::text = $2::text', [i, String(videoIds[i])]);
+        }
+        res.json({ success: true, message: 'Orden de videos actualizado correctamente' });
+    } catch (error) {
+        console.error('Error al reordenar videos:', error);
+        res.status(500).json({ error: 'Error al reordenar videos' });
     }
 };
 

@@ -15,6 +15,7 @@ router.delete('/sales/:id', adminController.deleteSale);
 router.get('/sales/analytics', adminController.getSalesAnalytics);
 
 router.get('/videos', adminController.getVideos);
+router.put('/videos/reorder', adminController.reorderVideos);
 router.post('/videos', adminController.addVideo);
 router.put('/videos/:id', adminController.updateVideo);
 router.delete('/videos/:id', adminController.deleteVideo);

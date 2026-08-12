@@ -28,12 +28,12 @@ const MOCK_VIDEOS = [
 exports.getAllVideos = async (req, res) => {
     try {
         const result = await db.query(`
-            SELECT v.id, v.title, v.description, v.price, v.secure_slug, v.thumbnail_url, v.created_at,
+            SELECT v.id, v.title, v.description, v.price, v.secure_slug, v.thumbnail_url, v.created_at, v.position,
                    (SELECT image_data FROM video_images vi WHERE vi.video_id = v.id ORDER BY created_at ASC LIMIT 1) as cover_image
             FROM videos v
             WHERE (v.is_deleted = false OR v.is_deleted IS NULL)
               AND v.published_at <= CURRENT_TIMESTAMP
-            ORDER BY v.created_at DESC
+            ORDER BY COALESCE(v.position, 0) ASC, v.created_at DESC
         `);
         if (result && result.rows && result.rows.length > 0) {
             res.json(result.rows);
@@ -48,13 +48,13 @@ exports.getAllVideos = async (req, res) => {
 exports.getCatalog = async (req, res) => {
     try {
         const result = await db.query(`
-            SELECT v.id, v.title, v.description, v.price, v.sale_price, v.secure_slug, v.currency,
+            SELECT v.id, v.title, v.description, v.price, v.sale_price, v.secure_slug, v.currency, v.position,
                    (SELECT image_data FROM video_images vi WHERE vi.video_id = v.id ORDER BY created_at ASC LIMIT 1) as cover_image
             FROM videos v
             WHERE v.is_hidden = false 
-              AND v.is_deleted = false 
+              AND (v.is_deleted = false OR v.is_deleted IS NULL) 
               AND v.published_at <= CURRENT_TIMESTAMP
-            ORDER BY v.created_at DESC
+            ORDER BY COALESCE(v.position, 0) ASC, v.created_at DESC
         `);
         if (result && result.rows && result.rows.length > 0) {
             res.json(result.rows);
