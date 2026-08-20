@@ -454,9 +454,17 @@
             if (urlParams.get('payment') === 'success') {
                 const sessionId = urlParams.get('session_id');
                 if (sessionId) {
-                    fetch(`/api/payment/confirm-stripe-session?session_id=${encodeURIComponent(sessionId)}`, {
-                        credentials: 'include'
-                    }).catch(console.error);
+                    try {
+                        const token = localStorage.getItem('sessionToken') || '';
+                        await fetch(`/api/payment/confirm-stripe-session?session_id=${encodeURIComponent(sessionId)}`, {
+                            headers: {
+                                'Authorization': 'Bearer ' + token
+                            },
+                            credentials: 'include'
+                        });
+                    } catch (e) {
+                        console.error('Error confirmando pago de Stripe:', e);
+                    }
                 }
                 const notif = document.createElement('div');
                 notif.style.cssText = "position:fixed; top:20px; right:20px; background:var(--primary); color:white; padding:15px 25px; border-radius:8px; z-index:9999; font-weight:bold; box-shadow:0 10px 30px rgba(154,34,171,0.5);";

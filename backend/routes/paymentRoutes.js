@@ -187,15 +187,37 @@ router.all('/confirm-stripe-session', async (req, res) => {
         if (session && session.payment_status === 'paid') {
             let userId = session.metadata?.userId;
             const userEmail = session.metadata?.userEmail || session.customer_details?.email;
-            const videoIds = session.metadata?.videoIds ? JSON.parse(session.metadata.videoIds) : [];
+            let videoIds = session.metadata?.videoIds ? JSON.parse(session.metadata.videoIds) : [];
             const couponCode = session.metadata?.couponCode;
             
+            if (!videoIds || videoIds.length === 0) {
+                try {
+                    const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
+                    if (lineItems && lineItems.data) {
+                        for (const item of lineItems.data) {
+                            const desc = item.description || '';
+                            if (desc) {
+                                const vidRes = await db.query(
+                                    'SELECT id FROM videos WHERE LOWER(title) LIKE LOWER($1) AND (is_deleted = false OR is_deleted IS NULL) LIMIT 1',
+                                    [`%${desc.trim()}%`]
+                                );
+                                if (vidRes.rows.length > 0) {
+                                    videoIds.push(vidRes.rows[0].id);
+                                }
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error recuperando line items de Stripe:', e);
+                }
+            }
+
             if (!userId && userEmail) {
                 const uRes = await db.query('SELECT id FROM users WHERE LOWER(email) = LOWER($1) LIMIT 1', [userEmail]);
                 userId = uRes.rows[0]?.id || userEmail;
             }
             
-            if (userId && videoIds.length > 0) {
+            if ((userId || userEmail) && videoIds.length > 0) {
                 await recordPurchases({
                     userId,
                     userEmail,
@@ -333,17 +355,39 @@ router.post('/stripe-webhook', async (req, res) => {
         } else {
             let userId = session.metadata?.userId;
             const userEmail = session.metadata?.userEmail || session.customer_details?.email;
-            const videoIds = session.metadata?.videoIds ? JSON.parse(session.metadata.videoIds) : [];
+            let videoIds = session.metadata?.videoIds ? JSON.parse(session.metadata.videoIds) : [];
             const couponCode = session.metadata?.couponCode;
             const orderNumber = session.id;
             const country = session.customer_details?.address?.country || 'N/A';
+
+            if (!videoIds || videoIds.length === 0) {
+                try {
+                    const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
+                    if (lineItems && lineItems.data) {
+                        for (const item of lineItems.data) {
+                            const desc = item.description || '';
+                            if (desc) {
+                                const vidRes = await db.query(
+                                    'SELECT id FROM videos WHERE LOWER(title) LIKE LOWER($1) AND (is_deleted = false OR is_deleted IS NULL) LIMIT 1',
+                                    [`%${desc.trim()}%`]
+                                );
+                                if (vidRes.rows.length > 0) {
+                                    videoIds.push(vidRes.rows[0].id);
+                                }
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error recuperando line items en webhook de Stripe:', e);
+                }
+            }
 
             if (!userId && userEmail) {
                 const uRes = await db.query('SELECT id FROM users WHERE LOWER(email) = LOWER($1) LIMIT 1', [userEmail]);
                 userId = uRes.rows[0]?.id || userEmail;
             }
 
-            if (userId && videoIds.length > 0) {
+            if ((userId || userEmail) && videoIds.length > 0) {
                 await recordPurchases({
                     userId,
                     userEmail,
@@ -353,7 +397,7 @@ router.post('/stripe-webhook', async (req, res) => {
                     country,
                     status: 'exitoso'
                 });
-                console.log(`✅ Webhook de Stripe completado. Registrado para el usuario ${userId}`);
+                console.log(`✅ Webhook de Stripe completado. Registrado para el usuario ${userId || userEmail}`);
             }
         }
     }
